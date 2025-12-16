@@ -15,3 +15,5 @@ _site/
 .DS_Store
 /.quarto/
 **/*.quarto_ipynb
+
+.nojekyll
