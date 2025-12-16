@@ -1,5 +1,48 @@
 ---
-title: "About"
+title: "Franklin Aryee"
+toc-title: "Profile"
+about:
+  template: trestles
+  image: images/profile.jpg
+  image-shape: round
+  links:
+    - icon: github
+      text: GitHub
+      href: https://github.com/jim-franklin
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/franklin-aryee-118729183/
 ---
 
-About this site
+I am a data scientist and engineer with a background in applied analytics, system design, and industrial data. I hold a Master of Data Science from the University of British Columbia and a Bachelor of Science in Engineering.
+
+## Education
+
+**University of British Columbia**  
+Aug 2024 – Jun 2025  
+Master of Data Science
+
+**Kwame Nkrumah University of Science and Technology**  
+Oct 2018 – Nov 2022   
+Bachelor of Science in Engineering  
+
+## Skills
+
+Python, SQL, data modeling, machine learning, time series and telemetry data, dashboard design, system architecture, analytics reporting, GitHub, Quarto
+
+## Experience
+
+**ALS GeoAnalytics** | Machine Learning Developer (UBC Capstone)  
+May 2025 – Jun 2025
+
+Trained deep learning models using PyTorch, designed data pipelines, and supported analytics workflows on operational datasets.
+
+**Zerone Analytiqs** | Data Scientist, Intern  
+October 2024 - August 2025  
+
+Built analytical models and dashboards using Python and SQL to support business and operational decision making.
+
+**Energy Commission** | Data Analyst, Electricity and Natural Gas  
+Nov 2022 – Oct 2023  
+
+Analyzed electricity and natural gas market, generation, and consumption datasets to support regulatory reporting, monitoring, and policy analysis.
