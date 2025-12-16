@@ -1,0 +1,191 @@
+[
+  {
+    "objectID": "report/core_entities_responsibilities.html",
+    "href": "report/core_entities_responsibilities.html",
+    "title": "",
+    "section": "",
+    "text": "The platform relies on a small but complete set of entities.\n\nPlants, production lines, machines, and machine types define the physical structure of the factory.\nTelemetry events capture raw machine signals over time.\nOperator reports capture human observations, inspections, and manual overrides.\nWork orders represent maintenance actions from creation through closure.\nFault codes and threshold rules standardize how issues are detected and interpreted.\nCurrent machine state provides a fast operational snapshot for each machine.\n\nTogether, these entities allow the system to explain what happened, why it happened, and what action was taken."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "",
+    "text": "This document presents the technical design for a Factory Equipment Health and Maintenance Platform developed for Intelbyte. The objective of the platform is to provide clear, real-time visibility into the health and operational status of equipment across multiple manufacturing plants, while preserving a complete historical record of machine telemetry, operator inputs, and maintenance activity for analysis, reporting, and audit purposes.\nThe proposed solution uses a scalable, event-driven data architecture that separates high-volume telemetry ingestion from day-to-day operational decision-making. Machine sensor readings such as temperature, vibration, throughput, and fault codes are captured as timestamped events for long-term retention, while a derived current equipment state is maintained for each machine. This enables supervisors to view a single, up-to-date record per asset without querying large historical datasets, even as data volumes grow.\nThe platform supports multiple plants, production lines, and machines, along with operator shift reports, manual inspections, and status overrides. Maintenance requests are generated automatically based on configurable thresholds, fault patterns, and operator-reported issues. A machine health scoring process combines recent telemetry signals and fault history into a single, easy-to-interpret score, while a clear precedence model resolves the current machine status across telemetry, operator inputs, and active work orders.\nOverall, the design is practical, transparent, and scalable. It delivers immediate value for day-to-day operations and supports timely maintenance decisions, while leaving room to add features such as predictive maintenance, deeper analysis, and AI based insights as the platform grows."
+  },
+  {
+    "objectID": "index.html#core-functional-requirements",
+    "href": "index.html#core-functional-requirements",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "3.1 Core Functional Requirements",
+    "text": "3.1 Core Functional Requirements\nThese define the essential capabilities the platform provides to support equipment monitoring, maintenance, and operational decision-making. They are organized by functional area for clarity.\n\n3.1.1 Asset and Equipment Management\n\nSupport multiple plants, production lines, and machines\n\nMaintain a clear hierarchical relationship between plants, lines, and machines\n\n\n\n3.1.2 Telemetry and Data Ingestion\n\nIngest continuous machine telemetry, including temperature, vibration, throughput, and fault codes\n\nAssociate each telemetry record with a machine identifier and timestamp\n\nRetain telemetry data as a complete historical record for analysis, reporting, and audits\n\n\n\n3.1.3 Operator and User Inputs\n\nAllow operators to log shift reports, inspection results, and issue descriptions\n\nRecord manual machine status updates with user attribution\n\nStore operator comments and inspection notes alongside machine and telemetry data\n\n\n\n3.1.4 Maintenance Management\n\nAutomatically create maintenance requests based on configurable thresholds, fault patterns, and operator reported issues\n\nTrack maintenance requests through their lifecycle, including status updates and resolution details\n\nLink maintenance history to machines and triggering events\n\n\n\n3.1.5 Health and Status Monitoring\n\nCalculate a machine health score using recent telemetry signals and fault history\n\nDetermine the current machine status by reconciling telemetry data, operator inputs, and active maintenance work orders\n\nProvide a Current Equipment Status view showing one row per machine using the most recent available data\n\n\n\n3.1.6 Reporting and Dashboards\n\nProvide dashboards for supervisors to monitor equipment health, status, and maintenance activity\n\nSupport filtering by plant, production line, machine, status, and health indicators"
+  },
+  {
+    "objectID": "index.html#operational-constraints-and-quality-considerations",
+    "href": "index.html#operational-constraints-and-quality-considerations",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "3.2 Operational Constraints and Quality Considerations",
+    "text": "3.2 Operational Constraints and Quality Considerations\nIn addition to core functional capabilities, the platform is designed to operate reliably at scale. It supports thousands of machines and high frequency telemetry, provides near real-time operational views, preserves historical data for audits, enforces role-based access, and allows system components to evolve independently as operational needs grow."
+  },
+  {
+    "objectID": "index.html#components-and-functions",
+    "href": "index.html#components-and-functions",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "4.1 Components and Functions",
+    "text": "4.1 Components and Functions\n\n4.1.1 Frontend (Operator and Supervisor Interfaces)\n\nOperator and Supervisor Web App (Power Apps): provides a unified interface for operators, supervisors, and maintenance teams to view current equipment status, review machine details, log shift reports and inspections, submit maintenance requests, and review, prioritize, assign, and track maintenance work orders.\nAnalytics Dashboards (Power BI): visual dashboards showing equipment health, status, and maintenance activity by plant, production line, and machine\n\n\n\n4.1.2 Backend Services and APIs (Application and Processing Layer)\n\nOperational API (Azure Functions): manages core business operations including plant and machine metadata, operator inputs, status updates, and maintenance workflows\nTelemetry Ingestion API (Azure IoT Hub): receives sensor data from machines or plant gateways and checks that required information is present\n\nEvent Stream (Azure Event Hubs): temporarily buffers incoming telemetry to allow the system to scale and continue receiving data even during peak loads\n\nStream Processor (Azure Stream Analytics): processes telemetry as it arrives and updates the latest known state of each machine\n\nRule Engine (Azure Functions): applies predefined rules and thresholds to detect issues and automatically create maintenance requests\n\nHealth Scoring Service (Azure Functions): calculates a simple health score for each machine using recent telemetry and fault history\n\n\n\n4.1.3 Data Layer (Data Storage and Access)\n\nOperational Store (Azure SQL Database): stores structured business data including assets, users, operator reports, and maintenance records\n\nTelemetry Store (Azure Data Explorer): stores all raw telemetry data as a long-term historical record for analysis and audits\n\nCurrent State Store (Azure SQL Database): stores the latest status and health indicators for each machine to support fast operational views\n\n\n\n4.1.4 Integrations (Access and Notifications)\n\nIdentity Provider (Microsoft Entra ID): manages user login, roles, and access permissions\n\nNotification Channel (Power Automate with Teams or Email): sends alerts when maintenance requests are created or critical issues are detected"
+  },
+  {
+    "objectID": "index.html#data-flow-and-communication",
+    "href": "index.html#data-flow-and-communication",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "4.2 Data Flow and Communication",
+    "text": "4.2 Data Flow and Communication\nTelemetry and operator inputs follow different paths, but converge in the current equipment state used for operational dashboards.\n\n4.2.1 Telemetry ingestion flow\n\nMachines or plant gateways send telemetry events to the Telemetry Ingestion API\nEvents are validated and written to the Telemetry Store as immutable, append-only records\nA stream processor consumes telemetry events and updates the Current State Store for the affected machine\nThe Health Scoring Service recalculates machine health scores based on new data or on a defined schedule\nThe Rule Engine evaluates thresholds and fault patterns and creates maintenance requests when conditions are met\n\n\n\n4.2.2 Operator input flow\n\nOperators submit shift logs, inspections, comments, or manual status updates through the web application\nThe Operational API records these inputs in the Operational Store with user attribution\nInputs that affect machine status are reflected in the Current State Store\nOperator-reported issues may directly trigger maintenance requests or contribute to rule evaluation\n\n\n\n4.2.3 Operational dashboard flow\n\nThe Current Equipment Status screen queries the Current State Store to retrieve one row per machine for fast operational monitoring.\nHistorical analysis and audits query the Telemetry Store and join with operational data as needed for reporting and compliance."
+  },
+  {
+    "objectID": "index.html#architecture-pattern-and-rationale",
+    "href": "index.html#architecture-pattern-and-rationale",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "4.3 Architecture Pattern and Rationale",
+    "text": "4.3 Architecture Pattern and Rationale\nThe architecture follows an event-driven pattern with a derived current-state view to handle high-frequency telemetry that grows rapidly over time. Telemetry is stored as immutable events to preserve a complete historical record for analysis and audits, while a separate current equipment state is maintained to support fast operational queries without scanning large historical datasets.\nBy decoupling telemetry ingestion from operational workflows, the system improves scalability and reliability. Telemetry capture can continue even if downstream processing is delayed, and user-facing views can rely on a lightweight current-state store for near real-time visibility. This design also supports incremental evolution, allowing more advanced analytics and predictive maintenance features to be added without restructuring the core architecture."
+  },
+  {
+    "objectID": "index.html#data-model-overview",
+    "href": "index.html#data-model-overview",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "5.1 Data Model Overview",
+    "text": "5.1 Data Model Overview\nThe data model is built around three ideas.\nFirst, the platform uses a clear asset hierarchy so machines can always be understood in context. Every machine belongs to a production line, and every production line belongs to a plant. This hierarchy enables filtering, reporting, and access control by site and line.\nSecond, telemetry and events are immutable. Sensor readings and machine signals are written once and never changed. This preserves data integrity and makes the system reliable for trend analysis, root cause investigation, and compliance.\nThird, the system maintains a derived current state for each machine. Instead of recalculating status from millions of telemetry records, the platform keeps one up-to-date row per machine that reflects its latest condition. This is what operational screens and supervisors rely on."
+  },
+  {
+    "objectID": "index.html#entity-relationship-model",
+    "href": "index.html#entity-relationship-model",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "5.2 Entity Relationship Model",
+    "text": "5.2 Entity Relationship Model\nThe Entity Relationship Diagram below shows the core entities and how they connect. It is intentionally kept high level so it remains readable for both technical and non-technical readers. See Table 1 for field level details.\n\n\n\n\n\nerDiagram\n  Plant ||--o{ ProductionLine : contains\n  ProductionLine ||--o{ Machine : contains\n  MachineType ||--o{ Machine : classifies\n\n  Machine ||--o{ TelemetryEvent : produces\n  FaultCode ||--o{ TelemetryEvent : appears_in\n\n  Machine ||--o{ OperatorReport : has\n  User ||--o{ OperatorReport : submits\n\n  Machine ||--o{ WorkOrder : has\n  User ||--o{ WorkOrder : creates\n  User ||--o{ WorkOrder : assigned_to\n\n  ThresholdRule }o--o{ WorkOrder : triggers\n\n  Machine ||--|| CurrentMachineState : has_latest\n  TelemetryEvent }o--|| CurrentMachineState : last_telemetry\n  OperatorReport }o--|| CurrentMachineState : last_operator_report\n\n\n High level ERD for assets, telemetry, operator inputs, and maintenance \n\n\n\nThis model shows how physical assets, telemetry, human inputs, and maintenance workflows are connected while keeping responsibilities clearly separated."
+  },
+  {
+    "objectID": "index.html#core-entities-and-responsibilities",
+    "href": "index.html#core-entities-and-responsibilities",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "5.3 Core Entities and Responsibilities",
+    "text": "5.3 Core Entities and Responsibilities\nThe platform relies on a small but complete set of entities.\n\nPlants, production lines, machines, and machine types define the physical structure of the factory.\nTelemetry events capture raw machine signals over time.\nOperator reports capture human observations, inspections, and manual overrides.\nWork orders represent maintenance actions from creation through closure.\nFault codes and threshold rules standardize how issues are detected and interpreted.\nCurrent machine state provides a fast operational snapshot for each machine.\n\nTogether, these entities allow the system to explain what happened, why it happened, and what action was taken."
+  },
+  {
+    "objectID": "index.html#field-level-details",
+    "href": "index.html#field-level-details",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "5.4 Field Level Details",
+    "text": "5.4 Field Level Details\nThe table below lists the proposed tables with their primary keys, foreign keys, and essential fields required for the MVP.\n\n\n\nTable 1: Field level details for the MVP schema\n\n\n\n\n\n\n\n\n\n\n\nTable\nPrimary Key\nForeign Keys\nKey Fields\n\n\n\n\nPlant\nplantId\n\nplantCode, plantName, region, timezone, isActive, createdAt\n\n\nProductionLine\nlineId\nplantId (Plant.plantId)\nlineCode, lineName, area, isActive, createdAt\n\n\nMachineType\nmachineTypeId\n\ntypeCode, typeName, manufacturer, model, createdAt\n\n\nMachine\nmachineId\nlineId (ProductionLine.lineId), machineTypeId (MachineType.machineTypeId)\nmachineCode, machineName, serialNumber, installDate, isActive, createdAt\n\n\nFaultCode\nfaultCodeId\n\nfaultCode, faultName, severity, description\n\n\nTelemetryEvent\ntelemetryEventId\nmachineId (Machine.machineId), faultCodeId (FaultCode.faultCodeId)\neventTimestamp, ingestedAt, temperature, vibration, throughput, statusRaw, payloadJson\n\n\nUser\nuserId\n\ndisplayName, email, role, isActive, createdAt\n\n\nOperatorReport\noperatorReportId\nmachineId (Machine.machineId), userId (User.userId)\nreportTimestamp, reportType, statusOverride, comment\n\n\nWorkOrder\nworkOrderId\nmachineId (Machine.machineId), createdByUserId (User.userId), assignedToUserId (User.userId)\nworkOrderNumber, priority, status, createdAt, closedAt\n\n\nThresholdRule\nthresholdRuleId\nmachineTypeId (MachineType.machineTypeId)\nruleName, metricName, operator, thresholdValue, windowMinutes, severity, isActive\n\n\nCurrentMachineState\nmachineId\nmachineId (Machine.machineId), lastTelemetryEventId (TelemetryEvent.telemetryEventId), lastOperatorReportId (OperatorReport.operatorReportId)\nresolvedStatus, healthScore, lastUpdateAt, openWorkOrderCount"
+  },
+  {
+    "objectID": "index.html#telemetry-and-current-state-strategy",
+    "href": "index.html#telemetry-and-current-state-strategy",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "5.5 Telemetry and Current State Strategy",
+    "text": "5.5 Telemetry and Current State Strategy\nTelemetry data is modeled as an immutable event stream. Each new reading is inserted and never updated. This guarantees a complete and trustworthy history that can support audits, analytics, and future use cases without redesign.\nOperational views do not query this history directly. Instead, the CurrentMachineState table is continuously updated as telemetry arrives, operator reports are submitted, and work orders change status. Each row represents the latest resolved view of a machine, including status, health score, and maintenance indicators.\nThis separation between append only history and derived operational state is the key scaling decision in the design. It keeps dashboards fast and predictable while preserving full historical detail for deeper analysis and long-term insight."
+  },
+  {
+    "objectID": "index.html#machine-health-scoring",
+    "href": "index.html#machine-health-scoring",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "6.1 Machine Health Scoring",
+    "text": "6.1 Machine Health Scoring"
+  },
+  {
+    "objectID": "index.html#latest-machine-status-resolution",
+    "href": "index.html#latest-machine-status-resolution",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "6.2 Latest Machine Status Resolution",
+    "text": "6.2 Latest Machine Status Resolution"
+  },
+  {
+    "objectID": "index.html#current-equipment-status-screen",
+    "href": "index.html#current-equipment-status-screen",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "7.1 Current Equipment Status Screen",
+    "text": "7.1 Current Equipment Status Screen"
+  },
+  {
+    "objectID": "index.html#operational-and-maintenance-views",
+    "href": "index.html#operational-and-maintenance-views",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "7.2 Operational and Maintenance Views",
+    "text": "7.2 Operational and Maintenance Views"
+  },
+  {
+    "objectID": "index.html#key-security-concerns",
+    "href": "index.html#key-security-concerns",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "8.1 Key Security Concerns",
+    "text": "8.1 Key Security Concerns"
+  },
+  {
+    "objectID": "index.html#authentication-and-authorization",
+    "href": "index.html#authentication-and-authorization",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "8.2 Authentication and Authorization",
+    "text": "8.2 Authentication and Authorization"
+  },
+  {
+    "objectID": "index.html#data-integrity-and-auditability",
+    "href": "index.html#data-integrity-and-auditability",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "8.3 Data Integrity and Auditability",
+    "text": "8.3 Data Integrity and Auditability"
+  },
+  {
+    "objectID": "index.html#data-growth-and-performance",
+    "href": "index.html#data-growth-and-performance",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "9.1 Data Growth and Performance",
+    "text": "9.1 Data Growth and Performance"
+  },
+  {
+    "objectID": "index.html#failure-scenarios-and-resilience",
+    "href": "index.html#failure-scenarios-and-resilience",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "9.2 Failure Scenarios and Resilience",
+    "text": "9.2 Failure Scenarios and Resilience"
+  },
+  {
+    "objectID": "index.html#summary",
+    "href": "index.html#summary",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "10.1 Summary",
+    "text": "10.1 Summary"
+  },
+  {
+    "objectID": "index.html#future-enhancements",
+    "href": "index.html#future-enhancements",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "10.2 Future Enhancements",
+    "text": "10.2 Future Enhancements"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Franklin Aryee",
+    "section": "",
+    "text": "I am a data scientist and engineer with a background in applied analytics, system design, and industrial data. I hold a Master of Data Science from the University of British Columbia and a Bachelor of Science in Engineering."
+  },
+  {
+    "objectID": "about.html#education",
+    "href": "about.html#education",
+    "title": "Franklin Aryee",
+    "section": "Education",
+    "text": "Education\nUniversity of British Columbia\nAug 2024 – Jun 2025\nMaster of Data Science\nKwame Nkrumah University of Science and Technology\nOct 2018 – Nov 2022\nBachelor of Science in Engineering"
+  },
+  {
+    "objectID": "about.html#skills",
+    "href": "about.html#skills",
+    "title": "Franklin Aryee",
+    "section": "Skills",
+    "text": "Skills\nPython, SQL, data modeling, machine learning, time series and telemetry data, dashboard design, system architecture, analytics reporting, GitHub, Quarto"
+  },
+  {
+    "objectID": "about.html#experience",
+    "href": "about.html#experience",
+    "title": "Franklin Aryee",
+    "section": "Experience",
+    "text": "Experience\nALS GeoAnalytics | Machine Learning Developer (UBC Capstone)\nMay 2025 – Jun 2025\nTrained deep learning models using PyTorch, designed data pipelines, and supported analytics workflows on operational datasets.\nZerone Analytiqs | Data Scientist, Intern\nOctober 2024 - August 2025\nBuilt analytical models and dashboards using Python and SQL to support business and operational decision making.\nEnergy Commission | Data Analyst, Electricity and Natural Gas\nNov 2022 – Oct 2023\nAnalyzed electricity and natural gas market, generation, and consumption datasets to support regulatory reporting, monitoring, and policy analysis."
+  }
+]

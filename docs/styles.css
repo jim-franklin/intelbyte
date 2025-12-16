@@ -1,0 +1,23 @@
+/* css styles */
+.quarto-title h1 {
+    font-size: 2.8rem;
+  }
+  
+  main.content h2 {
+    font-size: 1.4rem;
+  }
+
+  main.content h3 {
+    font-size: 1rem;
+  }
+
+/* Hide the "Other Formats" / "Other Links" block in the margin */
+.quarto-alternate-formats{
+  display: none !important;
+}
+
+p {
+    text-align: justify;
+    text-justify: inter-word;
+  }
+  

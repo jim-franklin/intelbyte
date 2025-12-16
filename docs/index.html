@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Designing a Scalable Factory Equipment Health and Maintenance Platform</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./images/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-0bf144460954881a529a602f9b9a7b5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-7f2cc7a6ea63d59fa1f1180d41479419.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-0bf144460954881a529a602f9b9a7b5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./images/intelbyte_logo.png" alt="" class="navbar-logo light-content">
+    <img src="./images/intelbyte_logo.png" alt="" class="navbar-logo dark-content">
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Report</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jim-franklin/intelbyte"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-right">
+      <h1 class="title">Designing a Scalable Factory Equipment Health and Maintenance Platform</h1>
+            <p class="subtitle lead">Architecture, Data Model, and Algorithms</p>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta column-page-right">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#executive-summary" id="toc-executive-summary" class="nav-link active" data-scroll-target="#executive-summary"><span class="header-section-number">1</span> Executive Summary</a></li>
+  <li><a href="#problem-context-and-objectives" id="toc-problem-context-and-objectives" class="nav-link" data-scroll-target="#problem-context-and-objectives"><span class="header-section-number">2</span> Problem Context and Objectives</a></li>
+  <li><a href="#requirements-analysis" id="toc-requirements-analysis" class="nav-link" data-scroll-target="#requirements-analysis"><span class="header-section-number">3</span> Requirements Analysis</a>
+  <ul class="collapse">
+  <li><a href="#core-functional-requirements" id="toc-core-functional-requirements" class="nav-link" data-scroll-target="#core-functional-requirements"><span class="header-section-number">3.1</span> Core Functional Requirements</a>
+  <ul class="collapse">
+  <li><a href="#asset-and-equipment-management" id="toc-asset-and-equipment-management" class="nav-link" data-scroll-target="#asset-and-equipment-management"><span class="header-section-number">3.1.1</span> Asset and Equipment Management</a></li>
+  <li><a href="#telemetry-and-data-ingestion" id="toc-telemetry-and-data-ingestion" class="nav-link" data-scroll-target="#telemetry-and-data-ingestion"><span class="header-section-number">3.1.2</span> Telemetry and Data Ingestion</a></li>
+  <li><a href="#operator-and-user-inputs" id="toc-operator-and-user-inputs" class="nav-link" data-scroll-target="#operator-and-user-inputs"><span class="header-section-number">3.1.3</span> Operator and User Inputs</a></li>
+  <li><a href="#maintenance-management" id="toc-maintenance-management" class="nav-link" data-scroll-target="#maintenance-management"><span class="header-section-number">3.1.4</span> Maintenance Management</a></li>
+  <li><a href="#health-and-status-monitoring" id="toc-health-and-status-monitoring" class="nav-link" data-scroll-target="#health-and-status-monitoring"><span class="header-section-number">3.1.5</span> Health and Status Monitoring</a></li>
+  <li><a href="#reporting-and-dashboards" id="toc-reporting-and-dashboards" class="nav-link" data-scroll-target="#reporting-and-dashboards"><span class="header-section-number">3.1.6</span> Reporting and Dashboards</a></li>
+  </ul></li>
+  <li><a href="#operational-constraints-and-quality-considerations" id="toc-operational-constraints-and-quality-considerations" class="nav-link" data-scroll-target="#operational-constraints-and-quality-considerations"><span class="header-section-number">3.2</span> Operational Constraints and Quality Considerations</a></li>
+  </ul></li>
+  <li><a href="#system-architecture" id="toc-system-architecture" class="nav-link" data-scroll-target="#system-architecture"><span class="header-section-number">4</span> System Architecture</a>
+  <ul class="collapse">
+  <li><a href="#components-and-functions" id="toc-components-and-functions" class="nav-link" data-scroll-target="#components-and-functions"><span class="header-section-number">4.1</span> Components and Functions</a>
+  <ul class="collapse">
+  <li><a href="#frontend-operator-and-supervisor-interfaces" id="toc-frontend-operator-and-supervisor-interfaces" class="nav-link" data-scroll-target="#frontend-operator-and-supervisor-interfaces"><span class="header-section-number">4.1.1</span> Frontend (Operator and Supervisor Interfaces)</a></li>
+  <li><a href="#backend-services-and-apis-application-and-processing-layer" id="toc-backend-services-and-apis-application-and-processing-layer" class="nav-link" data-scroll-target="#backend-services-and-apis-application-and-processing-layer"><span class="header-section-number">4.1.2</span> Backend Services and APIs (Application and Processing Layer)</a></li>
+  <li><a href="#data-layer-data-storage-and-access" id="toc-data-layer-data-storage-and-access" class="nav-link" data-scroll-target="#data-layer-data-storage-and-access"><span class="header-section-number">4.1.3</span> Data Layer (Data Storage and Access)</a></li>
+  <li><a href="#integrations-access-and-notifications" id="toc-integrations-access-and-notifications" class="nav-link" data-scroll-target="#integrations-access-and-notifications"><span class="header-section-number">4.1.4</span> Integrations (Access and Notifications)</a></li>
+  </ul></li>
+  <li><a href="#data-flow-and-communication" id="toc-data-flow-and-communication" class="nav-link" data-scroll-target="#data-flow-and-communication"><span class="header-section-number">4.2</span> Data Flow and Communication</a>
+  <ul class="collapse">
+  <li><a href="#telemetry-ingestion-flow" id="toc-telemetry-ingestion-flow" class="nav-link" data-scroll-target="#telemetry-ingestion-flow"><span class="header-section-number">4.2.1</span> Telemetry ingestion flow</a></li>
+  <li><a href="#operator-input-flow" id="toc-operator-input-flow" class="nav-link" data-scroll-target="#operator-input-flow"><span class="header-section-number">4.2.2</span> Operator input flow</a></li>
+  <li><a href="#operational-dashboard-flow" id="toc-operational-dashboard-flow" class="nav-link" data-scroll-target="#operational-dashboard-flow"><span class="header-section-number">4.2.3</span> Operational dashboard flow</a></li>
+  </ul></li>
+  <li><a href="#architecture-pattern-and-rationale" id="toc-architecture-pattern-and-rationale" class="nav-link" data-scroll-target="#architecture-pattern-and-rationale"><span class="header-section-number">4.3</span> Architecture Pattern and Rationale</a></li>
+  </ul></li>
+  <li><a href="#data-and-database-design" id="toc-data-and-database-design" class="nav-link" data-scroll-target="#data-and-database-design"><span class="header-section-number">5</span> Data and Database Design</a>
+  <ul class="collapse">
+  <li><a href="#data-model-overview" id="toc-data-model-overview" class="nav-link" data-scroll-target="#data-model-overview"><span class="header-section-number">5.1</span> Data Model Overview</a></li>
+  <li><a href="#entity-relationship-model" id="toc-entity-relationship-model" class="nav-link" data-scroll-target="#entity-relationship-model"><span class="header-section-number">5.2</span> Entity Relationship Model</a></li>
+  <li><a href="#core-entities-and-responsibilities" id="toc-core-entities-and-responsibilities" class="nav-link" data-scroll-target="#core-entities-and-responsibilities"><span class="header-section-number">5.3</span> Core Entities and Responsibilities</a></li>
+  <li><a href="#field-level-details" id="toc-field-level-details" class="nav-link" data-scroll-target="#field-level-details"><span class="header-section-number">5.4</span> Field Level Details</a></li>
+  <li><a href="#telemetry-and-current-state-strategy" id="toc-telemetry-and-current-state-strategy" class="nav-link" data-scroll-target="#telemetry-and-current-state-strategy"><span class="header-section-number">5.5</span> Telemetry and Current State Strategy</a></li>
+  </ul></li>
+  <li><a href="#core-algorithms" id="toc-core-algorithms" class="nav-link" data-scroll-target="#core-algorithms"><span class="header-section-number">6</span> Core Algorithms</a>
+  <ul class="collapse">
+  <li><a href="#machine-health-scoring" id="toc-machine-health-scoring" class="nav-link" data-scroll-target="#machine-health-scoring"><span class="header-section-number">6.1</span> Machine Health Scoring</a></li>
+  <li><a href="#latest-machine-status-resolution" id="toc-latest-machine-status-resolution" class="nav-link" data-scroll-target="#latest-machine-status-resolution"><span class="header-section-number">6.2</span> Latest Machine Status Resolution</a></li>
+  </ul></li>
+  <li><a href="#dashboards-and-user-experience" id="toc-dashboards-and-user-experience" class="nav-link" data-scroll-target="#dashboards-and-user-experience"><span class="header-section-number">7</span> Dashboards and User Experience</a>
+  <ul class="collapse">
+  <li><a href="#current-equipment-status-screen" id="toc-current-equipment-status-screen" class="nav-link" data-scroll-target="#current-equipment-status-screen"><span class="header-section-number">7.1</span> Current Equipment Status Screen</a></li>
+  <li><a href="#operational-and-maintenance-views" id="toc-operational-and-maintenance-views" class="nav-link" data-scroll-target="#operational-and-maintenance-views"><span class="header-section-number">7.2</span> Operational and Maintenance Views</a></li>
+  </ul></li>
+  <li><a href="#security-and-data-protection" id="toc-security-and-data-protection" class="nav-link" data-scroll-target="#security-and-data-protection"><span class="header-section-number">8</span> Security and Data Protection</a>
+  <ul class="collapse">
+  <li><a href="#key-security-concerns" id="toc-key-security-concerns" class="nav-link" data-scroll-target="#key-security-concerns"><span class="header-section-number">8.1</span> Key Security Concerns</a></li>
+  <li><a href="#authentication-and-authorization" id="toc-authentication-and-authorization" class="nav-link" data-scroll-target="#authentication-and-authorization"><span class="header-section-number">8.2</span> Authentication and Authorization</a></li>
+  <li><a href="#data-integrity-and-auditability" id="toc-data-integrity-and-auditability" class="nav-link" data-scroll-target="#data-integrity-and-auditability"><span class="header-section-number">8.3</span> Data Integrity and Auditability</a></li>
+  </ul></li>
+  <li><a href="#scalability-and-reliability" id="toc-scalability-and-reliability" class="nav-link" data-scroll-target="#scalability-and-reliability"><span class="header-section-number">9</span> Scalability and Reliability</a>
+  <ul class="collapse">
+  <li><a href="#data-growth-and-performance" id="toc-data-growth-and-performance" class="nav-link" data-scroll-target="#data-growth-and-performance"><span class="header-section-number">9.1</span> Data Growth and Performance</a></li>
+  <li><a href="#failure-scenarios-and-resilience" id="toc-failure-scenarios-and-resilience" class="nav-link" data-scroll-target="#failure-scenarios-and-resilience"><span class="header-section-number">9.2</span> Failure Scenarios and Resilience</a></li>
+  </ul></li>
+  <li><a href="#conclusion-and-recommendations" id="toc-conclusion-and-recommendations" class="nav-link" data-scroll-target="#conclusion-and-recommendations"><span class="header-section-number">10</span> Conclusion and Recommendations</a>
+  <ul class="collapse">
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">10.1</span> Summary</a></li>
+  <li><a href="#future-enhancements" id="toc-future-enhancements" class="nav-link" data-scroll-target="#future-enhancements"><span class="header-section-number">10.2</span> Future Enhancements</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">11</span> References</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="report.pdf"><i class="bi bi-file-pdf"></i>Typst</a></li></ul></div><div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="report.pdf"><i class="bi bi-file-earmark-pdf"></i>PDF</a></li><li><a href="dashboard.html"><i class="bi bi-speedometer"></i>Dashboards</a></li></ul></div></nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-right" id="quarto-document-content">
+
+
+
+
+
+<section id="executive-summary" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Executive Summary</h1>
+<p>This document presents the technical design for a Factory Equipment Health and Maintenance Platform developed for Intelbyte. The objective of the platform is to provide clear, real-time visibility into the health and operational status of equipment across multiple manufacturing plants, while preserving a complete historical record of machine telemetry, operator inputs, and maintenance activity for analysis, reporting, and audit purposes.</p>
+<p>The proposed solution uses a scalable, event-driven data architecture that separates high-volume telemetry ingestion from day-to-day operational decision-making. Machine sensor readings such as temperature, vibration, throughput, and fault codes are captured as timestamped events for long-term retention, while a derived current equipment state is maintained for each machine. This enables supervisors to view a single, up-to-date record per asset without querying large historical datasets, even as data volumes grow.</p>
+<p>The platform supports multiple plants, production lines, and machines, along with operator shift reports, manual inspections, and status overrides. Maintenance requests are generated automatically based on configurable thresholds, fault patterns, and operator-reported issues. A machine health scoring process combines recent telemetry signals and fault history into a single, easy-to-interpret score, while a clear precedence model resolves the current machine status across telemetry, operator inputs, and active work orders.</p>
+<p>Overall, the design is practical, transparent, and scalable. It delivers immediate value for day-to-day operations and supports timely maintenance decisions, while leaving room to add features such as predictive maintenance, deeper analysis, and AI based insights as the platform grows.</p>
+</section>
+<section id="problem-context-and-objectives" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Problem Context and Objectives</h1>
+<p>Manufacturing environments operate large numbers of machines across multiple plants and production lines, generating continuous streams of sensor data alongside operator reports and inspections. While this information is essential for monitoring equipment condition, its volume and fragmentation make it difficult to use effectively for day-to-day operational decisions.</p>
+<p>A central challenge is maintaining a clear, up to date view of current equipment status while preserving complete historical data for analysis, reporting, and audits. Supervisors require a simple snapshot of machine health and status, whereas engineers and analysts need access to detailed historical records to identify trends, recurring issues, and long term performance patterns. Without a unified approach, teams often rely on manual processes, disconnected data sources, and reactive maintenance practices.</p>
+<p>The objective of this platform is to address these challenges by providing a unified, scalable foundation for equipment health and maintenance management. At a high level, the platform is designed to:</p>
+<ul>
+<li>Provide a single, reliable view of the current status and health of each machine<br>
+</li>
+<li>Ingest and retain high volume telemetry data for long term analysis and audits<br>
+</li>
+<li>Capture operator reports, inspections, and status changes alongside sensor data<br>
+</li>
+<li>Automatically trigger maintenance requests based on thresholds, fault patterns, and reported issues<br>
+</li>
+<li>Support growth across plants, machines, and data volumes without major redesign</li>
+</ul>
+</section>
+<section id="requirements-analysis" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Requirements Analysis</h1>
+<p>The following requirements are defined based on the scenario provided, which assumes the availability of machine telemetry, operator inputs, and maintenance workflows typical of modern manufacturing environments.</p>
+<section id="core-functional-requirements" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="core-functional-requirements"><span class="header-section-number">3.1</span> Core Functional Requirements</h2>
+<p>These define the essential capabilities the platform provides to support equipment monitoring, maintenance, and operational decision-making. They are organized by functional area for clarity.</p>
+<section id="asset-and-equipment-management" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="asset-and-equipment-management"><span class="header-section-number">3.1.1</span> Asset and Equipment Management</h3>
+<ul>
+<li>Support multiple plants, production lines, and machines<br>
+</li>
+<li>Maintain a clear hierarchical relationship between plants, lines, and machines</li>
+</ul>
+</section>
+<section id="telemetry-and-data-ingestion" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="telemetry-and-data-ingestion"><span class="header-section-number">3.1.2</span> Telemetry and Data Ingestion</h3>
+<ul>
+<li>Ingest continuous machine telemetry, including temperature, vibration, throughput, and fault codes<br>
+</li>
+<li>Associate each telemetry record with a machine identifier and timestamp<br>
+</li>
+<li>Retain telemetry data as a complete historical record for analysis, reporting, and audits</li>
+</ul>
+</section>
+<section id="operator-and-user-inputs" class="level3" data-number="3.1.3">
+<h3 data-number="3.1.3" class="anchored" data-anchor-id="operator-and-user-inputs"><span class="header-section-number">3.1.3</span> Operator and User Inputs</h3>
+<ul>
+<li>Allow operators to log shift reports, inspection results, and issue descriptions<br>
+</li>
+<li>Record manual machine status updates with user attribution<br>
+</li>
+<li>Store operator comments and inspection notes alongside machine and telemetry data</li>
+</ul>
+</section>
+<section id="maintenance-management" class="level3" data-number="3.1.4">
+<h3 data-number="3.1.4" class="anchored" data-anchor-id="maintenance-management"><span class="header-section-number">3.1.4</span> Maintenance Management</h3>
+<ul>
+<li>Automatically create maintenance requests based on configurable thresholds, fault patterns, and operator reported issues<br>
+</li>
+<li>Track maintenance requests through their lifecycle, including status updates and resolution details<br>
+</li>
+<li>Link maintenance history to machines and triggering events</li>
+</ul>
+</section>
+<section id="health-and-status-monitoring" class="level3" data-number="3.1.5">
+<h3 data-number="3.1.5" class="anchored" data-anchor-id="health-and-status-monitoring"><span class="header-section-number">3.1.5</span> Health and Status Monitoring</h3>
+<ul>
+<li>Calculate a machine health score using recent telemetry signals and fault history<br>
+</li>
+<li>Determine the current machine status by reconciling telemetry data, operator inputs, and active maintenance work orders<br>
+</li>
+<li>Provide a Current Equipment Status view showing one row per machine using the most recent available data</li>
+</ul>
+</section>
+<section id="reporting-and-dashboards" class="level3" data-number="3.1.6">
+<h3 data-number="3.1.6" class="anchored" data-anchor-id="reporting-and-dashboards"><span class="header-section-number">3.1.6</span> Reporting and Dashboards</h3>
+<ul>
+<li>Provide dashboards for supervisors to monitor equipment health, status, and maintenance activity<br>
+</li>
+<li>Support filtering by plant, production line, machine, status, and health indicators</li>
+</ul>
+</section>
+</section>
+<section id="operational-constraints-and-quality-considerations" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="operational-constraints-and-quality-considerations"><span class="header-section-number">3.2</span> Operational Constraints and Quality Considerations</h2>
+<p>In addition to core functional capabilities, the platform is designed to operate reliably at scale. It supports thousands of machines and high frequency telemetry, provides near real-time operational views, preserves historical data for audits, enforces role-based access, and allows system components to evolve independently as operational needs grow.</p>
+</section>
+</section>
+<section id="system-architecture" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> System Architecture</h1>
+<p>The platform follows an event-driven architecture that separates high-volume telemetry ingestion from operational workflows and user facing views. Machine telemetry is captured as append-only event data to support long-term retention, analysis, and auditability. In parallel, a derived current equipment state is maintained to enable fast operational queries that present one up-to-date record per machine.</p>
+<p>At a high level, the system consists of a web application for operators and supervisors, backend services that manage operational workflows and business rules, a telemetry ingestion path optimized for scale, and a database layer that stores both historical telemetry and current machine state. Maintenance requests are generated through configurable rules and recorded as work items linked to the machines and events that triggered them.</p>
+<div class="cell" data-fig-width="80%" data-fig-height="100%" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  A[Machines or Plant Gateways] --&gt;|Telemetry Events| B[Telemetry Ingestion API]
+  B --&gt; C[(Telemetry Store&lt;br/&gt;Append-only events)]
+  B --&gt;|Event stream| D[Stream Processor]
+  D --&gt; E[(Current State Store&lt;br/&gt;One row per machine)]
+
+  F[Operator or Supervisor Web App] --&gt;|Login and Token| M[Identity Provider&lt;br/&gt;Microsoft Entra ID]
+  M --&gt;|Access Token| G[Operational API]
+
+  G --&gt; H[(Operational Store&lt;br/&gt;Assets, Logs, Work Orders, Users)]
+  G --&gt; E
+
+  E --&gt; I[Current Equipment Status Screen]
+  C --&gt; J[Analytics and Reporting]
+
+  E --&gt; K[Health Scoring Service]
+  C --&gt; K
+  K --&gt; E
+
+  E --&gt; L[Rule Engine]
+  C --&gt; L
+  L --&gt; H
+
+  L --&gt; N[Notification Channel&lt;br/&gt;Teams or Email]
+  G --&gt; N
+</pre>
+</div>
+<p></p><figcaption> System architecture and data flow</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<section id="components-and-functions" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="components-and-functions"><span class="header-section-number">4.1</span> Components and Functions</h2>
+<section id="frontend-operator-and-supervisor-interfaces" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="frontend-operator-and-supervisor-interfaces"><span class="header-section-number">4.1.1</span> Frontend (Operator and Supervisor Interfaces)</h3>
+<ul>
+<li>Operator and Supervisor Web App (Power Apps): provides a unified interface for operators, supervisors, and maintenance teams to view current equipment status, review machine details, log shift reports and inspections, submit maintenance requests, and review, prioritize, assign, and track maintenance work orders.</li>
+<li>Analytics Dashboards (Power BI): visual dashboards showing equipment health, status, and maintenance activity by plant, production line, and machine</li>
+</ul>
+</section>
+<section id="backend-services-and-apis-application-and-processing-layer" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="backend-services-and-apis-application-and-processing-layer"><span class="header-section-number">4.1.2</span> Backend Services and APIs (Application and Processing Layer)</h3>
+<ul>
+<li>Operational API (Azure Functions): manages core business operations including plant and machine metadata, operator inputs, status updates, and maintenance workflows</li>
+<li>Telemetry Ingestion API (Azure IoT Hub): receives sensor data from machines or plant gateways and checks that required information is present<br>
+</li>
+<li>Event Stream (Azure Event Hubs): temporarily buffers incoming telemetry to allow the system to scale and continue receiving data even during peak loads<br>
+</li>
+<li>Stream Processor (Azure Stream Analytics): processes telemetry as it arrives and updates the latest known state of each machine<br>
+</li>
+<li>Rule Engine (Azure Functions): applies predefined rules and thresholds to detect issues and automatically create maintenance requests<br>
+</li>
+<li>Health Scoring Service (Azure Functions): calculates a simple health score for each machine using recent telemetry and fault history</li>
+</ul>
+</section>
+<section id="data-layer-data-storage-and-access" class="level3" data-number="4.1.3">
+<h3 data-number="4.1.3" class="anchored" data-anchor-id="data-layer-data-storage-and-access"><span class="header-section-number">4.1.3</span> Data Layer (Data Storage and Access)</h3>
+<ul>
+<li>Operational Store (Azure SQL Database): stores structured business data including assets, users, operator reports, and maintenance records<br>
+</li>
+<li>Telemetry Store (Azure Data Explorer): stores all raw telemetry data as a long-term historical record for analysis and audits<br>
+</li>
+<li>Current State Store (Azure SQL Database): stores the latest status and health indicators for each machine to support fast operational views</li>
+</ul>
+</section>
+<section id="integrations-access-and-notifications" class="level3" data-number="4.1.4">
+<h3 data-number="4.1.4" class="anchored" data-anchor-id="integrations-access-and-notifications"><span class="header-section-number">4.1.4</span> Integrations (Access and Notifications)</h3>
+<ul>
+<li>Identity Provider (Microsoft Entra ID): manages user login, roles, and access permissions<br>
+</li>
+<li>Notification Channel (Power Automate with Teams or Email): sends alerts when maintenance requests are created or critical issues are detected</li>
+</ul>
+</section>
+</section>
+<section id="data-flow-and-communication" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="data-flow-and-communication"><span class="header-section-number">4.2</span> Data Flow and Communication</h2>
+<p>Telemetry and operator inputs follow different paths, but converge in the current equipment state used for operational dashboards.</p>
+<section id="telemetry-ingestion-flow" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="telemetry-ingestion-flow"><span class="header-section-number">4.2.1</span> Telemetry ingestion flow</h3>
+<ol type="1">
+<li>Machines or plant gateways send telemetry events to the Telemetry Ingestion API</li>
+<li>Events are validated and written to the Telemetry Store as immutable, append-only records</li>
+<li>A stream processor consumes telemetry events and updates the Current State Store for the affected machine</li>
+<li>The Health Scoring Service recalculates machine health scores based on new data or on a defined schedule</li>
+<li>The Rule Engine evaluates thresholds and fault patterns and creates maintenance requests when conditions are met</li>
+</ol>
+</section>
+<section id="operator-input-flow" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="operator-input-flow"><span class="header-section-number">4.2.2</span> Operator input flow</h3>
+<ol type="1">
+<li>Operators submit shift logs, inspections, comments, or manual status updates through the web application</li>
+<li>The Operational API records these inputs in the Operational Store with user attribution</li>
+<li>Inputs that affect machine status are reflected in the Current State Store</li>
+<li>Operator-reported issues may directly trigger maintenance requests or contribute to rule evaluation</li>
+</ol>
+</section>
+<section id="operational-dashboard-flow" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="operational-dashboard-flow"><span class="header-section-number">4.2.3</span> Operational dashboard flow</h3>
+<ul>
+<li>The Current Equipment Status screen queries the Current State Store to retrieve one row per machine for fast operational monitoring.</li>
+<li>Historical analysis and audits query the Telemetry Store and join with operational data as needed for reporting and compliance.</li>
+</ul>
+</section>
+</section>
+<section id="architecture-pattern-and-rationale" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="architecture-pattern-and-rationale"><span class="header-section-number">4.3</span> Architecture Pattern and Rationale</h2>
+<p>The architecture follows an event-driven pattern with a derived current-state view to handle high-frequency telemetry that grows rapidly over time. Telemetry is stored as immutable events to preserve a complete historical record for analysis and audits, while a separate current equipment state is maintained to support fast operational queries without scanning large historical datasets.</p>
+<p>By decoupling telemetry ingestion from operational workflows, the system improves scalability and reliability. Telemetry capture can continue even if downstream processing is delayed, and user-facing views can rely on a lightweight current-state store for near real-time visibility. This design also supports incremental evolution, allowing more advanced analytics and predictive maintenance features to be added without restructuring the core architecture.</p>
+</section>
+</section>
+<section id="data-and-database-design" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Data and Database Design</h1>
+<p>This section explains how the platform stores, organizes, and serves data in a way that balances <strong>accuracy, scalability, and usability</strong>.<br>
+The design supports both technical needs such as telemetry ingestion and analytics, and business needs such as fast operational views, traceability, and maintainable workflows.</p>
+<p>At a high level, the solution separates <strong>historical data</strong> from <strong>operational state</strong>. Telemetry and logs are preserved in full for analysis and audits, while a lightweight current state model ensures that dashboards and user interfaces remain fast and simple.</p>
+<section id="data-model-overview" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="data-model-overview"><span class="header-section-number">5.1</span> Data Model Overview</h2>
+<p>The data model is built around three ideas.</p>
+<p>First, the platform uses a clear <strong>asset hierarchy</strong> so machines can always be understood in context. Every machine belongs to a production line, and every production line belongs to a plant. This hierarchy enables filtering, reporting, and access control by site and line.</p>
+<p>Second, <strong>telemetry and events are immutable</strong>. Sensor readings and machine signals are written once and never changed. This preserves data integrity and makes the system reliable for trend analysis, root cause investigation, and compliance.</p>
+<p>Third, the system maintains a <strong>derived current state</strong> for each machine. Instead of recalculating status from millions of telemetry records, the platform keeps one up-to-date row per machine that reflects its latest condition. This is what operational screens and supervisors rely on.</p>
+</section>
+<section id="entity-relationship-model" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="entity-relationship-model"><span class="header-section-number">5.2</span> Entity Relationship Model</h2>
+<p>The Entity Relationship Diagram below shows the core entities and how they connect. It is intentionally kept high level so it remains readable for both technical and non-technical readers. See <a href="#tbl-field-level-details" class="quarto-xref">Table&nbsp;1</a> for field level details.</p>
+<div class="cell" data-fig-width="80%" data-fig-height="100%" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">erDiagram
+  Plant ||--o{ ProductionLine : contains
+  ProductionLine ||--o{ Machine : contains
+  MachineType ||--o{ Machine : classifies
+
+  Machine ||--o{ TelemetryEvent : produces
+  FaultCode ||--o{ TelemetryEvent : appears_in
+
+  Machine ||--o{ OperatorReport : has
+  User ||--o{ OperatorReport : submits
+
+  Machine ||--o{ WorkOrder : has
+  User ||--o{ WorkOrder : creates
+  User ||--o{ WorkOrder : assigned_to
+
+  ThresholdRule }o--o{ WorkOrder : triggers
+
+  Machine ||--|| CurrentMachineState : has_latest
+  TelemetryEvent }o--|| CurrentMachineState : last_telemetry
+  OperatorReport }o--|| CurrentMachineState : last_operator_report
+</pre>
+</div>
+<p></p><figcaption> High level ERD for assets, telemetry, operator inputs, and maintenance</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>This model shows how physical assets, telemetry, human inputs, and maintenance workflows are connected while keeping responsibilities clearly separated.</p>
+</section>
+<section id="core-entities-and-responsibilities" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="core-entities-and-responsibilities"><span class="header-section-number">5.3</span> Core Entities and Responsibilities</h2>
+<p>The platform relies on a small but complete set of entities.</p>
+<ul>
+<li>Plants, production lines, machines, and machine types define the physical structure of the factory.</li>
+<li>Telemetry events capture raw machine signals over time.</li>
+<li>Operator reports capture human observations, inspections, and manual overrides.</li>
+<li>Work orders represent maintenance actions from creation through closure.</li>
+<li>Fault codes and threshold rules standardize how issues are detected and interpreted.</li>
+<li>Current machine state provides a fast operational snapshot for each machine.</li>
+</ul>
+<p>Together, these entities allow the system to explain <strong><em>what happened</em></strong>, <strong><em>why it happened</em></strong>, and <strong><em>what action</em></strong> was taken.</p>
+</section>
+<section id="field-level-details" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="field-level-details"><span class="header-section-number">5.4</span> Field Level Details</h2>
+<p>The table below lists the proposed tables with their primary keys, foreign keys, and essential fields required for the MVP.</p>
+<div id="tbl-field-level-details" class="striped hover quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-field-level-details-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Field level details for the MVP schema
+</figcaption>
+<div aria-describedby="tbl-field-level-details-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table-striped table-hover caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Table</th>
+<th style="text-align: left;">Primary Key</th>
+<th style="text-align: left;">Foreign Keys</th>
+<th style="text-align: left;">Key Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>Plant</code></td>
+<td style="text-align: left;"><code>plantId</code></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>plantCode</code>, <code>plantName</code>, <code>region</code>, <code>timezone</code>, <code>isActive</code>, <code>createdAt</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>ProductionLine</code></td>
+<td style="text-align: left;"><code>lineId</code></td>
+<td style="text-align: left;"><code>plantId (Plant.plantId)</code></td>
+<td style="text-align: left;"><code>lineCode</code>, <code>lineName</code>, <code>area</code>, <code>isActive</code>, <code>createdAt</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>MachineType</code></td>
+<td style="text-align: left;"><code>machineTypeId</code></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>typeCode</code>, <code>typeName</code>, <code>manufacturer</code>, <code>model</code>, <code>createdAt</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Machine</code></td>
+<td style="text-align: left;"><code>machineId</code></td>
+<td style="text-align: left;"><code>lineId (ProductionLine.lineId)</code>, <code>machineTypeId (MachineType.machineTypeId)</code></td>
+<td style="text-align: left;"><code>machineCode</code>, <code>machineName</code>, <code>serialNumber</code>, <code>installDate</code>, <code>isActive</code>, <code>createdAt</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>FaultCode</code></td>
+<td style="text-align: left;"><code>faultCodeId</code></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>faultCode</code>, <code>faultName</code>, <code>severity</code>, <code>description</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>TelemetryEvent</code></td>
+<td style="text-align: left;"><code>telemetryEventId</code></td>
+<td style="text-align: left;"><code>machineId (Machine.machineId)</code>, <code>faultCodeId (FaultCode.faultCodeId)</code></td>
+<td style="text-align: left;"><code>eventTimestamp</code>, <code>ingestedAt</code>, <code>temperature</code>, <code>vibration</code>, <code>throughput</code>, <code>statusRaw</code>, <code>payloadJson</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>User</code></td>
+<td style="text-align: left;"><code>userId</code></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>displayName</code>, <code>email</code>, <code>role</code>, <code>isActive</code>, <code>createdAt</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>OperatorReport</code></td>
+<td style="text-align: left;"><code>operatorReportId</code></td>
+<td style="text-align: left;"><code>machineId (Machine.machineId)</code>, <code>userId (User.userId)</code></td>
+<td style="text-align: left;"><code>reportTimestamp</code>, <code>reportType</code>, <code>statusOverride</code>, <code>comment</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>WorkOrder</code></td>
+<td style="text-align: left;"><code>workOrderId</code></td>
+<td style="text-align: left;"><code>machineId (Machine.machineId)</code>, <code>createdByUserId (User.userId)</code>, <code>assignedToUserId (User.userId)</code></td>
+<td style="text-align: left;"><code>workOrderNumber</code>, <code>priority</code>, <code>status</code>, <code>createdAt</code>, <code>closedAt</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>ThresholdRule</code></td>
+<td style="text-align: left;"><code>thresholdRuleId</code></td>
+<td style="text-align: left;"><code>machineTypeId (MachineType.machineTypeId)</code></td>
+<td style="text-align: left;"><code>ruleName</code>, <code>metricName</code>, <code>operator</code>, <code>thresholdValue</code>, <code>windowMinutes</code>, <code>severity</code>, <code>isActive</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>CurrentMachineState</code></td>
+<td style="text-align: left;"><code>machineId</code></td>
+<td style="text-align: left;"><code>machineId (Machine.machineId)</code>, <code>lastTelemetryEventId (TelemetryEvent.telemetryEventId)</code>, <code>lastOperatorReportId (OperatorReport.operatorReportId)</code></td>
+<td style="text-align: left;"><code>resolvedStatus</code>, <code>healthScore</code>, <code>lastUpdateAt</code>, <code>openWorkOrderCount</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="telemetry-and-current-state-strategy" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="telemetry-and-current-state-strategy"><span class="header-section-number">5.5</span> Telemetry and Current State Strategy</h2>
+<p>Telemetry data is modeled as an immutable event stream. Each new reading is inserted and never updated. This guarantees a complete and trustworthy history that can support audits, analytics, and future use cases without redesign.</p>
+<p>Operational views do not query this history directly. Instead, the <code>CurrentMachineState</code> table is continuously updated as telemetry arrives, operator reports are submitted, and work orders change status. Each row represents the latest resolved view of a machine, including status, health score, and maintenance indicators.</p>
+<p>This separation between append only history and derived operational state is the key scaling decision in the design. It keeps dashboards fast and predictable while preserving full historical detail for deeper analysis and long-term insight.</p>
+</section>
+</section>
+<section id="core-algorithms" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Core Algorithms</h1>
+<section id="machine-health-scoring" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="machine-health-scoring"><span class="header-section-number">6.1</span> Machine Health Scoring</h2>
+</section>
+<section id="latest-machine-status-resolution" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="latest-machine-status-resolution"><span class="header-section-number">6.2</span> Latest Machine Status Resolution</h2>
+
+</section>
+</section>
+<section id="dashboards-and-user-experience" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Dashboards and User Experience</h1>
+<section id="current-equipment-status-screen" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="current-equipment-status-screen"><span class="header-section-number">7.1</span> Current Equipment Status Screen</h2>
+</section>
+<section id="operational-and-maintenance-views" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="operational-and-maintenance-views"><span class="header-section-number">7.2</span> Operational and Maintenance Views</h2>
+
+</section>
+</section>
+<section id="security-and-data-protection" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Security and Data Protection</h1>
+<section id="key-security-concerns" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="key-security-concerns"><span class="header-section-number">8.1</span> Key Security Concerns</h2>
+</section>
+<section id="authentication-and-authorization" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="authentication-and-authorization"><span class="header-section-number">8.2</span> Authentication and Authorization</h2>
+</section>
+<section id="data-integrity-and-auditability" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="data-integrity-and-auditability"><span class="header-section-number">8.3</span> Data Integrity and Auditability</h2>
+
+</section>
+</section>
+<section id="scalability-and-reliability" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Scalability and Reliability</h1>
+<section id="data-growth-and-performance" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="data-growth-and-performance"><span class="header-section-number">9.1</span> Data Growth and Performance</h2>
+</section>
+<section id="failure-scenarios-and-resilience" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="failure-scenarios-and-resilience"><span class="header-section-number">9.2</span> Failure Scenarios and Resilience</h2>
+
+</section>
+</section>
+<section id="conclusion-and-recommendations" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Conclusion and Recommendations</h1>
+<section id="summary" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="summary"><span class="header-section-number">10.1</span> Summary</h2>
+</section>
+<section id="future-enhancements" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="future-enhancements"><span class="header-section-number">10.2</span> Future Enhancements</h2>
+
+</section>
+</section>
+<section id="references" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> References</h1>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
