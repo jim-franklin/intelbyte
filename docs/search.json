@@ -1,10 +1,31 @@
 [
   {
-    "objectID": "report/core_entities_responsibilities.html",
-    "href": "report/core_entities_responsibilities.html",
-    "title": "",
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Franklin Aryee",
     "section": "",
-    "text": "The platform relies on a small but complete set of entities.\n\nPlants, production lines, machines, and machine types define the physical structure of the factory.\nTelemetry events capture raw machine signals over time.\nOperator reports capture human observations, inspections, and manual overrides.\nWork orders represent maintenance actions from creation through closure.\nFault codes and threshold rules standardize how issues are detected and interpreted.\nCurrent machine state provides a fast operational snapshot for each machine.\n\nTogether, these entities allow the system to explain what happened, why it happened, and what action was taken."
+    "text": "I am a data scientist and engineer with a background in applied analytics, system design, and industrial data. I hold a Master of Data Science from the University of British Columbia and a Bachelor of Science in Engineering."
+  },
+  {
+    "objectID": "about.html#education",
+    "href": "about.html#education",
+    "title": "Franklin Aryee",
+    "section": "Education",
+    "text": "Education\nUniversity of British Columbia\nAug 2024 – Jun 2025\nMaster of Data Science\nKwame Nkrumah University of Science and Technology\nOct 2018 – Nov 2022\nBachelor of Science in Engineering"
+  },
+  {
+    "objectID": "about.html#skills",
+    "href": "about.html#skills",
+    "title": "Franklin Aryee",
+    "section": "Skills",
+    "text": "Skills\nPython, SQL, data modeling, machine learning, time series and telemetry data, dashboard design, system architecture, analytics reporting, GitHub, Quarto"
+  },
+  {
+    "objectID": "about.html#experience",
+    "href": "about.html#experience",
+    "title": "Franklin Aryee",
+    "section": "Experience",
+    "text": "Experience\nALS GeoAnalytics | Machine Learning Developer (UBC Capstone)\nMay 2025 – Jun 2025\nTrained deep learning models using PyTorch, designed data pipelines, and supported analytics workflows on operational datasets.\nZerone Analytiqs | Data Scientist, Intern\nOctober 2024 - August 2025\nBuilt analytical models and dashboards using Python and SQL to support business and operational decision making.\nEnergy Commission | Data Analyst, Electricity and Natural Gas\nNov 2022 – Oct 2023\nAnalyzed electricity and natural gas market, generation, and consumption datasets to support regulatory reporting, monitoring, and policy analysis."
   },
   {
     "objectID": "index.html",
@@ -159,33 +180,5 @@
     "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
     "section": "10.2 Future Enhancements",
     "text": "10.2 Future Enhancements"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "Franklin Aryee",
-    "section": "",
-    "text": "I am a data scientist and engineer with a background in applied analytics, system design, and industrial data. I hold a Master of Data Science from the University of British Columbia and a Bachelor of Science in Engineering."
-  },
-  {
-    "objectID": "about.html#education",
-    "href": "about.html#education",
-    "title": "Franklin Aryee",
-    "section": "Education",
-    "text": "Education\nUniversity of British Columbia\nAug 2024 – Jun 2025\nMaster of Data Science\nKwame Nkrumah University of Science and Technology\nOct 2018 – Nov 2022\nBachelor of Science in Engineering"
-  },
-  {
-    "objectID": "about.html#skills",
-    "href": "about.html#skills",
-    "title": "Franklin Aryee",
-    "section": "Skills",
-    "text": "Skills\nPython, SQL, data modeling, machine learning, time series and telemetry data, dashboard design, system architecture, analytics reporting, GitHub, Quarto"
-  },
-  {
-    "objectID": "about.html#experience",
-    "href": "about.html#experience",
-    "title": "Franklin Aryee",
-    "section": "Experience",
-    "text": "Experience\nALS GeoAnalytics | Machine Learning Developer (UBC Capstone)\nMay 2025 – Jun 2025\nTrained deep learning models using PyTorch, designed data pipelines, and supported analytics workflows on operational datasets.\nZerone Analytiqs | Data Scientist, Intern\nOctober 2024 - August 2025\nBuilt analytical models and dashboards using Python and SQL to support business and operational decision making.\nEnergy Commission | Data Analyst, Electricity and Natural Gas\nNov 2022 – Oct 2023\nAnalyzed electricity and natural gas market, generation, and consumption datasets to support regulatory reporting, monitoring, and policy analysis."
   }
 ]
