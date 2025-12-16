@@ -1,0 +1,17 @@
+# Conda
+.env
+.conda
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints
+
+# Quarto output
+output/
+_site/
+
+# OS
+.DS_Store
+/.quarto/
+**/*.quarto_ipynb
