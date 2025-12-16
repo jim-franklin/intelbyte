@@ -101,40 +101,11 @@ bibliography: references.bib
 
 ## Entity Relationship Model
 
-The Entity Relationship Diagram below shows the core entities and how they connect. It is intentionally kept high level so it remains readable for both technical and non-technical readers. See @tbl-field-level-details for field level details.
-
-```{mermaid}
-%%| fig-cap: "High level ERD for assets, telemetry, operator inputs, and maintenance"
-%%| fig-align: center
-%%| fig-width: 80%
-%%| fig-height: 100%
-erDiagram
-  Plant ||--o{ ProductionLine : contains
-  ProductionLine ||--o{ Machine : contains
-  MachineType ||--o{ Machine : classifies
-
-  Machine ||--o{ TelemetryEvent : produces
-  FaultCode ||--o{ TelemetryEvent : appears_in
-
-  Machine ||--o{ OperatorReport : has
-  User ||--o{ OperatorReport : submits
-
-  Machine ||--o{ WorkOrder : has
-  User ||--o{ WorkOrder : creates
-  User ||--o{ WorkOrder : assigned_to
-
-  ThresholdRule }o--o{ WorkOrder : triggers
-
-  Machine ||--|| CurrentMachineState : has_latest
-  TelemetryEvent }o--|| CurrentMachineState : last_telemetry
-  OperatorReport }o--|| CurrentMachineState : last_operator_report
-```
-
-This model shows how physical assets, telemetry, human inputs, and maintenance workflows are connected while keeping responsibilities clearly separated.
+{{< include report/_entity_relationship_model.qmd >}}
 
 ## Core Entities and Responsibilities
 
-{{< include report/core_entities_responsibilities.qmd >}}
+{{< include report/_core_entities_responsibilities.qmd >}}
 
 ## Field Level Details
 
