@@ -1,0 +1,82 @@
+The Machine Health Scoring algorithm converts raw machine signals into a single, easy-to-understand indicator that reflects how healthy a machine is at any moment. The goal is not to predict failure perfectly in the MVP, but to provide a **clear, consistent signal** that helps supervisors and maintenance teams prioritize attention.
+
+Industry platforms often normalize machine health to a 0–100 scale to simplify interpretation for operations and maintenance teams @infiniteUptimeHealthScore. This score is recalculated as new telemetry arrives and stored in the `CurrentMachineState` so dashboards can always show the latest value without scanning historical data.
+
+### What the score represents
+
+The score combines three ideas that are common in industrial monitoring systems:
+
+- **Normal operation** keeps the score high  
+- **Abnormal sensor readings** reduce the score gradually  
+- **Faults and maintenance states** reduce the score immediately and visibly  
+
+This balance ensures the score is both **stable enough for dashboards** and **responsive enough to real issues**.
+
+### Inputs used
+
+For each machine, the scoring logic uses:
+
+- Recent telemetry readings over a short-time window (last 15 to 30 minutes)
+- Current machine status (`Running`, `Idle`, `Fault`, `UnderMaintenance`)
+- Any active fault codes and their severity (`High`, `Medium`')
+- Operator flags from inspections (`IssueObserved`, `MinorConcern`)
+
+### High level scoring logic
+
+1. **Start from a healthy baseline**  
+   Each machine begins with a score of 100.
+
+2. **Apply sensor based penalties**  
+   Telemetry values such as temperature, vibration, or throughput are compared against acceptable ranges.  
+   The further a value drifts from normal, the larger the penalty applied.
+
+3. **Apply fault and status penalties**  
+   - Active faults apply a strong penalty based on severity  
+   - Machines under maintenance are capped at a lower score to reflect reduced availability  
+
+4. **Smooth the result**  
+   To avoid rapid fluctuations caused by noisy sensor readings, the health score is lightly smoothed using its previous value. This prevents short lived spikes from immediately changing the displayed machine condition and keeps dashboards stable while still reflecting real trends.
+
+    In practice, this is commonly done using an **Exponentially Weighted Moving Average (EWMA)**, a standard technique in industrial monitoring that balances responsiveness and noise reduction in streaming data [@montgomery2020introduction].
+
+### Simple pseudocode
+
+```python
+score = 100                                   # <1>
+smoothing_param = 0.2                         # <2>
+
+# sensor penalties
+score -= temperature_penalty                 # <3>
+score -= vibration_penalty                   # <3>
+score -= throughput_penalty                  # <3>
+
+# fault severity penalties
+if fault_severity == "High":                 # <4>
+    score -= 60
+elif fault_severity == "Medium":
+    score -= 30
+
+# apply operator input only if a report exists
+if operator_flag == "IssueObserved":          # <5>
+    score -= 20
+elif operator_flag == "MinorConcern":
+    score -= 10
+
+# maintenance state cap
+if status == "UnderMaintenance":              # <6>
+    score = min(score, 60)
+
+# smoothing (EWMA)
+score = smoothing_param * score + (1 - smoothing_param) * previous_score  # <7>
+
+# ensure the final score stays between 0 (worst) and 100 (best)
+score = max(0, min(100, score))               # <8>
+```
+1.	Start from a healthy baseline score of 100 for every evaluation.
+2.	Define how strongly the new score reacts to recent data versus the previous score.
+3.	Apply penalties based on sensor readings that deviate from normal operating ranges.
+4.	Apply a strong penalty when an active fault is detected, scaled by severity.
+5.	Incorporate human input from inspections or shift reports when operators flag issues.
+6.	Cap the score when the machine is under maintenance to reflect reduced availability.
+7.	Smooth the score using an Exponentially Weighted Moving Average to reduce noise.
+8.	Ensure the final score always remains between 0 and 100.
