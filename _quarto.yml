@@ -2,10 +2,11 @@ project:
   type: website
 
 website:
+  favicon: images/favicon.ico
   navbar:
     right:
       - href: report.qmd
-        text: "Home"
+        text: "Report"
       - href: about.qmd
         text: About
       - icon: github
