@@ -1,0 +1,1 @@
+In addition to core functional capabilities, the platform is designed to operate reliably at scale. It supports thousands of machines and high frequency telemetry, provides near real-time operational views, preserves historical data for audits, enforces role-based access, and allows system components to evolve independently as operational needs grow.

@@ -1,0 +1,29 @@
+These define the essential capabilities the platform provides to support equipment monitoring, maintenance, and operational decision-making. They are organized by functional area for clarity.
+
+### Asset and Equipment Management
+- Support multiple plants, production lines, and machines  
+- Maintain a clear hierarchical relationship between plants, lines, and machines  
+
+### Telemetry and Data Ingestion
+- Ingest continuous machine telemetry, including temperature, vibration, throughput, and fault codes  
+- Associate each telemetry record with a machine identifier and timestamp  
+- Retain telemetry data as a complete historical record for analysis, reporting, and audits  
+
+### Operator and User Inputs
+- Allow operators to log shift reports, inspection results, and issue descriptions  
+- Record manual machine status updates with user attribution  
+- Store operator comments and inspection notes alongside machine and telemetry data  
+
+### Maintenance Management
+- Automatically create maintenance requests based on configurable thresholds, fault patterns, and operator reported issues  
+- Track maintenance requests through their lifecycle, including status updates and resolution details  
+- Link maintenance history to machines and triggering events  
+
+### Health and Status Monitoring
+- Calculate a machine health score using recent telemetry signals and fault history  
+- Determine the current machine status by reconciling telemetry data, operator inputs, and active maintenance work orders  
+- Provide a Current Equipment Status view showing one row per machine using the most recent available data  
+
+### Reporting and Dashboards
+- Provide dashboards for supervisors to monitor equipment health, status, and maintenance activity  
+- Support filtering by plant, production line, machine, status, and health indicators  
