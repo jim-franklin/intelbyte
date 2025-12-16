@@ -5,8 +5,8 @@ website:
   favicon: images/favicon.ico
   navbar:
     right:
-      - href: report.qmd
-        text: "Report"
+      - href: index.qmd
+        text: Report
       - href: about.qmd
         text: About
       - icon: github
