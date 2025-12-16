@@ -32,12 +32,12 @@ bibliography: references.bib
 ---
 # Executive Summary
 
-{{< include _executive_summary.qmd >}}
+{{< include report/_executive_summary.qmd >}}
 \newpage
 
 # Problem Context and Objectives
 
-{{< include _problem_context.qmd >}}
+{{< include report/_problem_context.qmd >}}
 \newpage
 
 # Requirements Analysis  
@@ -45,108 +45,108 @@ The following requirements are defined based on the scenario provided, which ass
 
 ## Core Functional Requirements
 
-{{< include _functional_requirements.qmd >}}
+{{< include report/_functional_requirements.qmd >}}
 
 ## Operational Constraints and Quality Considerations
 
-{{< include _operational_quality_requirements.qmd >}}
+{{< include report/_operational_quality_requirements.qmd >}}
 \newpage
 
 # System Architecture
 
 ## Architecture Overview
 
-{{< include _architecture_overview.qmd >}}
+{{< include report/_architecture_overview.qmd >}}
 
 ## Component Responsibilities
 
-{{< include _architecture_components.qmd >}}
+{{< include report/_architecture_components.qmd >}}
 
 ## Data Flow and Communication
 
-{{< include _data_flow.qmd >}}
+{{< include report/_data_flow.qmd >}}
 
 ## Architecture Decisions and Tradeoffs
 
-{{< include _architecture_tradeoffs.qmd >}}
+{{< include report/_architecture_tradeoffs.qmd >}}
 \newpage
 
 # Data and Database Design
 
 ## Entity Relationship Model
 
-{{< include _erd.qmd >}}
+{{< include report/_erd.qmd >}}
 
 ## Core Entities and Relationships
 
-{{< include _core_entities.qmd >}}
+{{< include report/_core_entities.qmd >}}
 
 ## Telemetry Data Strategy
 
-{{< include _telemetry_strategy.qmd >}}
+{{< include report/_telemetry_strategy.qmd >}}
 
 ## Current Equipment State Design
 
-{{< include _current_state_design.qmd >}}
+{{< include report/_current_state_design.qmd >}}
 \newpage
 
 # Core Algorithms
 
 ## Machine Health Scoring
 
-{{< include _health_score_algorithm.qmd >}}
+{{< include report/_health_score_algorithm.qmd >}}
 
 ## Latest Machine Status Resolution
 
-{{< include _latest_status_algorithm.qmd >}}
+{{< include report/_latest_status_algorithm.qmd >}}
 \newpage
 
 # Dashboards and User Experience
 
 ## Current Equipment Status Screen
 
-{{< include _current_status_dashboard.qmd >}}
+{{< include report/_current_status_dashboard.qmd >}}
 
 ## Operational and Maintenance Views
 
-{{< include _maintenance_dashboards.qmd >}}
+{{< include report/_maintenance_dashboards.qmd >}}
 \newpage
 
 # Security and Data Protection
 
 ## Key Security Concerns
 
-{{< include _security_concerns.qmd >}}
+{{< include report/_security_concerns.qmd >}}
 
 ## Authentication and Authorization
 
-{{< include _auth_model.qmd >}}
+{{< include report/_auth_model.qmd >}}
 
 ## Data Integrity and Auditability
 
-{{< include _auditability.qmd >}}
+{{< include report/_auditability.qmd >}}
 \newpage
 
 # Scalability and Reliability
 
 ## Data Growth and Performance
 
-{{< include _scalability.qmd >}}
+{{< include report/_scalability.qmd >}}
 
 ## Failure Scenarios and Resilience
 
-{{< include _failure_handling.qmd >}}
+{{< include report/_failure_handling.qmd >}}
 \newpage
 
 # Conclusion and Recommendations
 
 ## Summary
 
-{{< include _summary.qmd >}}
+{{< include report/_summary.qmd >}}
 
 ## Future Enhancements
 
-{{< include _future_work.qmd >}}
+{{< include report/_future_work.qmd >}}
 
 # References
 
