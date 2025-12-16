@@ -18,7 +18,7 @@ For each machine, the scoring logic uses:
 
 - Recent telemetry readings over a short-time window (last 15 to 30 minutes)
 - Current machine status (`Running`, `Idle`, `Fault`, `UnderMaintenance`)
-- Any active fault codes and their severity (`High`, `Medium`')
+- Any active fault codes and their severity (`High`, `Medium`)
 - Operator flags from inspections (`IssueObserved`, `MinorConcern`)
 
 ### High level scoring logic
@@ -42,35 +42,41 @@ For each machine, the scoring logic uses:
 ### Simple pseudocode
 
 ```python
-score = 100                                   # <1>
-smoothing_param = 0.2                         # <2>
+def compute_health_score(previous_score):
+    healthScore = 100                                  # <1>
+    smoothing_param = 0.2                              # <2>
 
-# sensor penalties
-score -= temperature_penalty                 # <3>
-score -= vibration_penalty                   # <3>
-score -= throughput_penalty                  # <3>
+    # sensor penalties
+    healthScore -= temperature_penalty                 # <3>
+    healthScore -= vibration_penalty                   # <3>
+    healthScore -= throughput_penalty                  # <3>
 
-# fault severity penalties
-if fault_severity == "High":                 # <4>
-    score -= 60
-elif fault_severity == "Medium":
-    score -= 30
+    # fault severity penalties
+    if fault_severity == "High":                       # <4>
+        healthScore -= 60
+    elif fault_severity == "Medium":
+        healthScore -= 30
 
-# apply operator input only if a report exists
-if operator_flag == "IssueObserved":          # <5>
-    score -= 20
-elif operator_flag == "MinorConcern":
-    score -= 10
+    # apply operator input only if a report exists
+    if operator_flag == "IssueObserved":                # <5>
+        healthScore -= 20
+    elif operator_flag == "MinorConcern":
+        healthScore -= 10
 
-# maintenance state cap
-if status == "UnderMaintenance":              # <6>
-    score = min(score, 60)
+    # maintenance state cap
+    if status == "UnderMaintenance":                    # <6>
+        healthScore = min(healthScore, 60)
 
-# smoothing (EWMA)
-score = smoothing_param * score + (1 - smoothing_param) * previous_score  # <7>
+    # smoothing (EWMA)
+    healthScore = (                                     # <7>
+        smoothing_param * healthScore + 
+        (1 - smoothing_param) * previous_score
+    )
 
-# ensure the final score stays between 0 (worst) and 100 (best)
-score = max(0, min(100, score))               # <8>
+    # ensure the final score stays between 0 (worst) and 100 (best)
+    healthScore = max(0, min(100, healthScore))         # <8>
+    
+    return healthScore
 ```
 1.	Start from a healthy baseline score of 100 for every evaluation.
 2.	Define how strongly the new score reacts to recent data versus the previous score.
