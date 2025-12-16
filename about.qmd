@@ -1,6 +1,7 @@
 ---
 title: "Franklin Aryee"
 toc-title: "Profile"
+page-layout: full
 about:
   template: trestles
   image: images/profile.jpg
