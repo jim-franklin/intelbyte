@@ -4,9 +4,12 @@ project:
 website:
   navbar:
     right:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+      - href: report.qmd
+        text: "Home"
+      - href: about.qmd
+        text: About
+      - icon: github
+        href: https://github.com/jim-franklin/intelbyte
 
 format:
   html:
