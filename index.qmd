@@ -1,0 +1,220 @@
+---
+title: "Designing a Scalable Factory Equipment Health and Maintenance Platform"
+subtitle: "Architecture, Data Model, and Algorithms"
+
+toc-location: left
+title-block-banner: true
+lightbox: true
+
+format:
+  html:
+    page-layout: full
+    toc-title: "Contents"
+    number-sections: true
+    other-links:
+      - href: report.pdf
+        icon: file-earmark-pdf
+        text: PDF
+      - href: dashboard.html
+        icon: speedometer
+        text: Dashboards
+
+
+  typst:
+    text:
+      align: justify
+    page-layout: full
+    toc-title: "Table of Contents"
+    toc: true
+    number-sections: true
+    margin:
+      top: 1.25in
+      bottom: 1.25in
+      left: 1in
+      right: 1in
+    output-file: report.pdf
+
+  dashboard:
+    output-file: index-dashboard.html
+
+bibliography: references.bib
+---
+```{=typst}
+#pagebreak()
+```
+
+# Executive Summary
+
+{{< include report/_executive_summary.qmd >}}
+```{=typst}
+#pagebreak()
+```
+
+# Problem Context and Objectives
+
+{{< include report/_problem_context.qmd >}}
+```{=typst}
+#pagebreak()
+```
+
+# Requirements Analysis  
+
+{{< include report/_requirments_analysis.qmd >}}
+
+## Core Functional Requirements
+
+{{< include report/_functional_requirements.qmd >}}
+
+## Operational Constraints and Quality Considerations
+
+{{< include report/_operational_quality_requirements.qmd >}}
+```{=typst}
+#pagebreak()
+```
+
+# System Architecture
+
+{{< include report/_architecture_overview.qmd >}}
+
+## Components and Functions
+
+{{< include report/_architecture_components.qmd >}}
+
+## Data Flow and Communication
+
+{{< include report/_data_flow.qmd >}}
+
+## Architecture Pattern and Rationale
+
+{{< include report/_architecture_tradeoffs.qmd >}}
+```{=typst}
+#pagebreak()
+```
+
+# Data and Database Design
+
+{{< include report/_data_and_database_design.qmd >}}
+
+## Data Model Overview
+
+{{< include report/_data_model_overview.qmd >}}
+
+## Entity Relationship Model
+
+The Entity Relationship Diagram below shows the core entities and how they connect. It is intentionally kept high level so it remains readable for both technical and non-technical readers. See @tbl-field-level-details for field level details.
+
+```{mermaid}
+%%| fig-cap: "High level ERD for assets, telemetry, operator inputs, and maintenance"
+%%| fig-align: center
+%%| fig-width: 80%
+%%| fig-height: 100%
+erDiagram
+  Plant ||--o{ ProductionLine : contains
+  ProductionLine ||--o{ Machine : contains
+  MachineType ||--o{ Machine : classifies
+
+  Machine ||--o{ TelemetryEvent : produces
+  FaultCode ||--o{ TelemetryEvent : appears_in
+
+  Machine ||--o{ OperatorReport : has
+  User ||--o{ OperatorReport : submits
+
+  Machine ||--o{ WorkOrder : has
+  User ||--o{ WorkOrder : creates
+  User ||--o{ WorkOrder : assigned_to
+
+  ThresholdRule }o--o{ WorkOrder : triggers
+
+  Machine ||--|| CurrentMachineState : has_latest
+  TelemetryEvent }o--|| CurrentMachineState : last_telemetry
+  OperatorReport }o--|| CurrentMachineState : last_operator_report
+```
+
+This model shows how physical assets, telemetry, human inputs, and maintenance workflows are connected while keeping responsibilities clearly separated.
+
+## Core Entities and Responsibilities
+
+{{< include report/core_entities_responsibilities.qmd >}}
+
+## Field Level Details
+
+{{< include report/_filed_level_details.qmd >}}
+
+## Telemetry and Current State Strategy
+
+{{< include report/_telemetry_current_state_strategy.qmd >}}
+```{=typst}
+#pagebreak()
+```
+
+# Core Algorithms
+
+## Machine Health Scoring
+
+{{< include report/_health_score_algorithm.qmd >}}
+
+## Latest Machine Status Resolution
+
+{{< include report/_latest_status_algorithm.qmd >}}
+```{=typst}
+#pagebreak()
+```
+
+# Dashboards and User Experience
+
+## Current Equipment Status Screen
+
+{{< include report/_current_status_dashboard.qmd >}}
+
+## Operational and Maintenance Views
+
+{{< include report/_maintenance_dashboards.qmd >}}
+```{=typst}
+#pagebreak()
+```
+
+# Security and Data Protection
+
+## Key Security Concerns
+
+{{< include report/_security_concerns.qmd >}}
+
+## Authentication and Authorization
+
+{{< include report/_auth_model.qmd >}}
+
+## Data Integrity and Auditability
+
+{{< include report/_auditability.qmd >}}
+```{=typst}
+#pagebreak()
+```
+
+# Scalability and Reliability
+
+## Data Growth and Performance
+
+{{< include report/_scalability.qmd >}}
+
+## Failure Scenarios and Resilience
+
+{{< include report/_failure_handling.qmd >}}
+```{=typst}
+#pagebreak()
+```
+
+# Conclusion and Recommendations
+
+## Summary
+
+{{< include report/_summary.qmd >}}
+
+## Future Enhancements
+
+{{< include report/_future_work.qmd >}}
+```{=typst}
+#pagebreak()
+```
+
+# References
+
