@@ -1,0 +1,10 @@
+The platform relies on a small but complete set of entities.
+
+- Plants, production lines, machines, and machine types define the physical structure of the factory.
+- Telemetry events capture raw machine signals over time.
+- Operator reports capture human observations, inspections, and manual overrides.
+- Work orders represent maintenance actions from creation through closure.
+- Fault codes and threshold rules standardize how issues are detected and interpreted.
+- Current machine state provides a fast operational snapshot for each machine.
+
+Together, these entities allow the system to explain ***what happened***, ***why it happened***, and ***what action*** was taken.

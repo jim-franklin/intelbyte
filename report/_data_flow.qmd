@@ -1,0 +1,18 @@
+Telemetry and operator inputs follow different paths, but converge in the current equipment state used for operational dashboards.
+
+### Telemetry ingestion flow
+1.	Machines or plant gateways send telemetry events to the Telemetry Ingestion API
+2.	Events are validated and written to the Telemetry Store as immutable, append-only records
+3.	A stream processor consumes telemetry events and updates the Current State Store for the affected machine
+4.	The Health Scoring Service recalculates machine health scores based on new data or on a defined schedule
+5.	The Rule Engine evaluates thresholds and fault patterns and creates maintenance requests when conditions are met
+
+### Operator input flow
+1.	Operators submit shift logs, inspections, comments, or manual status updates through the web application
+2.	The Operational API records these inputs in the Operational Store with user attribution
+3.	Inputs that affect machine status are reflected in the Current State Store
+4.	Operator-reported issues may directly trigger maintenance requests or contribute to rule evaluation
+
+### Operational dashboard flow
+- The Current Equipment Status screen queries the Current State Store to retrieve one row per machine for fast operational monitoring.
+- Historical analysis and audits query the Telemetry Store and join with operational data as needed for reporting and compliance. 

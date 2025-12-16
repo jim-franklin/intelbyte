@@ -1,0 +1,35 @@
+The platform follows an event-driven architecture that separates high-volume telemetry ingestion from operational workflows and user facing views. Machine telemetry is captured as append-only event data to support long-term retention, analysis, and auditability. In parallel, a derived current equipment state is maintained to enable fast operational queries that present one up-to-date record per machine.
+
+At a high level, the system consists of a web application for operators and supervisors, backend services that manage operational workflows and business rules, a telemetry ingestion path optimized for scale, and a database layer that stores both historical telemetry and current machine state. Maintenance requests are generated through configurable rules and recorded as work items linked to the machines and events that triggered them.
+
+```{mermaid}
+%%| fig-cap: "System architecture and data flow"
+%%| fig-align: center
+%%| fig-width: 80%
+%%| fig-height: 100%
+flowchart TB
+  A[Machines or Plant Gateways] -->|Telemetry Events| B[Telemetry Ingestion API]
+  B --> C[(Telemetry Store<br/>Append-only events)]
+  B -->|Event stream| D[Stream Processor]
+  D --> E[(Current State Store<br/>One row per machine)]
+
+  F[Operator or Supervisor Web App] -->|Login and Token| M[Identity Provider<br/>Microsoft Entra ID]
+  M -->|Access Token| G[Operational API]
+
+  G --> H[(Operational Store<br/>Assets, Logs, Work Orders, Users)]
+  G --> E
+
+  E --> I[Current Equipment Status Screen]
+  C --> J[Analytics and Reporting]
+
+  E --> K[Health Scoring Service]
+  C --> K
+  K --> E
+
+  E --> L[Rule Engine]
+  C --> L
+  L --> H
+
+  L --> N[Notification Channel<br/>Teams or Email]
+  G --> N
+```

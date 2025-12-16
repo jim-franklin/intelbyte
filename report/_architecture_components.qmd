@@ -1,0 +1,20 @@
+### Frontend (Operator and Supervisor Interfaces)
+- Operator and Supervisor Web App (Power Apps): provides a unified interface for operators, supervisors, and maintenance teams to view current equipment status, review machine details, log shift reports and inspections, submit maintenance requests, and review, prioritize, assign, and track maintenance work orders. 
+- Analytics Dashboards (Power BI): visual dashboards showing equipment health, status, and maintenance activity by plant, production line, and machine  
+
+### Backend Services and APIs (Application and Processing Layer)
+- Operational API (Azure Functions): manages core business operations including plant and machine metadata, operator inputs, status updates, and maintenance workflows
+- Telemetry Ingestion API (Azure IoT Hub): receives sensor data from machines or plant gateways and checks that required information is present  
+- Event Stream (Azure Event Hubs): temporarily buffers incoming telemetry to allow the system to scale and continue receiving data even during peak loads  
+- Stream Processor (Azure Stream Analytics): processes telemetry as it arrives and updates the latest known state of each machine  
+- Rule Engine (Azure Functions): applies predefined rules and thresholds to detect issues and automatically create maintenance requests  
+- Health Scoring Service (Azure Functions): calculates a simple health score for each machine using recent telemetry and fault history  
+
+### Data Layer (Data Storage and Access)
+- Operational Store (Azure SQL Database): stores structured business data including assets, users, operator reports, and maintenance records  
+- Telemetry Store (Azure Data Explorer): stores all raw telemetry data as a long-term historical record for analysis and audits  
+- Current State Store (Azure SQL Database): stores the latest status and health indicators for each machine to support fast operational views  
+
+### Integrations (Access and Notifications)
+- Identity Provider (Microsoft Entra ID): manages user login, roles, and access permissions  
+- Notification Channel (Power Automate with Teams or Email): sends alerts when maintenance requests are created or critical issues are detected  

@@ -1,0 +1,7 @@
+The data model is built around three ideas.
+
+First, the platform uses a clear **asset hierarchy** so machines can always be understood in context. Every machine belongs to a production line, and every production line belongs to a plant. This hierarchy enables filtering, reporting, and access control by site and line.
+
+Second, **telemetry and events are immutable**. Sensor readings and machine signals are written once and never changed. This preserves data integrity and makes the system reliable for trend analysis, root cause investigation, and compliance.
+
+Third, the system maintains a **derived current state** for each machine. Instead of recalculating status from millions of telemetry records, the platform keeps one up-to-date row per machine that reflects its latest condition. This is what operational screens and supervisors rely on.
