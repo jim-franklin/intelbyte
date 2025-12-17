@@ -1,45 +1,51 @@
 The Machine Health Scoring algorithm converts raw machine signals into a single, easy-to-understand indicator that reflects how healthy a machine is at any moment. The goal is not to predict failure perfectly in the MVP, but to provide a **clear, consistent signal** that helps supervisors and maintenance teams prioritize attention.
 
-Industry platforms often normalize machine health to a 0–100 scale to simplify interpretation for operations and maintenance teams @infiniteUptimeHealthScore. This score is recalculated as new telemetry arrives and stored in the `CurrentMachineState` so dashboards can always show the latest value without scanning historical data.
-
-### What the score represents
-
-The score combines three ideas that are common in industrial monitoring systems:
+Industry platforms often normalize machine health to a **0–100** scale to simplify interpretation for operations and maintenance teams @infiniteUptimeHealthScore. The score combines **three ideas** that are common in industrial monitoring systems:
 
 - **Normal operation** keeps the score high  
 - **Abnormal sensor readings** reduce the score gradually  
-- **Faults and maintenance states** reduce the score immediately and visibly  
+- **Faults and maintenance states** reduce the score immediately and visibly 
 
-This balance ensures the score is both **stable enough for dashboards** and **responsive enough to real issues**.
+### How often the score is recalculated
 
-### Inputs used
+The health score is recalculated each time new telemetry is processed for a machine, which in typical industrial environments means every few seconds to every minute, depending on sensor. High frequency signals such as temperature or vibration may arrive every 5–30 seconds, while lower frequency metrics such as throughput or energy usage may arrive every 1–5 minutes.
 
-For each machine, the scoring logic uses:
+Rather than recomputing the score from all historical data, the system updates the score incrementally using the previous value. This keeps the score near real-time, computationally efficient, and stable for dashboards, while still reacting quickly when sustained issues or faults appear.
 
-- Recent telemetry readings over a short-time window (last 15 to 30 minutes)
-- Current machine status (`Running`, `Idle`, `Fault`, `UnderMaintenance`)
-- Any active fault codes and their severity (`High`, `Medium`)
-- Operator flags from inspections (`IssueObserved`, `MinorConcern`)
+### Where the score is stored
 
-### High level scoring logic
+The computed score is written to `CurrentMachineState.healthScore` for each machine:
 
-1. **Start from a healthy baseline**  
-   Each machine begins with a score of 100.
+- Table: `CurrentMachineState`  
+- Primary key: `machineId`  
+- Foreign keys:  
+  - `machineId -> Machine.machineId`  
+  - `lastTelemetryEventId -> TelemetryEvent.telemetryEventId`  
+  - `lastOperatorReportId -> OperatorReport.operatorReportId`  
+- Key fields updated by this algorithm:   
+  - `healthScore`  
+  - `lastUpdateAt`
 
-2. **Apply sensor based penalties**  
-   Telemetry values such as temperature, vibration, or throughput are compared against acceptable ranges.  
-   The further a value drifts from normal, the larger the penalty applied.
+This aligns with @tbl-field-level-details.
 
-3. **Apply fault and status penalties**  
-   - Active faults apply a strong penalty based on severity  
-   - Machines under maintenance are capped at a lower score to reflect reduced availability  
+### Scoring logic overview
 
-4. **Smooth the result**  
-   To avoid rapid fluctuations caused by noisy sensor readings, the health score is lightly smoothed using its previous value. This prevents short lived spikes from immediately changing the displayed machine condition and keeps dashboards stable while still reflecting real trends.
+At each update, the score is computed using recent machine behavior, not the full telemetry history.
 
-    In practice, this is commonly done using an **Exponentially Weighted Moving Average (EWMA)**, a standard technique in industrial monitoring that balances responsiveness and noise reduction in streaming data [@montgomery2020introduction].
+::: {.callout-note appearance="simple"}
+### Telemetry Frequency and Rolling Window
 
-### Simple pseudocode
+For the MVP, machines are assumed to publish telemetry approximately every 30 seconds. A 15 minute rolling window is therefore used for health scoring, providing about 30 samples per metric. This window smooths short-lived sensor noise while remaining responsive to sustained changes in machine condition.
+:::
+
+The scoring logic combines:
+
+- The latest telemetry readings, aggregated as rolling averages over a short time window
+- Current machine status (`Running`, `Idle`, `Fault`, `UnderMaintenance`)  
+- Any active fault codes and their severity (`High`, `Medium`)  
+- Operator flags from inspections (`IssueObserved`, `MinorConcern`)  
+
+The annotated pseudocode below shows exactly how each signal contributes to the final score and how the result is stabilized for operational dashboards.
 
 ```python
 def compute_health_score(previous_score):

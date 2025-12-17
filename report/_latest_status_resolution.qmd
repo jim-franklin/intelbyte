@@ -1,0 +1,92 @@
+The platform resolves `CurrentMachineState.resolvedStatus` using three signal sources, with clear precedence so the output stays explainable.
+
+**Precedence (highest wins):**
+
+1. **UnderMaintenance** when there is an open work order
+2. **Manual override** when an operator has set a status override that is still active
+3. **Telemetry derived** status from the latest telemetry event
+
+This ensures an operator’s safety decision can override sensors, while still allowing the system to return to automatic status when the override expires.
+
+### Process
+
+1. The stream processor continuously determines the latest **telemetry status** per machine (e.g., `Fault` if a fault code is present, else `Running` or `Idle` from the device status field).
+2. The operational workflow updates `openWorkOrderCount` when work orders open or close.
+3. The latest operator report with `statusOverride` (if any) is treated as a **manual override** for a short time window (for example 2 to 8 hours), after which the system falls back to telemetry.
+
+### Query
+
+```sql
+WITH LatestTelemetry AS (                                               -- <1>
+  SELECT
+    t.machineId,
+    t.telemetryEventId,
+    t.eventTimestamp,
+    t.statusRaw,
+    t.faultCodeId,
+    ROW_NUMBER() OVER (
+      PARTITION BY t.machineId
+      ORDER BY t.eventTimestamp DESC
+    ) AS rn
+  FROM TelemetryEvent t
+),
+
+LatestOperatorOverride AS (                                              -- <2>
+  SELECT
+    r.machineId,
+    r.operatorReportId,
+    r.reportTimestamp,
+    r.statusOverride,
+    ROW_NUMBER() OVER (
+      PARTITION BY r.machineId
+      ORDER BY r.reportTimestamp DESC
+    ) AS rn
+  FROM OperatorReport r
+  WHERE r.statusOverride IS NOT NULL
+),
+
+OpenWorkOrders AS (                                                     -- <3>
+  SELECT
+    w.machineId,
+    COUNT(*) AS openWorkOrderCount
+  FROM WorkOrder w
+  WHERE w.status IN ('Open', 'InProgress')
+  GROUP BY w.machineId
+)
+
+SELECT
+  m.machineId,
+  CASE                                                                 -- <4>
+    WHEN COALESCE(owo.openWorkOrderCount, 0) > 0 THEN 'UnderMaintenance'
+
+    WHEN loo.statusOverride IS NOT NULL
+     AND loo.reportTimestamp >= CURRENT_TIMESTAMP - INTERVAL '4 hours' THEN loo.statusOverride
+
+    WHEN lt.faultCodeId IS NOT NULL THEN 'Fault'
+    ELSE COALESCE(lt.statusRaw, 'Idle')
+  END AS resolvedStatus,
+
+  COALESCE(owo.openWorkOrderCount, 0) AS openWorkOrderCount,
+  lt.telemetryEventId AS lastTelemetryEventId,                          -- <5>
+  loo.operatorReportId AS lastOperatorReportId,
+  GREATEST(                                                             -- <6>
+    COALESCE(lt.eventTimestamp, TIMESTAMP '1970-01-01'),
+    COALESCE(loo.reportTimestamp, TIMESTAMP '1970-01-01')
+  ) AS lastUpdateAt
+
+FROM Machine m
+LEFT JOIN LatestTelemetry lt
+  ON m.machineId = lt.machineId AND lt.rn = 1                           -- <7>
+LEFT JOIN LatestOperatorOverride loo
+  ON m.machineId = loo.machineId AND loo.rn = 1
+LEFT JOIN OpenWorkOrders owo
+  ON m.machineId = owo.machineId;
+```
+
+1.	Pick the most recent telemetry event per machine.
+2.	Pick the most recent operator report that contains a manual status override.
+3.	Count open work orders per machine to detect maintenance state.
+4.	Resolve status using precedence: maintenance → manual override (time boxed) → telemetry.
+5.	Keep pointers to the exact records that drove the current view for auditability.
+6.	lastUpdateAt reflects the most recent update source (telemetry vs operator override).
+7.	Only one telemetry row per machine is used (rn = 1) to avoid scanning history in dashboards.

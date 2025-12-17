@@ -4,6 +4,7 @@ At a high level, the system consists of a web application for operators and supe
 
 ```{mermaid}
 %%| fig-cap: "System architecture and data flow"
+%%| label: fig-architecture
 %%| fig-align: center
 %%| fig-width: 80%
 %%| fig-height: 100%
