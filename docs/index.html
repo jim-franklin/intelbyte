@@ -101,6 +101,9 @@ div.csl-indent {
 <link href="site_libs/bootstrap/bootstrap-0bf144460954881a529a602f9b9a7b5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-dark-7f2cc7a6ea63d59fa1f1180d41479419.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-0bf144460954881a529a602f9b9a7b5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -432,9 +435,45 @@ Figure&nbsp;1: System architecture and data flow
 <section id="frontend-operator-and-supervisor-interfaces" class="level3" data-number="4.1.1">
 <h3 data-number="4.1.1" class="anchored" data-anchor-id="frontend-operator-and-supervisor-interfaces"><span class="header-section-number">4.1.1</span> Frontend (Operator and Supervisor Interfaces)</h3>
 <ul>
-<li>Operator and Supervisor Web App (Power Apps): provides a unified interface for operators, supervisors, and maintenance teams to view current equipment status, review machine details, log shift reports and inspections, submit maintenance requests, and review, prioritize, assign, and track maintenance work orders.</li>
+<li>Operator and Supervisor Web App (Power Apps, Copilot): provides a unified interface for operators, supervisors, and maintenance teams to view current equipment status, review machine details, log shift reports and inspections, submit maintenance requests, and review, prioritize, assign, and track maintenance work orders.</li>
 <li>Analytics Dashboards (Power BI): visual dashboards showing equipment health, status, and maintenance activity by plant, production line, and machine</li>
 </ul>
+<div class="quarto-layout-panel" data-layout-ncol="4">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/PowerApps_scalable.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Power Apps"><img src="assets/PowerApps_scalable.svg" class="img-fluid figure-img" alt="Power Apps icon" width="90"></a></p>
+<figcaption>Power Apps</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/PowerBI_scalable.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Power BI"><img src="assets/PowerBI_scalable.svg" class="img-fluid figure-img" alt="Power BI icon" width="90"></a></p>
+<figcaption>Power BI</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/CopilotStudio_scalable.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Copilot"><img src="assets/CopilotStudio_scalable.svg" class="img-fluid figure-img" alt="Copilot icon" width="90"></a></p>
+<figcaption>Copilot</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/AIBuilder_scalable.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="AI Builder"><img src="assets/AIBuilder_scalable.svg" class="img-fluid figure-img" alt="AIBuilder icon" width="90"></a></p>
+<figcaption>AI Builder</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="backend-services-and-apis-application-and-processing-layer" class="level3" data-number="4.1.2">
 <h3 data-number="4.1.2" class="anchored" data-anchor-id="backend-services-and-apis-application-and-processing-layer"><span class="header-section-number">4.1.2</span> Backend Services and APIs (Application and Processing Layer)</h3>
@@ -449,16 +488,88 @@ Figure&nbsp;1: System architecture and data flow
 </li>
 <li>Health Scoring Service (Azure Functions): calculates a simple health score for each machine using recent telemetry and fault history</li>
 </ul>
+<div class="quarto-layout-panel" data-layout-ncol="4">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/Azure_Functions.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Azure Functions"><img src="assets/Azure_Functions.svg" class="img-fluid figure-img" alt="Azure Functions icon" width="90"></a></p>
+<figcaption>Azure Functions</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/IoT-Hub.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Azure IoT Hub"><img src="assets/IoT-Hub.svg" class="img-fluid figure-img" alt="Azure IoT Hub icon" width="90"></a></p>
+<figcaption>Azure IoT Hub</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/Stream-Analytics.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Azure Stream Analytics"><img src="assets/Stream-Analytics.svg" class="img-fluid figure-img" alt="Azure Stream Analytics icon" width="90"></a></p>
+<figcaption>Azure Stream Analytics</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/App-Services.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Azure App-Services"><img src="assets/App-Services.svg" class="img-fluid figure-img" alt="Azure App-Services icon" width="90"></a></p>
+<figcaption>Azure App-Services</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="data-layer-data-storage-and-access" class="level3" data-number="4.1.3">
 <h3 data-number="4.1.3" class="anchored" data-anchor-id="data-layer-data-storage-and-access"><span class="header-section-number">4.1.3</span> Data Layer (Data Storage and Access)</h3>
 <ul>
-<li>Operational Store (Azure SQL Database): stores structured business data including assets, users, operator reports, and maintenance records<br>
+<li>Operational Store (Dataverse or Azure SQL Database): stores structured business data including assets, users, operator reports, and maintenance records<br>
 </li>
 <li>Telemetry Store (Azure Data Explorer): stores all raw telemetry data as a long-term historical record for analysis and audits<br>
 </li>
 <li>Current State Store (Azure SQL Database): stores the latest status and health indicators for each machine to support fast operational views</li>
 </ul>
+<div class="quarto-layout-panel" data-layout-ncol="4">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/Dataverse_scalable.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Dataverse"><img src="assets/Dataverse_scalable.svg" class="img-fluid figure-img" alt="Dataverse icon" width="90"></a></p>
+<figcaption>Dataverse</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/SQL-Database.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Azure SQL Database"><img src="assets/SQL-Database.svg" class="img-fluid figure-img" alt="Azure SQL Database icon" width="90"></a></p>
+<figcaption>Azure SQL Database</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/Azure-Data-Explorer.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Azure Data Explorer"><img src="assets/Azure-Data-Explorer.svg" class="img-fluid figure-img" alt="Azure Data Explorer icon" width="90"></a></p>
+<figcaption>Azure Data Explorer</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/Azure-Cosmos-DB.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Azure Cosmos DB"><img src="assets/Azure-Cosmos-DB.svg" class="img-fluid figure-img" alt="Azure Cosmos DB icon" width="90"></a></p>
+<figcaption>Azure Cosmos DB</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="integrations-access-and-notifications" class="level3" data-number="4.1.4">
 <h3 data-number="4.1.4" class="anchored" data-anchor-id="integrations-access-and-notifications"><span class="header-section-number">4.1.4</span> Integrations (Access and Notifications)</h3>
@@ -467,6 +578,42 @@ Figure&nbsp;1: System architecture and data flow
 </li>
 <li>Notification Channel (Power Automate with Teams or Email): sends alerts when maintenance requests are created or critical issues are detected</li>
 </ul>
+<div class="quarto-layout-panel" data-layout-ncol="4">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/Microsoft_Entra.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Microsoft Entra"><img src="assets/Microsoft_Entra.svg" class="img-fluid figure-img" alt="Microsoft Entra icon" width="90"></a></p>
+<figcaption>Microsoft Entra</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/PowerAutomate_scalable.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Power Automate"><img src="assets/PowerAutomate_scalable.svg" class="img-fluid figure-img" alt="Power Automate icon" width="90"></a></p>
+<figcaption>Power Automate</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/microsoft-teams-icon.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-15" title="Teams"><img src="assets/microsoft-teams-icon.svg" class="img-fluid figure-img" alt="Teams icon" width="90"></a></p>
+<figcaption>Teams</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="assets/microsoft-outlook-icon.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-16" title="Outlook"><img src="assets/microsoft-outlook-icon.svg" class="img-fluid figure-img" alt="Outlook icon" width="90"></a></p>
+<figcaption>Outlook</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="data-flow-and-communication" class="level2" data-number="4.2">
@@ -731,12 +878,12 @@ Table&nbsp;1: Field level details for the MVP schema
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For the MVP, machines are assumed to publish telemetry approximately every 30 seconds. A 15 minute rolling window is therefore used for health scoring, providing about 30 samples per metric. This window smooths short-lived sensor noise while remaining responsive to sustained changes in machine condition.</p>
+<p>The machines are assumed to publish telemetry approximately every 30 seconds. A 15 minute rolling window is therefore used for health scoring, providing about 30 samples per metric. This window smooths short-lived sensor noise while remaining responsive to sustained changes in machine condition.</p>
 </div>
 </div>
 <p>The scoring logic combines:</p>
 <ul>
-<li>The latest telemetry readings, aggregated as rolling averages over a short time window</li>
+<li>The latest telemetry readings, aggregated as rolling averages over a 15 minute window</li>
 <li>Current machine status (<code>Running</code>, <code>Idle</code>, <code>Fault</code>, <code>UnderMaintenance</code>)<br>
 </li>
 <li>Any active fault codes and their severity (<code>High</code>, <code>Medium</code>)<br>
@@ -1388,6 +1535,38 @@ Uptime, Infinite. 2022. <span>“Understanding Machine Health Score and Its Impo
   });
   </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
