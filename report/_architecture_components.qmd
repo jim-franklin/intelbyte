@@ -1,7 +1,19 @@
 ### Frontend (Operator and Supervisor Interfaces)
 
-- Operator and Supervisor Web App (Power Apps): provides a unified interface for operators, supervisors, and maintenance teams to view current equipment status, review machine details, log shift reports and inspections, submit maintenance requests, and review, prioritize, assign, and track maintenance work orders. 
+- Operator and Supervisor Web App (Power Apps, Copilot): provides a unified interface for operators, supervisors, and maintenance teams to view current equipment status, review machine details, log shift reports and inspections, submit maintenance requests, and review, prioritize, assign, and track maintenance work orders. 
 - Analytics Dashboards (Power BI): visual dashboards showing equipment health, status, and maintenance activity by plant, production line, and machine  
+
+::: {layout-ncol=4}
+
+![Power Apps](assets/PowerApps_scalable.svg){fig-alt="Power Apps icon" width=90}
+
+![Power BI](assets/PowerBI_scalable.svg){fig-alt="Power BI icon" width=90}
+
+![Copilot](assets/CopilotStudio_scalable.svg){fig-alt="Copilot icon" width=90}
+
+![AI Builder](assets/AIBuilder_scalable.svg){fig-alt="AIBuilder icon" width=90}
+
+:::
 
 ### Backend Services and APIs (Application and Processing Layer)
 
@@ -12,13 +24,49 @@
 - Rule Engine (Azure Functions): evaluates business rules against machine state and history to decide when maintenance actions are required, creating work orders and triggering notifications.  
 - Health Scoring Service (Azure Functions): calculates a simple health score for each machine using recent telemetry and fault history  
 
+::: {layout-ncol=4}
+
+![Azure Functions](assets/Azure_Functions.svg){fig-alt="Azure Functions icon" width=90}
+
+![Azure IoT Hub](assets/IoT-Hub.svg){fig-alt="Azure IoT Hub icon" width=90}
+
+![Azure Stream Analytics](assets/Stream-Analytics.svg){fig-alt="Azure Stream Analytics icon" width=90}
+
+![Azure App-Services](assets/App-Services.svg){fig-alt="Azure App-Services icon" width=90}
+
+:::
+
 ### Data Layer (Data Storage and Access)
 
-- Operational Store (Azure SQL Database): stores structured business data including assets, users, operator reports, and maintenance records  
+- Operational Store (Dataverse or Azure SQL Database): stores structured business data including assets, users, operator reports, and maintenance records  
 - Telemetry Store (Azure Data Explorer): stores all raw telemetry data as a long-term historical record for analysis and audits  
 - Current State Store (Azure SQL Database): stores the latest status and health indicators for each machine to support fast operational views  
+
+::: {layout-ncol=4}
+
+![Dataverse](assets/Dataverse_scalable.svg){fig-alt="Dataverse icon" width=90}
+
+![Azure SQL Database](assets/SQL-Database.svg){fig-alt="Azure SQL Database icon" width=90}
+
+![Azure Data Explorer](assets/Azure-Data-Explorer.svg){fig-alt="Azure Data Explorer icon" width=90}
+
+![Azure Cosmos DB](assets/Azure-Cosmos-DB.svg){fig-alt="Azure Cosmos DB icon" width=90}
+
+:::
 
 ### Integrations (Access and Notifications)
 
 - Identity Provider (Microsoft Entra ID): manages user login, roles, and access permissions  
-- Notification Channel (Power Automate with Teams or Email): sends alerts when maintenance requests are created or critical issues are detected  
+- Notification Channel (Power Automate with Teams or Email): sends alerts when maintenance requests are created or critical issues are detected
+
+::: {layout-ncol=4}
+
+![Microsoft Entra](assets/Microsoft_Entra.svg){fig-alt="Microsoft Entra icon" width=90}
+
+![Power Automate](assets/PowerAutomate_scalable.svg){fig-alt="Power Automate icon" width=90}
+
+![Teams](assets/microsoft-teams-icon.svg){fig-alt="Teams icon" width=90}
+
+![Outlook](assets/microsoft-outlook-icon.svg){fig-alt="Outlook icon" width=90}
+
+:::

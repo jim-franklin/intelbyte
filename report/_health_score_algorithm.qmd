@@ -35,12 +35,12 @@ At each update, the score is computed using recent machine behavior, not the ful
 ::: {.callout-note appearance="simple"}
 ### Telemetry Frequency and Rolling Window
 
-For the MVP, machines are assumed to publish telemetry approximately every 30 seconds. A 15 minute rolling window is therefore used for health scoring, providing about 30 samples per metric. This window smooths short-lived sensor noise while remaining responsive to sustained changes in machine condition.
+The machines are assumed to publish telemetry approximately every 30 seconds. A 15 minute rolling window is therefore used for health scoring, providing about 30 samples per metric. This window smooths short-lived sensor noise while remaining responsive to sustained changes in machine condition.
 :::
 
 The scoring logic combines:
 
-- The latest telemetry readings, aggregated as rolling averages over a short time window
+- The latest telemetry readings, aggregated as rolling averages over a 15 minute window
 - Current machine status (`Running`, `Idle`, `Fault`, `UnderMaintenance`)  
 - Any active fault codes and their severity (`High`, `Medium`)  
 - Operator flags from inspections (`IssueObserved`, `MinorConcern`)  
