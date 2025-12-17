@@ -99,17 +99,17 @@ bibliography: references.bib
 
 {{< include report/_data_model_overview.qmd >}}
 
-## Entity Relationship Model
+## Entity Relationship Diagram
 
-{{< include report/_entity_relationship_model.qmd >}}
+{{< include report/_entity_relationship_diagram.qmd >}}
 
-## Core Entities and Responsibilities
+## Entities and their Functions
 
 {{< include report/_core_entities_responsibilities.qmd >}}
 
 ## Field Level Details
 
-{{< include report/_filed_level_details.qmd >}}
+{{< include report/_field_level_details.qmd >}}
 
 ## Telemetry and Current State Strategy
 
@@ -126,7 +126,7 @@ bibliography: references.bib
 
 ## Latest Machine Status Resolution
 
-{{< include report/_latest_status_algorithm.qmd >}}
+{{< include report/_latest_status_resolution.qmd >}}
 ```{=typst}
 #pagebreak()
 ```
