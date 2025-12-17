@@ -383,7 +383,8 @@ grid-auto-rows: minmax(0, 1fr);">
 grid-auto-rows: minmax(0, 1fr);">
 <div class="card html-fill-item html-fill-container bslib-card" data-fill="false" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
 <div class="card-body html-fill-item html-fill-container">
-<p>In addition to core functional capabilities, the platform is designed to operate reliably at scale. It supports thousands of machines and high frequency telemetry, provides near real-time operational views, preserves historical data for audits, enforces role-based access, and allows system components to evolve independently as operational needs grow.</p>
+<p>Beyond core functionality, the platform is designed to operate reliably in a production environment where data volume and operational complexity increase over time. It is expected to scale to thousands of machines generating high-frequency telemetry without requiring major redesign or manual intervention.</p>
+<p>Operational views used by supervisors and maintenance teams must remain highly available and reflect the latest known state of each machine in near real-time. To support audits, investigations, and long-term analysis, all telemetry and operational events are preserved as immutable historical records. The platform enforces role based access control to ensure users can only view or perform actions appropriate to their role, protecting sensitive operational data and workflows. System components are loosely coupled so ingestion, processing, analytics, and user facing features can be updated or extended independently, supporting continuous improvement without disrupting ongoing operations.</p>
 </div>
 <bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
     <template>Expand</template>
@@ -410,10 +411,11 @@ grid-auto-rows: minmax(0, 1fr);">
 <div class="card cell html-fill-item html-fill-container bslib-card" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
 <div class="card-body html-fill-item html-fill-container">
 <div class="cell-output-display html-fill-item html-fill-container">
+<div id="fig-architecture" class="quarto-float quarto-figure quarto-figure-center html-fill-item html-fill-container">
+<figure class="quarto-float quarto-float-fig figure html-fill-item html-fill-container">
+<div aria-describedby="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="html-fill-item html-fill-container">
 <div class="html-fill-item html-fill-container">
-<figure class="figure">
-<div class="html-fill-item html-fill-container">
-<pre class="mermaid mermaid-js">flowchart TB
+<pre class="mermaid mermaid-js" data-label="fig-architecture">flowchart TB
   A[Machines or Plant Gateways] --&gt;|Telemetry Events| B[Telemetry Ingestion API]
   B --&gt; C[(Telemetry Store&lt;br/&gt;Append-only events)]
   B --&gt;|Event stream| D[Stream Processor]
@@ -440,7 +442,11 @@ grid-auto-rows: minmax(0, 1fr);">
   G --&gt; N
 </pre>
 </div>
-<p></p><figcaption> System architecture and data flow</figcaption> </figure><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: System architecture and data flow
+</figcaption>
+</figure>
 </div>
 </div>
 </div>
@@ -475,9 +481,8 @@ grid-auto-rows: minmax(0, 1fr);">
 </li>
 <li>Event Stream (Azure Event Hubs): temporarily buffers incoming telemetry to allow the system to scale and continue receiving data even during peak loads<br>
 </li>
-<li>Stream Processor (Azure Stream Analytics): processes telemetry as it arrives and updates the latest known state of each machine<br>
-</li>
-<li>Rule Engine (Azure Functions): applies predefined rules and thresholds to detect issues and automatically create maintenance requests<br>
+<li>Stream Processor (Azure Stream Analytics): continuously processes incoming telemetry, determines the current condition of each machine using predefined rules, and keeps the operational view up to date.</li>
+<li>Rule Engine (Azure Functions): evaluates business rules against machine state and history to decide when maintenance actions are required, creating work orders and triggering notifications.<br>
 </li>
 <li>Health Scoring Service (Azure Functions): calculates a simple health score for each machine using recent telemetry and fault history</li>
 </ul>
@@ -628,11 +633,11 @@ grid-auto-rows: minmax(0, 1fr);">
     </span>
 </bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div>
 </div>
-<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-columns: minmax(3em, 1fr) minmax(3em, 1fr) minmax(3em, 1fr);
+<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-columns: minmax(3em, 1fr) minmax(3em, 1fr);
 grid-auto-rows: minmax(0, 1fr);">
 <div class="card html-fill-item html-fill-container bslib-card" data-fill="false" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
 <div class="card-body html-fill-item html-fill-container">
-<p>The Entity Relationship Diagram below shows the core entities and how they connect. It is intentionally kept high level so it remains readable for both technical and non-technical readers. See <a href="#tbl-field-level-details" class="quarto-xref">Table&nbsp;1</a> for field level details.</p>
+<p>The Entity Relationship Diagram below shows the core entities such as assets, telemetry, human inputs, and maintenance workflows are connected while keeping responsibilities clearly separated. See <a href="#tbl-field-level-details" class="quarto-xref">Table&nbsp;1</a> for field level details.</p>
 </div>
 <bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
     <template>Expand</template>
@@ -642,10 +647,11 @@ grid-auto-rows: minmax(0, 1fr);">
 </bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div><div class="card cell html-fill-item html-fill-container bslib-card" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
 <div class="card-body html-fill-item html-fill-container">
 <div class="cell-output-display html-fill-item html-fill-container">
+<div id="fig-ERD" class="quarto-float quarto-figure quarto-figure-center html-fill-item html-fill-container">
+<figure class="quarto-float quarto-float-fig figure html-fill-item html-fill-container">
+<div aria-describedby="fig-ERD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="html-fill-item html-fill-container">
 <div class="html-fill-item html-fill-container">
-<figure class="figure">
-<div class="html-fill-item html-fill-container">
-<pre class="mermaid mermaid-js">erDiagram
+<pre class="mermaid mermaid-js" data-label="fig-ERD">erDiagram
   Plant ||--o{ ProductionLine : contains
   ProductionLine ||--o{ Machine : contains
   MachineType ||--o{ Machine : classifies
@@ -667,18 +673,13 @@ grid-auto-rows: minmax(0, 1fr);">
   OperatorReport }o--|| CurrentMachineState : last_operator_report
 </pre>
 </div>
-<p></p><figcaption> High level ERD for assets, telemetry, operator inputs, and maintenance</figcaption> </figure><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ERD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: High level ERD for assets, telemetry, operator inputs, and maintenance
+</figcaption>
+</figure>
 </div>
 </div>
-</div>
-<bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
-    <template>Expand</template>
-    <span class="bslib-full-screen-enter badge rounded-pill">
-        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" style="height:1em;width:1em;" aria-hidden="true" role="img"><path d="M20 5C20 4.4 19.6 4 19 4H13C12.4 4 12 3.6 12 3C12 2.4 12.4 2 13 2H21C21.6 2 22 2.4 22 3V11C22 11.6 21.6 12 21 12C20.4 12 20 11.6 20 11V5ZM4 19C4 19.6 4.4 20 5 20H11C11.6 20 12 20.4 12 21C12 21.6 11.6 22 11 22H3C2.4 22 2 21.6 2 21V13C2 12.4 2.4 12 3 12C3.6 12 4 12.4 4 13V19Z"></path></svg>
-    </span>
-</bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div><div class="card html-fill-item html-fill-container bslib-card" data-fill="false" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
-<div class="card-body html-fill-item html-fill-container">
-<p>This model shows how physical assets, telemetry, human inputs, and maintenance workflows are connected while keeping responsibilities clearly separated.</p>
 </div>
 <bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
     <template>Expand</template>
@@ -833,13 +834,20 @@ grid-auto-rows: minmax(0, 1fr);">
 </div>
 </div>
 <div id="core-algorithms" class="dashboard-page tab-pane grid-skip html-fill-item html-fill-container" data-orientation="rows" aria-labelledby="tab-core-algorithms">
-<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, 1fr) minmax(3em, max-content); grid-auto-columns: minmax(0, 1fr);">
-<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-columns: minmax(3em, 1fr) minmax(3em, 1fr) minmax(3em, 1fr) minmax(3em, 1fr) minmax(3em, 1fr);
+<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, 1fr) minmax(3em, 1fr); grid-auto-columns: minmax(0, 1fr);">
+<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-columns: minmax(3em, 1fr) minmax(3em, 1fr) minmax(3em, 1fr) minmax(3em, 1fr);
 grid-auto-rows: minmax(0, 1fr);">
 <div class="card html-fill-item html-fill-container bslib-card" data-fill="false" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
 <div class="card-body html-fill-item html-fill-container">
 <p>The Machine Health Scoring algorithm converts raw machine signals into a single, easy-to-understand indicator that reflects how healthy a machine is at any moment. The goal is not to predict failure perfectly in the MVP, but to provide a <strong>clear, consistent signal</strong> that helps supervisors and maintenance teams prioritize attention.</p>
-<p>Industry platforms often normalize machine health to a 0–100 scale to simplify interpretation for operations and maintenance teams <span class="citation" data-cites="infiniteUptimeHealthScore">Uptime (<a href="#ref-infiniteUptimeHealthScore" role="doc-biblioref">2022</a>)</span>. This score is recalculated as new telemetry arrives and stored in the <code>CurrentMachineState</code> so dashboards can always show the latest value without scanning historical data.</p>
+<p>Industry platforms often normalize machine health to a <strong>0–100</strong> scale to simplify interpretation for operations and maintenance teams <span class="citation" data-cites="infiniteUptimeHealthScore">Uptime (<a href="#ref-infiniteUptimeHealthScore" role="doc-biblioref">2022</a>)</span>. The score combines <strong>three ideas</strong> that are common in industrial monitoring systems:</p>
+<ul>
+<li><strong>Normal operation</strong> keeps the score high<br>
+</li>
+<li><strong>Abnormal sensor readings</strong> reduce the score gradually<br>
+</li>
+<li><strong>Faults and maintenance states</strong> reduce the score immediately and visibly</li>
+</ul>
 </div>
 <bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
     <template>Expand</template>
@@ -849,15 +857,8 @@ grid-auto-rows: minmax(0, 1fr);">
 </bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div><div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, max-content); grid-auto-columns: minmax(0, 1fr);">
 <div class="card html-fill-item html-fill-container bslib-card" data-fill="false" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
 <div class="card-body html-fill-item html-fill-container">
-<p>The score combines three ideas that are common in industrial monitoring systems:</p>
-<ul>
-<li><strong>Normal operation</strong> keeps the score high<br>
-</li>
-<li><strong>Abnormal sensor readings</strong> reduce the score gradually<br>
-</li>
-<li><strong>Faults and maintenance states</strong> reduce the score immediately and visibly</li>
-</ul>
-<p>This balance ensures the score is both <strong>stable enough for dashboards</strong> and <strong>responsive enough to real issues</strong>.</p>
+<p>The health score is recalculated each time new telemetry is processed for a machine, which in typical industrial environments means every few seconds to every minute, depending on sensor. High frequency signals such as temperature or vibration may arrive every 5–30 seconds, while lower frequency metrics such as throughput or energy usage may arrive every 1–5 minutes.</p>
+<p>Rather than recomputing the score from all historical data, the system updates the score incrementally using the previous value. This keeps the score near real-time, computationally efficient, and stable for dashboards, while still reacting quickly when sustained issues or faults appear.</p>
 </div>
 <bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
     <template>Expand</template>
@@ -868,49 +869,63 @@ grid-auto-rows: minmax(0, 1fr);">
 </div><div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, max-content); grid-auto-columns: minmax(0, 1fr);">
 <div class="card html-fill-item html-fill-container bslib-card" data-fill="false" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
 <div class="card-body html-fill-item html-fill-container">
-<p>For each machine, the scoring logic uses:</p>
+<p>The computed score is written to <code>CurrentMachineState.healthScore</code> for each machine:</p>
 <ul>
-<li>Recent telemetry readings over a short-time window (last 15 to 30 minutes)</li>
-<li>Current machine status (<code>Running</code>, <code>Idle</code>, <code>Fault</code>, <code>UnderMaintenance</code>)</li>
-<li>Any active fault codes and their severity (<code>High</code>, <code>Medium</code>)</li>
+<li>Table: <code>CurrentMachineState</code><br>
+</li>
+<li>Primary key: <code>machineId</code><br>
+</li>
+<li>Foreign keys:
+<ul>
+<li><code>machineId -&gt; Machine.machineId</code><br>
+</li>
+<li><code>lastTelemetryEventId -&gt; TelemetryEvent.telemetryEventId</code><br>
+</li>
+<li><code>lastOperatorReportId -&gt; OperatorReport.operatorReportId</code><br>
+</li>
+</ul></li>
+<li>Key fields updated by this algorithm:
+<ul>
+<li><code>healthScore</code><br>
+</li>
+<li><code>lastUpdateAt</code></li>
+</ul></li>
+</ul>
+<p>This aligns with <a href="#tbl-field-level-details" class="quarto-xref">Table&nbsp;1</a>.</p>
+</div>
+<bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
+    <template>Expand</template>
+    <span class="bslib-full-screen-enter badge rounded-pill">
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" style="height:1em;width:1em;" aria-hidden="true" role="img"><path d="M20 5C20 4.4 19.6 4 19 4H13C12.4 4 12 3.6 12 3C12 2.4 12.4 2 13 2H21C21.6 2 22 2.4 22 3V11C22 11.6 21.6 12 21 12C20.4 12 20 11.6 20 11V5ZM4 19C4 19.6 4.4 20 5 20H11C11.6 20 12 20.4 12 21C12 21.6 11.6 22 11 22H3C2.4 22 2 21.6 2 21V13C2 12.4 2.4 12 3 12C3.6 12 4 12.4 4 13V19Z"></path></svg>
+    </span>
+</bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div>
+</div><div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, max-content); grid-auto-columns: minmax(0, 1fr);">
+<div class="card html-fill-item html-fill-container bslib-card" data-fill="false" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
+<div class="card-body html-fill-item html-fill-container">
+<p>At each update, the score is computed using recent machine behavior, not the full telemetry history.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center html-fill-item html-fill-container">
+<div class="callout-icon-container html-fill-item html-fill-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill html-fill-item html-fill-container">
+<span class="screen-reader-only">Note</span>Telemetry Frequency and Rolling Window
+</div>
+</div>
+<div class="callout-body-container callout-body html-fill-item html-fill-container">
+<p>For the MVP, machines are assumed to publish telemetry approximately every 30 seconds. A 15 minute rolling window is therefore used for health scoring, providing about 30 samples per metric. This window smooths short-lived sensor noise while remaining responsive to sustained changes in machine condition.</p>
+</div>
+</div>
+<p>The scoring logic combines:</p>
+<ul>
+<li>The latest telemetry readings, aggregated as rolling averages over a short time window</li>
+<li>Current machine status (<code>Running</code>, <code>Idle</code>, <code>Fault</code>, <code>UnderMaintenance</code>)<br>
+</li>
+<li>Any active fault codes and their severity (<code>High</code>, <code>Medium</code>)<br>
+</li>
 <li>Operator flags from inspections (<code>IssueObserved</code>, <code>MinorConcern</code>)</li>
 </ul>
-</div>
-<bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
-    <template>Expand</template>
-    <span class="bslib-full-screen-enter badge rounded-pill">
-        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" style="height:1em;width:1em;" aria-hidden="true" role="img"><path d="M20 5C20 4.4 19.6 4 19 4H13C12.4 4 12 3.6 12 3C12 2.4 12.4 2 13 2H21C21.6 2 22 2.4 22 3V11C22 11.6 21.6 12 21 12C20.4 12 20 11.6 20 11V5ZM4 19C4 19.6 4.4 20 5 20H11C11.6 20 12 20.4 12 21C12 21.6 11.6 22 11 22H3C2.4 22 2 21.6 2 21V13C2 12.4 2.4 12 3 12C3.6 12 4 12.4 4 13V19Z"></path></svg>
-    </span>
-</bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div>
-</div><div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, max-content); grid-auto-columns: minmax(0, 1fr);">
-<div class="card html-fill-item html-fill-container bslib-card" data-fill="false" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
-<div class="card-body html-fill-item html-fill-container">
-<ol type="1">
-<li><p><strong>Start from a healthy baseline</strong><br>
-Each machine begins with a score of 100.</p></li>
-<li><p><strong>Apply sensor based penalties</strong><br>
-Telemetry values such as temperature, vibration, or throughput are compared against acceptable ranges.<br>
-The further a value drifts from normal, the larger the penalty applied.</p></li>
-<li><strong>Apply fault and status penalties</strong>
-<ul>
-<li>Active faults apply a strong penalty based on severity<br>
-</li>
-<li>Machines under maintenance are capped at a lower score to reflect reduced availability</li>
-</ul></li>
-<li><p><strong>Smooth the result</strong><br>
-To avoid rapid fluctuations caused by noisy sensor readings, the health score is lightly smoothed using its previous value. This prevents short lived spikes from immediately changing the displayed machine condition and keeps dashboards stable while still reflecting real trends.</p>
-<p>In practice, this is commonly done using an <strong>Exponentially Weighted Moving Average (EWMA)</strong>, a standard technique in industrial monitoring that balances responsiveness and noise reduction in streaming data <span class="citation" data-cites="montgomery2020introduction">(<a href="#ref-montgomery2020introduction" role="doc-biblioref">Montgomery 2020</a>)</span>.</p></li>
-</ol>
-</div>
-<bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
-    <template>Expand</template>
-    <span class="bslib-full-screen-enter badge rounded-pill">
-        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" style="height:1em;width:1em;" aria-hidden="true" role="img"><path d="M20 5C20 4.4 19.6 4 19 4H13C12.4 4 12 3.6 12 3C12 2.4 12.4 2 13 2H21C21.6 2 22 2.4 22 3V11C22 11.6 21.6 12 21 12C20.4 12 20 11.6 20 11V5ZM4 19C4 19.6 4.4 20 5 20H11C11.6 20 12 20.4 12 21C12 21.6 11.6 22 11 22H3C2.4 22 2 21.6 2 21V13C2 12.4 2.4 12 3 12C3.6 12 4 12.4 4 13V19Z"></path></svg>
-    </span>
-</bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div>
-</div><div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, max-content); grid-auto-columns: minmax(0, 1fr);">
-<div class="card html-fill-item html-fill-container bslib-card" data-fill="false" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
-<div class="card-body html-fill-item html-fill-container">
+<p>The annotated pseudocode below shows exactly how each signal contributes to the final score and how the result is stabilized for operational dashboards.</p>
 <div class="code-copy-outer-scaffold html-fill-item html-fill-container"><div class="sourceCode html-fill-item html-fill-container" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_health_score(previous_score):</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a>    healthScore <span class="op">=</span> <span class="dv">100</span></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-1-3" class="code-annotation-target"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a>    smoothing_param <span class="op">=</span> <span class="fl">0.2</span></span>
@@ -989,9 +1004,144 @@ To avoid rapid fluctuations caused by noisy sensor readings, the health score is
 </bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div>
 </div>
 </div>
-<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-columns: ;
+<div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-columns: minmax(3em, 1fr) minmax(3em, 1fr) minmax(3em, 1fr);
 grid-auto-rows: minmax(0, 1fr);">
-
+<div class="card html-fill-item html-fill-container bslib-card" data-fill="false" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
+<div class="card-body html-fill-item html-fill-container">
+<p>The platform resolves <code>CurrentMachineState.resolvedStatus</code> using three signal sources, with clear precedence so the output stays explainable.</p>
+<strong>Precedence (highest wins):</strong>
+<ol type="1">
+<li><strong>UnderMaintenance</strong> when there is an open work order</li>
+<li><strong>Manual override</strong> when an operator has set a status override that is still active</li>
+<li><strong>Telemetry derived</strong> status from the latest telemetry event</li>
+</ol>
+<p>This ensures an operator’s safety decision can override sensors, while still allowing the system to return to automatic status when the override expires.</p>
+</div>
+<bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
+    <template>Expand</template>
+    <span class="bslib-full-screen-enter badge rounded-pill">
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" style="height:1em;width:1em;" aria-hidden="true" role="img"><path d="M20 5C20 4.4 19.6 4 19 4H13C12.4 4 12 3.6 12 3C12 2.4 12.4 2 13 2H21C21.6 2 22 2.4 22 3V11C22 11.6 21.6 12 21 12C20.4 12 20 11.6 20 11V5ZM4 19C4 19.6 4.4 20 5 20H11C11.6 20 12 20.4 12 21C12 21.6 11.6 22 11 22H3C2.4 22 2 21.6 2 21V13C2 12.4 2.4 12 3 12C3.6 12 4 12.4 4 13V19Z"></path></svg>
+    </span>
+</bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div><div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, max-content); grid-auto-columns: minmax(0, 1fr);">
+<div class="card html-fill-item html-fill-container bslib-card" data-fill="false" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
+<div class="card-body html-fill-item html-fill-container">
+<ol type="1">
+<li>The stream processor continuously determines the latest <strong>telemetry status</strong> per machine (e.g., <code>Fault</code> if a fault code is present, else <code>Running</code> or <code>Idle</code> from the device status field).</li>
+<li>The operational workflow updates <code>openWorkOrderCount</code> when work orders open or close.</li>
+<li>The latest operator report with <code>statusOverride</code> (if any) is treated as a <strong>manual override</strong> for a short time window (for example 2 to 8 hours), after which the system falls back to telemetry.</li>
+</ol>
+</div>
+<bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
+    <template>Expand</template>
+    <span class="bslib-full-screen-enter badge rounded-pill">
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" style="height:1em;width:1em;" aria-hidden="true" role="img"><path d="M20 5C20 4.4 19.6 4 19 4H13C12.4 4 12 3.6 12 3C12 2.4 12.4 2 13 2H21C21.6 2 22 2.4 22 3V11C22 11.6 21.6 12 21 12C20.4 12 20 11.6 20 11V5ZM4 19C4 19.6 4.4 20 5 20H11C11.6 20 12 20.4 12 21C12 21.6 11.6 22 11 22H3C2.4 22 2 21.6 2 21V13C2 12.4 2.4 12 3 12C3.6 12 4 12.4 4 13V19Z"></path></svg>
+    </span>
+</bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div>
+</div><div class="html-fill-item html-fill-container bslib-grid" style="display: grid; grid-template-rows: minmax(3em, max-content); grid-auto-columns: minmax(0, 1fr);">
+<div class="card html-fill-item html-fill-container bslib-card" data-fill="false" data-bslib-card-init="" data-require-bs-caller="card()" data-full-screen="false">
+<div class="card-body html-fill-item html-fill-container">
+<div class="code-copy-outer-scaffold html-fill-item html-fill-container"><div class="sourceCode html-fill-item html-fill-container" id="annotated-cell-2"><pre class="sourceCode sql code-annotation-code code-with-copy code-annotated"><code class="sourceCode sql"><a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span> LatestTelemetry <span class="kw">AS</span> (</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span></span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>    t.machineId,</span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>    t.telemetryEventId,</span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>    t.eventTimestamp,</span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-hidden="true" tabindex="-1"></a>    t.statusRaw,</span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-hidden="true" tabindex="-1"></a>    t.faultCodeId,</span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ROW_NUMBER</span>() <span class="kw">OVER</span> (</span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-hidden="true" tabindex="-1"></a>      <span class="kw">PARTITION</span> <span class="kw">BY</span> t.machineId</span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-hidden="true" tabindex="-1"></a>      <span class="kw">ORDER</span> <span class="kw">BY</span> t.eventTimestamp <span class="kw">DESC</span></span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="kw">AS</span> rn</span>
+<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> TelemetryEvent t</span>
+<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13" aria-hidden="true" tabindex="-1"></a>),</span>
+<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-15" class="code-annotation-target"><a href="#annotated-cell-2-15" aria-hidden="true" tabindex="-1"></a>LatestOperatorOverride <span class="kw">AS</span> (</span>
+<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span></span>
+<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17" aria-hidden="true" tabindex="-1"></a>    r.machineId,</span>
+<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18" aria-hidden="true" tabindex="-1"></a>    r.operatorReportId,</span>
+<span id="annotated-cell-2-19"><a href="#annotated-cell-2-19" aria-hidden="true" tabindex="-1"></a>    r.reportTimestamp,</span>
+<span id="annotated-cell-2-20"><a href="#annotated-cell-2-20" aria-hidden="true" tabindex="-1"></a>    r.statusOverride,</span>
+<span id="annotated-cell-2-21"><a href="#annotated-cell-2-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ROW_NUMBER</span>() <span class="kw">OVER</span> (</span>
+<span id="annotated-cell-2-22"><a href="#annotated-cell-2-22" aria-hidden="true" tabindex="-1"></a>      <span class="kw">PARTITION</span> <span class="kw">BY</span> r.machineId</span>
+<span id="annotated-cell-2-23"><a href="#annotated-cell-2-23" aria-hidden="true" tabindex="-1"></a>      <span class="kw">ORDER</span> <span class="kw">BY</span> r.reportTimestamp <span class="kw">DESC</span></span>
+<span id="annotated-cell-2-24"><a href="#annotated-cell-2-24" aria-hidden="true" tabindex="-1"></a>    ) <span class="kw">AS</span> rn</span>
+<span id="annotated-cell-2-25"><a href="#annotated-cell-2-25" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> OperatorReport r</span>
+<span id="annotated-cell-2-26"><a href="#annotated-cell-2-26" aria-hidden="true" tabindex="-1"></a>  <span class="kw">WHERE</span> r.statusOverride <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="annotated-cell-2-27"><a href="#annotated-cell-2-27" aria-hidden="true" tabindex="-1"></a>),</span>
+<span id="annotated-cell-2-28"><a href="#annotated-cell-2-28" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-29" class="code-annotation-target"><a href="#annotated-cell-2-29" aria-hidden="true" tabindex="-1"></a>OpenWorkOrders <span class="kw">AS</span> (</span>
+<span id="annotated-cell-2-30"><a href="#annotated-cell-2-30" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span></span>
+<span id="annotated-cell-2-31"><a href="#annotated-cell-2-31" aria-hidden="true" tabindex="-1"></a>    w.machineId,</span>
+<span id="annotated-cell-2-32"><a href="#annotated-cell-2-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> openWorkOrderCount</span>
+<span id="annotated-cell-2-33"><a href="#annotated-cell-2-33" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> WorkOrder w</span>
+<span id="annotated-cell-2-34"><a href="#annotated-cell-2-34" aria-hidden="true" tabindex="-1"></a>  <span class="kw">WHERE</span> w.status <span class="kw">IN</span> (<span class="st">'Open'</span>, <span class="st">'InProgress'</span>)</span>
+<span id="annotated-cell-2-35"><a href="#annotated-cell-2-35" aria-hidden="true" tabindex="-1"></a>  <span class="kw">GROUP</span> <span class="kw">BY</span> w.machineId</span>
+<span id="annotated-cell-2-36"><a href="#annotated-cell-2-36" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="annotated-cell-2-37"><a href="#annotated-cell-2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-2-38"><a href="#annotated-cell-2-38" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span></span>
+<span id="annotated-cell-2-39"><a href="#annotated-cell-2-39" aria-hidden="true" tabindex="-1"></a>  m.machineId,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-2-40" class="code-annotation-target"><a href="#annotated-cell-2-40" aria-hidden="true" tabindex="-1"></a>  <span class="cf">CASE</span></span>
+<span id="annotated-cell-2-41"><a href="#annotated-cell-2-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">COALESCE</span>(owo.openWorkOrderCount, <span class="dv">0</span>) <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">THEN</span> <span class="st">'UnderMaintenance'</span></span>
+<span id="annotated-cell-2-42"><a href="#annotated-cell-2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-2-43"><a href="#annotated-cell-2-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> loo.statusOverride <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="annotated-cell-2-44"><a href="#annotated-cell-2-44" aria-hidden="true" tabindex="-1"></a>     <span class="kw">AND</span> loo.reportTimestamp <span class="op">&gt;=</span> <span class="fu">CURRENT_TIMESTAMP</span> <span class="op">-</span> <span class="dt">INTERVAL</span> <span class="st">'4 hours'</span> <span class="cf">THEN</span> loo.statusOverride</span>
+<span id="annotated-cell-2-45"><a href="#annotated-cell-2-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-2-46"><a href="#annotated-cell-2-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> lt.faultCodeId <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="st">'Fault'</span></span>
+<span id="annotated-cell-2-47"><a href="#annotated-cell-2-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">ELSE</span> <span class="fu">COALESCE</span>(lt.statusRaw, <span class="st">'Idle'</span>)</span>
+<span id="annotated-cell-2-48"><a href="#annotated-cell-2-48" aria-hidden="true" tabindex="-1"></a>  <span class="cf">END</span> <span class="kw">AS</span> resolvedStatus,</span>
+<span id="annotated-cell-2-49"><a href="#annotated-cell-2-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-2-50"><a href="#annotated-cell-2-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">COALESCE</span>(owo.openWorkOrderCount, <span class="dv">0</span>) <span class="kw">AS</span> openWorkOrderCount,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-2-51" class="code-annotation-target"><a href="#annotated-cell-2-51" aria-hidden="true" tabindex="-1"></a>  lt.telemetryEventId <span class="kw">AS</span> lastTelemetryEventId,</span>
+<span id="annotated-cell-2-52"><a href="#annotated-cell-2-52" aria-hidden="true" tabindex="-1"></a>  loo.operatorReportId <span class="kw">AS</span> lastOperatorReportId,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="6" onclick="event.preventDefault();">6</a><span id="annotated-cell-2-53" class="code-annotation-target"><a href="#annotated-cell-2-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">GREATEST</span>(</span>
+<span id="annotated-cell-2-54"><a href="#annotated-cell-2-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COALESCE</span>(lt.eventTimestamp, <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>),</span>
+<span id="annotated-cell-2-55"><a href="#annotated-cell-2-55" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COALESCE</span>(loo.reportTimestamp, <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>)</span>
+<span id="annotated-cell-2-56"><a href="#annotated-cell-2-56" aria-hidden="true" tabindex="-1"></a>  ) <span class="kw">AS</span> lastUpdateAt</span>
+<span id="annotated-cell-2-57"><a href="#annotated-cell-2-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-2-58"><a href="#annotated-cell-2-58" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> Machine m</span>
+<span id="annotated-cell-2-59"><a href="#annotated-cell-2-59" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> LatestTelemetry lt</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="7" onclick="event.preventDefault();">7</a><span id="annotated-cell-2-60" class="code-annotation-target"><a href="#annotated-cell-2-60" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ON</span> m.machineId <span class="op">=</span> lt.machineId <span class="kw">AND</span> lt.rn <span class="op">=</span> <span class="dv">1</span></span>
+<span id="annotated-cell-2-61"><a href="#annotated-cell-2-61" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> LatestOperatorOverride loo</span>
+<span id="annotated-cell-2-62"><a href="#annotated-cell-2-62" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ON</span> m.machineId <span class="op">=</span> loo.machineId <span class="kw">AND</span> loo.rn <span class="op">=</span> <span class="dv">1</span></span>
+<span id="annotated-cell-2-63"><a href="#annotated-cell-2-63" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> OpenWorkOrders owo</span>
+<span id="annotated-cell-2-64"><a href="#annotated-cell-2-64" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ON</span> m.machineId <span class="op">=</span> owo.machineId;</span><div class="code-annotation-gutter-bg html-fill-item html-fill-container"></div><div class="code-annotation-gutter html-fill-item html-fill-container"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="1" data-code-annotation="1">Pick the most recent telemetry event per machine.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="15" data-code-annotation="2">Pick the most recent operator report that contains a manual status override.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="29" data-code-annotation="3">Count open work orders per machine to detect maintenance state.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="40" data-code-annotation="4">Resolve status using precedence: maintenance → manual override (time boxed) → telemetry.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="51" data-code-annotation="5">Keep pointers to the exact records that drove the current view for auditability.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="6">6</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="53" data-code-annotation="6">lastUpdateAt reflects the most recent update source (telemetry vs operator override).</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="7">7</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="60" data-code-annotation="7">Only one telemetry row per machine is used (rn = 1) to avoid scanning history in dashboards.</span>
+</dd>
+</dl>
+</div>
+<bslib-tooltip placement="auto" bsoptions="[]" data-require-bs-version="5" data-require-bs-caller="tooltip()">
+    <template>Expand</template>
+    <span class="bslib-full-screen-enter badge rounded-pill">
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" style="height:1em;width:1em;" aria-hidden="true" role="img"><path d="M20 5C20 4.4 19.6 4 19 4H13C12.4 4 12 3.6 12 3C12 2.4 12.4 2 13 2H21C21.6 2 22 2.4 22 3V11C22 11.6 21.6 12 21 12C20.4 12 20 11.6 20 11V5ZM4 19C4 19.6 4.4 20 5 20H11C11.6 20 12 20.4 12 21C12 21.6 11.6 22 11 22H3C2.4 22 2 21.6 2 21V13C2 12.4 2.4 12 3 12C3.6 12 4 12.4 4 13V19Z"></path></svg>
+    </span>
+</bslib-tooltip><script data-bslib-card-init="">bslib.Card.initializeAllCards();</script></div>
+</div>
 </div>
 </div>
 </div>
@@ -1441,9 +1591,6 @@ grid-auto-rows: minmax(0, 1fr);">
   });
   </script>
 <div id="quarto-appendix" class="default bslib-grid-item html-fill-item"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
-<div id="ref-montgomery2020introduction" class="csl-entry" role="listitem">
-Montgomery, D. C. 2020. <em>Introduction to Statistical Quality Control</em>. John Wiley &amp; Sons, Incorporated. <a href="https://books.google.ca/books?id=X6JFxAEACAAJ">https://books.google.ca/books?id=X6JFxAEACAAJ</a>.
-</div>
 <div id="ref-infiniteUptimeHealthScore" class="csl-entry" role="listitem">
 Uptime, Infinite. 2022. <span>“Understanding Machine Health Score and Its Importance in Asset Reliability.”</span> 2022. <a href="https://medium.com/@infiniteuptime/understanding-machine-health-score-and-its-importance-in-asset-reliability-4912218ea2f7">https://medium.com/@infiniteuptime/understanding-machine-health-score-and-its-importance-in-asset-reliability-4912218ea2f7</a>.
 </div>
