@@ -35,4 +35,4 @@ This approach makes the design easy to review, share, and extend.
   https://jim-franklin.github.io/intelbyte/
 
 - **PDF Report**  
-  Available via the website at https://jim-franklin.github.io/intelbyte/
+  Available via the website at https://jim-franklin.github.io/intelbyte/report.pdf
