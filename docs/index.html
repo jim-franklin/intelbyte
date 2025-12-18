@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Franklin Aryee">
 
 <title>Designing a Scalable Factory Equipment Health and Maintenance Platform</title>
 <style>
@@ -189,6 +190,12 @@ div.csl-indent {
   
   <div class="quarto-title-meta column-page-right">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Franklin Aryee </p>
+            </div>
+    </div>
       
     
       
@@ -240,20 +247,23 @@ div.csl-indent {
   <li><a href="#entity-relationship-diagram" id="toc-entity-relationship-diagram" class="nav-link" data-scroll-target="#entity-relationship-diagram"><span class="header-section-number">5.2</span> Entity Relationship Diagram</a></li>
   <li><a href="#entities-and-their-functions" id="toc-entities-and-their-functions" class="nav-link" data-scroll-target="#entities-and-their-functions"><span class="header-section-number">5.3</span> Entities and their Functions</a></li>
   <li><a href="#field-level-details" id="toc-field-level-details" class="nav-link" data-scroll-target="#field-level-details"><span class="header-section-number">5.4</span> Field Level Details</a></li>
-  <li><a href="#telemetry-and-current-state-strategy" id="toc-telemetry-and-current-state-strategy" class="nav-link" data-scroll-target="#telemetry-and-current-state-strategy"><span class="header-section-number">5.5</span> Telemetry and Current State Strategy</a></li>
+  <li><a href="#telemetry-and-current-machine-state-strategy" id="toc-telemetry-and-current-machine-state-strategy" class="nav-link" data-scroll-target="#telemetry-and-current-machine-state-strategy"><span class="header-section-number">5.5</span> Telemetry and Current Machine State Strategy</a></li>
   </ul></li>
   <li><a href="#core-algorithms" id="toc-core-algorithms" class="nav-link" data-scroll-target="#core-algorithms"><span class="header-section-number">6</span> Core Algorithms</a>
   <ul class="collapse">
   <li><a href="#machine-health-scoring" id="toc-machine-health-scoring" class="nav-link" data-scroll-target="#machine-health-scoring"><span class="header-section-number">6.1</span> Machine Health Scoring</a>
   <ul class="collapse">
-  <li><a href="#how-often-the-score-is-recalculated" id="toc-how-often-the-score-is-recalculated" class="nav-link" data-scroll-target="#how-often-the-score-is-recalculated"><span class="header-section-number">6.1.1</span> How often the score is recalculated</a></li>
-  <li><a href="#where-the-score-is-stored" id="toc-where-the-score-is-stored" class="nav-link" data-scroll-target="#where-the-score-is-stored"><span class="header-section-number">6.1.2</span> Where the score is stored</a></li>
-  <li><a href="#scoring-logic-overview" id="toc-scoring-logic-overview" class="nav-link" data-scroll-target="#scoring-logic-overview"><span class="header-section-number">6.1.3</span> Scoring logic overview</a></li>
+  <li><a href="#how-often-the-score-is-recalculated" id="toc-how-often-the-score-is-recalculated" class="nav-link" data-scroll-target="#how-often-the-score-is-recalculated"><span class="header-section-number">6.1.1</span> How Often the Score is Recalculated</a></li>
+  <li><a href="#where-the-score-is-stored" id="toc-where-the-score-is-stored" class="nav-link" data-scroll-target="#where-the-score-is-stored"><span class="header-section-number">6.1.2</span> Where the Score is Stored</a></li>
+  <li><a href="#scoring-logic" id="toc-scoring-logic" class="nav-link" data-scroll-target="#scoring-logic"><span class="header-section-number">6.1.3</span> Scoring Logic</a></li>
+  <li><a href="#sec-health-score" id="toc-sec-health-score" class="nav-link" data-scroll-target="#sec-health-score"><span class="header-section-number">6.1.4</span> Pseudocode for Scoring</a></li>
   </ul></li>
   <li><a href="#latest-machine-status-resolution" id="toc-latest-machine-status-resolution" class="nav-link" data-scroll-target="#latest-machine-status-resolution"><span class="header-section-number">6.2</span> Latest Machine Status Resolution</a>
   <ul class="collapse">
-  <li><a href="#process" id="toc-process" class="nav-link" data-scroll-target="#process"><span class="header-section-number">6.2.1</span> Process</a></li>
-  <li><a href="#query" id="toc-query" class="nav-link" data-scroll-target="#query"><span class="header-section-number">6.2.2</span> Query</a></li>
+  <li><a href="#status-precedence" id="toc-status-precedence" class="nav-link" data-scroll-target="#status-precedence"><span class="header-section-number">6.2.1</span> Status Precedence</a></li>
+  <li><a href="#initialization-at-launch" id="toc-initialization-at-launch" class="nav-link" data-scroll-target="#initialization-at-launch"><span class="header-section-number">6.2.2</span> Initialization at Launch</a></li>
+  <li><a href="#event-driven-updates" id="toc-event-driven-updates" class="nav-link" data-scroll-target="#event-driven-updates"><span class="header-section-number">6.2.3</span> Event Driven Updates</a></li>
+  <li><a href="#how-health-score-fits-into-the-current-view" id="toc-how-health-score-fits-into-the-current-view" class="nav-link" data-scroll-target="#how-health-score-fits-into-the-current-view"><span class="header-section-number">6.2.4</span> How Health Score fits into the current view</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#dashboards-and-user-experience" id="toc-dashboards-and-user-experience" class="nav-link" data-scroll-target="#dashboards-and-user-experience"><span class="header-section-number">7</span> Dashboards and User Experience</a>
@@ -279,7 +289,7 @@ div.csl-indent {
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">11</span> References</a></li>
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="report.pdf"><i class="bi bi-file-pdf"></i>Typst</a></li></ul></div><div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="report.pdf"><i class="bi bi-file-earmark-pdf"></i>PDF</a></li><li><a href="dashboard.html"><i class="bi bi-speedometer"></i>Dashboards</a></li></ul></div></nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="report.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div><div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="report.pdf"><i class="bi bi-file-earmark-pdf"></i>PDF</a></li><li><a href="dashboard.html"><i class="bi bi-speedometer"></i>Dashboards</a></li></ul></div></nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
@@ -292,12 +302,14 @@ div.csl-indent {
 
 
 
+<div style="page-break-after: always;"></div>
 <section id="executive-summary" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Executive Summary</h1>
 <p>This document presents the technical design for a Factory Equipment Health and Maintenance Platform developed for Intelbyte. The objective of the platform is to provide clear, real-time visibility into the health and operational status of equipment across multiple manufacturing plants, while preserving a complete historical record of machine telemetry, operator inputs, and maintenance activity for analysis, reporting, and audit purposes.</p>
 <p>The proposed solution uses a scalable, event-driven data architecture that separates high-volume telemetry ingestion from day-to-day operational decision-making. Machine sensor readings such as temperature, vibration, throughput, and fault codes are captured as timestamped events for long-term retention, while a derived current equipment state is maintained for each machine. This enables supervisors to view a single, up-to-date record per asset without querying large historical datasets, even as data volumes grow.</p>
 <p>The platform supports multiple plants, production lines, and machines, along with operator shift reports, manual inspections, and status overrides. Maintenance requests are generated automatically based on configurable thresholds, fault patterns, and operator-reported issues. A machine health scoring process combines recent telemetry signals and fault history into a single, easy-to-interpret score, while a clear precedence model resolves the current machine status across telemetry, operator inputs, and active work orders.</p>
 <p>Overall, the design is practical, transparent, and scalable. It delivers immediate value for day-to-day operations and supports timely maintenance decisions, while leaving room to add features such as predictive maintenance, deeper analysis, and AI based insights as the platform grows.</p>
+<div style="page-break-after: always;"></div>
 </section>
 <section id="problem-context-and-objectives" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Problem Context and Objectives</h1>
@@ -315,6 +327,7 @@ div.csl-indent {
 </li>
 <li>Support growth across plants, machines, and data volumes without major redesign</li>
 </ul>
+<div style="page-break-after: always;"></div>
 </section>
 <section id="requirements-analysis" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Requirements Analysis</h1>
@@ -383,13 +396,15 @@ div.csl-indent {
 <h2 data-number="3.2" class="anchored" data-anchor-id="operational-constraints-and-quality-considerations"><span class="header-section-number">3.2</span> Operational Constraints and Quality Considerations</h2>
 <p>Beyond core functionality, the platform is designed to operate reliably in a production environment where data volume and operational complexity increase over time. It is expected to scale to thousands of machines generating high-frequency telemetry without requiring major redesign or manual intervention.</p>
 <p>Operational views used by supervisors and maintenance teams must remain highly available and reflect the latest known state of each machine in near real-time. To support audits, investigations, and long-term analysis, all telemetry and operational events are preserved as immutable historical records. The platform enforces role based access control to ensure users can only view or perform actions appropriate to their role, protecting sensitive operational data and workflows. System components are loosely coupled so ingestion, processing, analytics, and user facing features can be updated or extended independently, supporting continuous improvement without disrupting ongoing operations.</p>
+<div style="page-break-after: always;"></div>
 </section>
 </section>
 <section id="system-architecture" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> System Architecture</h1>
 <p>The platform follows an event-driven architecture that separates high-volume telemetry ingestion from operational workflows and user facing views. Machine telemetry is captured as append-only event data to support long-term retention, analysis, and auditability. In parallel, a derived current equipment state is maintained to enable fast operational queries that present one up-to-date record per machine.</p>
 <p>At a high level, the system consists of a web application for operators and supervisors, backend services that manage operational workflows and business rules, a telemetry ingestion path optimized for scale, and a database layer that stores both historical telemetry and current machine state. Maintenance requests are generated through configurable rules and recorded as work items linked to the machines and events that triggered them.</p>
-<div class="cell" data-fig-width="80%" data-fig-height="100%" data-layout-align="center">
+<div class="landscape">
+<div class="cell" data-fig-width="7" data-fig-height="6" data-layout-align="center">
 <div class="cell-output-display">
 <div id="fig-architecture" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -430,6 +445,7 @@ Figure&nbsp;1: System architecture and data flow
 </div>
 </div>
 </div>
+</div>
 <section id="components-and-functions" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="components-and-functions"><span class="header-section-number">4.1</span> Components and Functions</h2>
 <section id="frontend-operator-and-supervisor-interfaces" class="level3" data-number="4.1.1">
@@ -443,7 +459,7 @@ Figure&nbsp;1: System architecture and data flow
 <div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="assets/PowerApps_scalable.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Power Apps"><img src="assets/PowerApps_scalable.svg" class="img-fluid figure-img" alt="Power Apps icon" width="90"></a></p>
+<p><a href="assets/PowerApps_scalable.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Power Apps"><img src="assets/PowerApps_scalable.png" class="img-fluid figure-img" alt="Power Apps icon" width="90"></a></p>
 <figcaption>Power Apps</figcaption>
 </figure>
 </div>
@@ -451,7 +467,7 @@ Figure&nbsp;1: System architecture and data flow
 <div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="assets/PowerBI_scalable.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Power BI"><img src="assets/PowerBI_scalable.svg" class="img-fluid figure-img" alt="Power BI icon" width="90"></a></p>
+<p><a href="assets/PowerBI_scalable.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Power BI"><img src="assets/PowerBI_scalable.png" class="img-fluid figure-img" alt="Power BI icon" width="90"></a></p>
 <figcaption>Power BI</figcaption>
 </figure>
 </div>
@@ -467,7 +483,7 @@ Figure&nbsp;1: System architecture and data flow
 <div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="assets/AIBuilder_scalable.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="AI Builder"><img src="assets/AIBuilder_scalable.svg" class="img-fluid figure-img" alt="AIBuilder icon" width="90"></a></p>
+<p><a href="assets/AIBuilder_scalable.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="AI Builder"><img src="assets/AIBuilder_scalable.png" class="img-fluid figure-img" alt="AIBuilder icon" width="90"></a></p>
 <figcaption>AI Builder</figcaption>
 </figure>
 </div>
@@ -539,7 +555,7 @@ Figure&nbsp;1: System architecture and data flow
 <div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="assets/Dataverse_scalable.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Dataverse"><img src="assets/Dataverse_scalable.svg" class="img-fluid figure-img" alt="Dataverse icon" width="90"></a></p>
+<p><a href="assets/Dataverse_scalable.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Dataverse"><img src="assets/Dataverse_scalable.png" class="img-fluid figure-img" alt="Dataverse icon" width="90"></a></p>
 <figcaption>Dataverse</figcaption>
 </figure>
 </div>
@@ -591,7 +607,7 @@ Figure&nbsp;1: System architecture and data flow
 <div class="quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="assets/PowerAutomate_scalable.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Power Automate"><img src="assets/PowerAutomate_scalable.svg" class="img-fluid figure-img" alt="Power Automate icon" width="90"></a></p>
+<p><a href="assets/PowerAutomate_scalable.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Power Automate"><img src="assets/PowerAutomate_scalable.png" class="img-fluid figure-img" alt="Power Automate icon" width="90"></a></p>
 <figcaption>Power Automate</figcaption>
 </figure>
 </div>
@@ -650,6 +666,7 @@ Figure&nbsp;1: System architecture and data flow
 <h2 data-number="4.3" class="anchored" data-anchor-id="architecture-pattern-and-rationale"><span class="header-section-number">4.3</span> Architecture Pattern and Rationale</h2>
 <p>The architecture follows an event-driven pattern with a derived current-state view to handle high-frequency telemetry that grows rapidly over time. Telemetry is stored as immutable events to preserve a complete historical record for analysis and audits, while a separate current equipment state is maintained to support fast operational queries without scanning large historical datasets.</p>
 <p>By decoupling telemetry ingestion from operational workflows, the system improves scalability and reliability. Telemetry capture can continue even if downstream processing is delayed, and user-facing views can rely on a lightweight current-state store for near real-time visibility. This design also supports incremental evolution, allowing more advanced analytics and predictive maintenance features to be added without restructuring the core architecture.</p>
+<div style="page-break-after: always;"></div>
 </section>
 </section>
 <section id="data-and-database-design" class="level1" data-number="5">
@@ -667,7 +684,8 @@ The design supports both technical needs such as telemetry ingestion and analyti
 <section id="entity-relationship-diagram" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="entity-relationship-diagram"><span class="header-section-number">5.2</span> Entity Relationship Diagram</h2>
 <p>The Entity Relationship Diagram below shows the core entities such as assets, telemetry, human inputs, and maintenance workflows are connected while keeping responsibilities clearly separated. See <a href="#tbl-field-level-details" class="quarto-xref">Table&nbsp;1</a> for field level details.</p>
-<div class="cell" data-fig-width="80%" data-fig-height="100%" data-layout-align="center">
+<div class="landscape">
+<div class="cell" data-fig-width="8" data-fig-height="6" data-layout-align="center">
 <div class="cell-output-display">
 <div id="fig-ERD" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -703,6 +721,7 @@ Figure&nbsp;2: High level ERD for assets, telemetry, operator inputs, and mainte
 </div>
 </div>
 </div>
+</div>
 </section>
 <section id="entities-and-their-functions" class="level2" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="entities-and-their-functions"><span class="header-section-number">5.3</span> Entities and their Functions</h2>
@@ -720,6 +739,8 @@ Figure&nbsp;2: High level ERD for assets, telemetry, operator inputs, and mainte
 <section id="field-level-details" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="field-level-details"><span class="header-section-number">5.4</span> Field Level Details</h2>
 <p>The table below lists the proposed tables with their primary keys, foreign keys, and essential fields required for the MVP.</p>
+<div style="page-break-after: always;"></div>
+<div class="landscape">
 <div id="tbl-field-level-details" class="striped hover quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-field-level-details-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -737,7 +758,7 @@ Table&nbsp;1: Field level details for the MVP schema
 <tr class="header">
 <th style="text-align: left;">Table</th>
 <th style="text-align: left;">Primary Key</th>
-<th style="text-align: left;">Foreign Keys</th>
+<th style="text-align: left;">Related References</th>
 <th style="text-align: left;">Key Fields</th>
 </tr>
 </thead>
@@ -813,20 +834,23 @@ Table&nbsp;1: Field level details for the MVP schema
 </div>
 </figure>
 </div>
+</div>
 </section>
-<section id="telemetry-and-current-state-strategy" class="level2" data-number="5.5">
-<h2 data-number="5.5" class="anchored" data-anchor-id="telemetry-and-current-state-strategy"><span class="header-section-number">5.5</span> Telemetry and Current State Strategy</h2>
+<section id="telemetry-and-current-machine-state-strategy" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="telemetry-and-current-machine-state-strategy"><span class="header-section-number">5.5</span> Telemetry and Current Machine State Strategy</h2>
 <p>Telemetry data is modeled as an immutable event stream. Each new reading is inserted and never updated. This guarantees a complete and trustworthy history that can support audits, analytics, and future use cases without redesign.</p>
 <p>Operational views do not query this history directly. Instead, the <code>CurrentMachineState</code> table is continuously updated as telemetry arrives, operator reports are submitted, and work orders change status. Each row represents the latest resolved view of a machine, including status, health score, and maintenance indicators.</p>
 <p>This separation between append only history and derived operational state is the key scaling decision in the design. It keeps dashboards fast and predictable while preserving full historical detail for deeper analysis and long-term insight.</p>
+<div style="page-break-after: always;"></div>
 </section>
 </section>
 <section id="core-algorithms" class="level1" data-number="6">
 <h1 data-number="6"><span class="header-section-number">6</span> Core Algorithms</h1>
+<p>The platform maintains an operational view of each machine using near real time, event driven processing. As telemetry events arrive, the system updates the current machine state within seconds by resolving machine status and recalculating health indicators. Dashboards query this current state store and refresh on a short interval, providing timely and consistent operational visibility without scanning historical telemetry.</p>
 <section id="machine-health-scoring" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="machine-health-scoring"><span class="header-section-number">6.1</span> Machine Health Scoring</h2>
 <p>The Machine Health Scoring algorithm converts raw machine signals into a single, easy-to-understand indicator that reflects how healthy a machine is at any moment. The goal is not to predict failure perfectly in the MVP, but to provide a <strong>clear, consistent signal</strong> that helps supervisors and maintenance teams prioritize attention.</p>
-<p>Industry platforms often normalize machine health to a <strong>0–100</strong> scale to simplify interpretation for operations and maintenance teams <span class="citation" data-cites="infiniteUptimeHealthScore">Uptime (<a href="#ref-infiniteUptimeHealthScore" role="doc-biblioref">2022</a>)</span>. The score combines <strong>three ideas</strong> that are common in industrial monitoring systems:</p>
+<p>Industry platforms often normalize machine health score to a <strong>0–100</strong> scale to simplify interpretation for operations and maintenance teams (<span class="citation" data-cites="infiniteUptimeHealthScore">Uptime (<a href="#ref-infiniteUptimeHealthScore" role="doc-biblioref">2022</a>)</span>). The score combines <strong>three ideas</strong> that are common in industrial monitoring systems:</p>
 <ul>
 <li><strong>Normal operation</strong> keeps the score high<br>
 </li>
@@ -834,110 +858,114 @@ Table&nbsp;1: Field level details for the MVP schema
 </li>
 <li><strong>Faults and maintenance states</strong> reduce the score immediately and visibly</li>
 </ul>
+<p>This balance ensures the score is stable enough for dashboards while still reacting quickly to real issues.</p>
 <section id="how-often-the-score-is-recalculated" class="level3" data-number="6.1.1">
-<h3 data-number="6.1.1" class="anchored" data-anchor-id="how-often-the-score-is-recalculated"><span class="header-section-number">6.1.1</span> How often the score is recalculated</h3>
-<p>The health score is recalculated each time new telemetry is processed for a machine, which in typical industrial environments means every few seconds to every minute, depending on sensor. High frequency signals such as temperature or vibration may arrive every 5–30 seconds, while lower frequency metrics such as throughput or energy usage may arrive every 1–5 minutes.</p>
-<p>Rather than recomputing the score from all historical data, the system updates the score incrementally using the previous value. This keeps the score near real-time, computationally efficient, and stable for dashboards, while still reacting quickly when sustained issues or faults appear.</p>
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="how-often-the-score-is-recalculated"><span class="header-section-number">6.1.1</span> How Often the Score is Recalculated</h3>
+<p>The health score is recalculated <strong>each time new telemetry is processed for a machine</strong>. We assume telemetry arrives about <strong>every 60 seconds</strong>, so a <strong>15-minute rolling window</strong> provides <strong>about 15 samples per metric</strong>. Hence, This window reduces short lived noise while still reacting to sustained changes in machine condition.</p>
+<p>Rather than recomputing the score from full historical data, the system updates the score incrementally using the previously stored value. In practice, this is done using an <strong>Exponentially Weighted Moving Average (EWMA)</strong>, which balances responsiveness with noise reduction in streaming telemetry (<span class="citation" data-cites="montgomery2020introduction">Montgomery (<a href="#ref-montgomery2020introduction" role="doc-biblioref">2020</a>)</span>).</p>
+<p>If telemetry is missing for too long, the previous score is no longer reliable. As a safeguard, when the time since the last telemetry event exceeds <strong>twice the rolling window</strong> (in this case, more than <strong>30 minutes</strong> for the 15-minute window), the smoothing state is reset and the score is reinitialized from the current raw telemetry based score. See <a href="#sec-health-score" class="quarto-xref">Section&nbsp;6.1.4</a> for the health scoring pseudocode.</p>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>The machines are assumed to publish telemetry approximately every <strong>60 seconds</strong>. A <strong>15-minute rolling window</strong> provides <strong>15 samples per metric</strong>. The health score is recalculated whenever new telemetry arrives and is typically updated once per minute.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="where-the-score-is-stored" class="level3" data-number="6.1.2">
-<h3 data-number="6.1.2" class="anchored" data-anchor-id="where-the-score-is-stored"><span class="header-section-number">6.1.2</span> Where the score is stored</h3>
-<p>The computed score is written to <code>CurrentMachineState.healthScore</code> for each machine:</p>
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="where-the-score-is-stored"><span class="header-section-number">6.1.2</span> Where the Score is Stored</h3>
+<p>Health scoring is performed by the Health Scoring Service (Azure Functions), which computes the score as telemetry arrives (approximately every minute). The score is stored in the <code>CurrentMachineState</code> table, which represents the latest operational view for each machine:</p>
 <ul>
 <li>Table: <code>CurrentMachineState</code><br>
 </li>
 <li>Primary key: <code>machineId</code><br>
 </li>
-<li>Foreign keys:
+<li>Related references:
 <ul>
 <li><code>machineId -&gt; Machine.machineId</code><br>
 </li>
 <li><code>lastTelemetryEventId -&gt; TelemetryEvent.telemetryEventId</code><br>
 </li>
-<li><code>lastOperatorReportId -&gt; OperatorReport.operatorReportId</code><br>
-</li>
+<li><code>lastOperatorReportId -&gt; OperatorReport.operatorReportId</code></li>
 </ul></li>
-<li>Key fields updated by this algorithm:
+</ul>
+<p>The scoring service keeps health scoring independent from status resolution and maintenance workflows by updating only the fields it owns:</p>
 <ul>
 <li><code>healthScore</code><br>
 </li>
 <li><code>lastUpdateAt</code></li>
-</ul></li>
 </ul>
-<p>This aligns with <a href="#tbl-field-level-details" class="quarto-xref">Table&nbsp;1</a>.</p>
 </section>
-<section id="scoring-logic-overview" class="level3" data-number="6.1.3">
-<h3 data-number="6.1.3" class="anchored" data-anchor-id="scoring-logic-overview"><span class="header-section-number">6.1.3</span> Scoring logic overview</h3>
-<p>At each update, the score is computed using recent machine behavior, not the full telemetry history.</p>
-<div class="callout callout-style-simple callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Telemetry Frequency and Rolling Window
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The machines are assumed to publish telemetry approximately every 30 seconds. A 15 minute rolling window is therefore used for health scoring, providing about 30 samples per metric. This window smooths short-lived sensor noise while remaining responsive to sustained changes in machine condition.</p>
-</div>
-</div>
-<p>The scoring logic combines:</p>
+<section id="scoring-logic" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="scoring-logic"><span class="header-section-number">6.1.3</span> Scoring Logic</h3>
+<p>At each update, the score is computed using recent machine behavior, not the full telemetry history. The scoring logic combines:</p>
 <ul>
-<li>The latest telemetry readings, aggregated as rolling averages over a 15 minute window</li>
+<li>The latest telemetry readings, aggregated as rolling averages over a 15-minute window<br>
+</li>
 <li>Current machine status (<code>Running</code>, <code>Idle</code>, <code>Fault</code>, <code>UnderMaintenance</code>)<br>
 </li>
 <li>Any active fault codes and their severity (<code>High</code>, <code>Medium</code>)<br>
 </li>
 <li>Operator flags from inspections (<code>IssueObserved</code>, <code>MinorConcern</code>)</li>
 </ul>
-<p>The annotated pseudocode below shows exactly how each signal contributes to the final score and how the result is stabilized for operational dashboards.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_health_score(previous_score):</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a>    healthScore <span class="op">=</span> <span class="dv">100</span></span>
+<p>The pseudocode in <a href="#sec-health-score" class="quarto-xref">Section&nbsp;6.1.4</a> shows how each signal contributes to the final score and how EWMA smoothing stabilizes the result for operational dashboards.</p>
+</section>
+<section id="sec-health-score" class="level3" data-number="6.1.4">
+<h3 data-number="6.1.4" class="anchored" data-anchor-id="sec-health-score"><span class="header-section-number">6.1.4</span> Pseudocode for Scoring</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_health_score(previous_score, minutes_since_last_telemetry):</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a>    rawScore <span class="op">=</span> <span class="dv">100</span></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-1-3" class="code-annotation-target"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a>    smoothing_param <span class="op">=</span> <span class="fl">0.2</span></span>
 <span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sensor penalties</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-1-6" class="code-annotation-target"><a href="#annotated-cell-1-6" aria-hidden="true" tabindex="-1"></a>    healthScore <span class="op">-=</span> temperature_penalty</span>
-<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7" aria-hidden="true" tabindex="-1"></a>    healthScore <span class="op">-=</span> vibration_penalty</span>
-<span id="annotated-cell-1-8"><a href="#annotated-cell-1-8" aria-hidden="true" tabindex="-1"></a>    healthScore <span class="op">-=</span> throughput_penalty</span>
+<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sensor penalties (computed from last 15 minutes of data)</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-1-6" class="code-annotation-target"><a href="#annotated-cell-1-6" aria-hidden="true" tabindex="-1"></a>    rawScore <span class="op">-=</span> temperature_penalty</span>
+<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7" aria-hidden="true" tabindex="-1"></a>    rawScore <span class="op">-=</span> vibration_penalty</span>
+<span id="annotated-cell-1-8"><a href="#annotated-cell-1-8" aria-hidden="true" tabindex="-1"></a>    rawScore <span class="op">-=</span> throughput_penalty</span>
 <span id="annotated-cell-1-9"><a href="#annotated-cell-1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-1-10"><a href="#annotated-cell-1-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># fault severity penalties</span></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-1-11" class="code-annotation-target"><a href="#annotated-cell-1-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> fault_severity <span class="op">==</span> <span class="st">"High"</span>:</span>
-<span id="annotated-cell-1-12"><a href="#annotated-cell-1-12" aria-hidden="true" tabindex="-1"></a>        healthScore <span class="op">-=</span> <span class="dv">60</span></span>
+<span id="annotated-cell-1-12"><a href="#annotated-cell-1-12" aria-hidden="true" tabindex="-1"></a>        rawScore <span class="op">-=</span> <span class="dv">60</span></span>
 <span id="annotated-cell-1-13"><a href="#annotated-cell-1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> fault_severity <span class="op">==</span> <span class="st">"Medium"</span>:</span>
-<span id="annotated-cell-1-14"><a href="#annotated-cell-1-14" aria-hidden="true" tabindex="-1"></a>        healthScore <span class="op">-=</span> <span class="dv">30</span></span>
+<span id="annotated-cell-1-14"><a href="#annotated-cell-1-14" aria-hidden="true" tabindex="-1"></a>        rawScore <span class="op">-=</span> <span class="dv">30</span></span>
 <span id="annotated-cell-1-15"><a href="#annotated-cell-1-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-1-16"><a href="#annotated-cell-1-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># apply operator input only if a report exists</span></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-1-17" class="code-annotation-target"><a href="#annotated-cell-1-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> operator_flag <span class="op">==</span> <span class="st">"IssueObserved"</span>:</span>
-<span id="annotated-cell-1-18"><a href="#annotated-cell-1-18" aria-hidden="true" tabindex="-1"></a>        healthScore <span class="op">-=</span> <span class="dv">20</span></span>
+<span id="annotated-cell-1-18"><a href="#annotated-cell-1-18" aria-hidden="true" tabindex="-1"></a>        rawScore <span class="op">-=</span> <span class="dv">20</span></span>
 <span id="annotated-cell-1-19"><a href="#annotated-cell-1-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> operator_flag <span class="op">==</span> <span class="st">"MinorConcern"</span>:</span>
-<span id="annotated-cell-1-20"><a href="#annotated-cell-1-20" aria-hidden="true" tabindex="-1"></a>        healthScore <span class="op">-=</span> <span class="dv">10</span></span>
+<span id="annotated-cell-1-20"><a href="#annotated-cell-1-20" aria-hidden="true" tabindex="-1"></a>        rawScore <span class="op">-=</span> <span class="dv">10</span></span>
 <span id="annotated-cell-1-21"><a href="#annotated-cell-1-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-1-22"><a href="#annotated-cell-1-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># maintenance state cap</span></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="6" onclick="event.preventDefault();">6</a><span id="annotated-cell-1-23" class="code-annotation-target"><a href="#annotated-cell-1-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> status <span class="op">==</span> <span class="st">"UnderMaintenance"</span>:</span>
-<span id="annotated-cell-1-24"><a href="#annotated-cell-1-24" aria-hidden="true" tabindex="-1"></a>        healthScore <span class="op">=</span> <span class="bu">min</span>(healthScore, <span class="dv">60</span>)</span>
+<span id="annotated-cell-1-24"><a href="#annotated-cell-1-24" aria-hidden="true" tabindex="-1"></a>        rawScore <span class="op">=</span> <span class="bu">min</span>(rawScore, <span class="dv">60</span>)</span>
 <span id="annotated-cell-1-25"><a href="#annotated-cell-1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-1-26"><a href="#annotated-cell-1-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># smoothing (EWMA)</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="7" onclick="event.preventDefault();">7</a><span id="annotated-cell-1-27" class="code-annotation-target"><a href="#annotated-cell-1-27" aria-hidden="true" tabindex="-1"></a>    healthScore <span class="op">=</span> (</span>
-<span id="annotated-cell-1-28"><a href="#annotated-cell-1-28" aria-hidden="true" tabindex="-1"></a>        smoothing_param <span class="op">*</span> healthScore <span class="op">+</span> </span>
-<span id="annotated-cell-1-29"><a href="#annotated-cell-1-29" aria-hidden="true" tabindex="-1"></a>        (<span class="dv">1</span> <span class="op">-</span> smoothing_param) <span class="op">*</span> previous_score</span>
-<span id="annotated-cell-1-30"><a href="#annotated-cell-1-30" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="annotated-cell-1-31"><a href="#annotated-cell-1-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-1-32"><a href="#annotated-cell-1-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ensure the final score stays between 0 (worst) and 100 (best)</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="8" onclick="event.preventDefault();">8</a><span id="annotated-cell-1-33" class="code-annotation-target"><a href="#annotated-cell-1-33" aria-hidden="true" tabindex="-1"></a>    healthScore <span class="op">=</span> <span class="bu">max</span>(<span class="dv">0</span>, <span class="bu">min</span>(<span class="dv">100</span>, healthScore))</span>
-<span id="annotated-cell-1-34"><a href="#annotated-cell-1-34" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="annotated-cell-1-35"><a href="#annotated-cell-1-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> healthScore</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-1-26"><a href="#annotated-cell-1-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># initialization / reset rule (no previous score or stale telemetry)</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="7" onclick="event.preventDefault();">7</a><span id="annotated-cell-1-27" class="code-annotation-target"><a href="#annotated-cell-1-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> previous_score <span class="kw">is</span> <span class="va">None</span> <span class="kw">or</span> minutes_since_last_telemetry <span class="op">&gt;</span> <span class="dv">30</span>:</span>
+<span id="annotated-cell-1-28"><a href="#annotated-cell-1-28" aria-hidden="true" tabindex="-1"></a>        healthScore <span class="op">=</span> rawScore</span>
+<span id="annotated-cell-1-29"><a href="#annotated-cell-1-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="annotated-cell-1-30"><a href="#annotated-cell-1-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># smoothing (EWMA)</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="8" onclick="event.preventDefault();">8</a><span id="annotated-cell-1-31" class="code-annotation-target"><a href="#annotated-cell-1-31" aria-hidden="true" tabindex="-1"></a>        healthScore <span class="op">=</span> (</span>
+<span id="annotated-cell-1-32"><a href="#annotated-cell-1-32" aria-hidden="true" tabindex="-1"></a>            smoothing_param <span class="op">*</span> rawScore <span class="op">+</span></span>
+<span id="annotated-cell-1-33"><a href="#annotated-cell-1-33" aria-hidden="true" tabindex="-1"></a>            (<span class="dv">1</span> <span class="op">-</span> smoothing_param) <span class="op">*</span> previous_score</span>
+<span id="annotated-cell-1-34"><a href="#annotated-cell-1-34" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="annotated-cell-1-35"><a href="#annotated-cell-1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-1-36"><a href="#annotated-cell-1-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ensure the final score stays between 0 (worst) and 100 (best)</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="9" onclick="event.preventDefault();">9</a><span id="annotated-cell-1-37" class="code-annotation-target"><a href="#annotated-cell-1-37" aria-hidden="true" tabindex="-1"></a>    healthScore <span class="op">=</span> <span class="bu">max</span>(<span class="dv">0</span>, <span class="bu">min</span>(<span class="dv">100</span>, healthScore))</span>
+<span id="annotated-cell-1-38"><a href="#annotated-cell-1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-1-39"><a href="#annotated-cell-1-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> healthScore</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="1">Start from a healthy baseline score of 100 for every evaluation.</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="1">Start from a baseline score and compute a fresh rawScore for this update.</span>
 </dd>
 <dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="3" data-code-annotation="2">Define how strongly the new score reacts to recent data versus the previous score.</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="3" data-code-annotation="2">Set the EWMA weight so recent data influences the score without causing jumps.</span>
 </dd>
 <dt data-target-cell="annotated-cell-1" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="6,7,8" data-code-annotation="3">Apply penalties based on sensor readings that deviate from normal operating ranges.</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="6,7,8" data-code-annotation="3">Apply penalties based on 15-minute rolling window sensor summaries</span>
 </dd>
 <dt data-target-cell="annotated-cell-1" data-target-annotation="4">4</dt>
 <dd>
@@ -945,137 +973,229 @@ Table&nbsp;1: Field level details for the MVP schema
 </dd>
 <dt data-target-cell="annotated-cell-1" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="17" data-code-annotation="5">Incorporate human input from inspections or shift reports when operators flag issues.</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="17" data-code-annotation="5">Reduce the score when operators flag issues in inspections or shift reports.</span>
 </dd>
 <dt data-target-cell="annotated-cell-1" data-target-annotation="6">6</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="23" data-code-annotation="6">Cap the score when the machine is under maintenance to reflect reduced availability.</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="23" data-code-annotation="6">Cap the score during maintenance to reflect reduced availability.</span>
 </dd>
 <dt data-target-cell="annotated-cell-1" data-target-annotation="7">7</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="27" data-code-annotation="7">Smooth the score using an Exponentially Weighted Moving Average to reduce noise.</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="27" data-code-annotation="7">If there is no previous score (MVP start) or telemetry is stale (&gt;2× rolling window), reinitialize from rawScore.</span>
 </dd>
 <dt data-target-cell="annotated-cell-1" data-target-annotation="8">8</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="33" data-code-annotation="8">Ensure the final score always remains between 0 and 100.</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="31" data-code-annotation="8">Otherwise smooth using EWMA to reduce noise while keeping responsiveness.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="9">9</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="37" data-code-annotation="9">Clamp the final score to stay between 0 and 100.</span>
 </dd>
 </dl>
 </section>
 </section>
 <section id="latest-machine-status-resolution" class="level2" data-number="6.2">
 <h2 data-number="6.2" class="anchored" data-anchor-id="latest-machine-status-resolution"><span class="header-section-number">6.2</span> Latest Machine Status Resolution</h2>
-<p>The platform resolves <code>CurrentMachineState.resolvedStatus</code> using three signal sources, with clear precedence so the output stays explainable.</p>
-<p><strong>Precedence (highest wins):</strong></p>
+<p>The platform resolves <code>CurrentMachineState.resolvedStatus</code> by evaluating multiple signal sources in a fixed order of precedence. This ensures the resulting status is predictable, explainable, and aligned with real operational decision-making.</p>
+<section id="status-precedence" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="status-precedence"><span class="header-section-number">6.2.1</span> Status Precedence</h3>
+<p>Status precedence ensures maintenance and safety decisions take priority, while allowing the system to automatically return to telemetry driven status when conditions normalize. It is applied as follows (highest wins):</p>
 <ol type="1">
-<li><strong>UnderMaintenance</strong> when there is an open work order</li>
-<li><strong>Manual override</strong> when an operator has set a status override that is still active</li>
-<li><strong>Telemetry derived</strong> status from the latest telemetry event</li>
+<li><p><strong>UnderMaintenance</strong><br>
+If one or more maintenance work orders are active for a machine, the machine is considered <code>UnderMaintenance</code> regardless of telemetry or operator inputs. This condition is represented by <code>openWorkOrderCount &gt; 0</code>, derived from <code>WorkOrder.status</code>.</p></li>
+<li><p><strong>Manual operator override</strong><br>
+If an operator submits a report containing <code>statusOverride</code>, the most recent override is applied while it is still valid. This allows short term safety or inspection decisions to override automated signals.</p></li>
+<li><p><strong>Telemetry derived status</strong><br>
+When neither maintenance nor a manual override is active, the status is derived from the latest telemetry event. If <code>faultCodeId</code> is present the status is <code>Fault</code>; otherwise the status falls back to the device reported operating state stored in <code>TelemetryEvent.statusRaw</code> (for example <code>Running</code> or <code>Idle</code>).</p></li>
 </ol>
-<p>This ensures an operator’s safety decision can override sensors, while still allowing the system to return to automatic status when the override expires.</p>
-<section id="process" class="level3" data-number="6.2.1">
-<h3 data-number="6.2.1" class="anchored" data-anchor-id="process"><span class="header-section-number">6.2.1</span> Process</h3>
-<ol type="1">
-<li>The stream processor continuously determines the latest <strong>telemetry status</strong> per machine (e.g., <code>Fault</code> if a fault code is present, else <code>Running</code> or <code>Idle</code> from the device status field).</li>
-<li>The operational workflow updates <code>openWorkOrderCount</code> when work orders open or close.</li>
-<li>The latest operator report with <code>statusOverride</code> (if any) is treated as a <strong>manual override</strong> for a short time window (for example 2 to 8 hours), after which the system falls back to telemetry.</li>
-</ol>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><code>WorkOrder.status</code> drives <code>openWorkOrderCount</code>. Any non-zero count forces <code>CurrentMachineState.resolvedStatus = 'UnderMaintenance'</code> until all active work orders are closed and <code>openWorkOrderCount</code> returns to <code>0</code>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Operator overrides are intentionally time boxed (example: 4 hours). After the window expires, status resolution automatically falls back to telemetry without requiring manual cleanup.</p>
+</div>
+</div>
+</div>
 </section>
-<section id="query" class="level3" data-number="6.2.2">
-<h3 data-number="6.2.2" class="anchored" data-anchor-id="query"><span class="header-section-number">6.2.2</span> Query</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2"><pre class="sourceCode sql code-annotation-code code-with-copy code-annotated"><code class="sourceCode sql"><a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span> LatestTelemetry <span class="kw">AS</span> (</span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span></span>
-<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>    t.machineId,</span>
-<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>    t.telemetryEventId,</span>
-<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>    t.eventTimestamp,</span>
-<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-hidden="true" tabindex="-1"></a>    t.statusRaw,</span>
-<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-hidden="true" tabindex="-1"></a>    t.faultCodeId,</span>
-<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ROW_NUMBER</span>() <span class="kw">OVER</span> (</span>
-<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-hidden="true" tabindex="-1"></a>      <span class="kw">PARTITION</span> <span class="kw">BY</span> t.machineId</span>
-<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-hidden="true" tabindex="-1"></a>      <span class="kw">ORDER</span> <span class="kw">BY</span> t.eventTimestamp <span class="kw">DESC</span></span>
-<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="kw">AS</span> rn</span>
-<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> TelemetryEvent t</span>
-<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13" aria-hidden="true" tabindex="-1"></a>),</span>
-<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14" aria-hidden="true" tabindex="-1"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-15" class="code-annotation-target"><a href="#annotated-cell-2-15" aria-hidden="true" tabindex="-1"></a>LatestOperatorOverride <span class="kw">AS</span> (</span>
-<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span></span>
-<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17" aria-hidden="true" tabindex="-1"></a>    r.machineId,</span>
-<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18" aria-hidden="true" tabindex="-1"></a>    r.operatorReportId,</span>
-<span id="annotated-cell-2-19"><a href="#annotated-cell-2-19" aria-hidden="true" tabindex="-1"></a>    r.reportTimestamp,</span>
-<span id="annotated-cell-2-20"><a href="#annotated-cell-2-20" aria-hidden="true" tabindex="-1"></a>    r.statusOverride,</span>
-<span id="annotated-cell-2-21"><a href="#annotated-cell-2-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ROW_NUMBER</span>() <span class="kw">OVER</span> (</span>
-<span id="annotated-cell-2-22"><a href="#annotated-cell-2-22" aria-hidden="true" tabindex="-1"></a>      <span class="kw">PARTITION</span> <span class="kw">BY</span> r.machineId</span>
-<span id="annotated-cell-2-23"><a href="#annotated-cell-2-23" aria-hidden="true" tabindex="-1"></a>      <span class="kw">ORDER</span> <span class="kw">BY</span> r.reportTimestamp <span class="kw">DESC</span></span>
-<span id="annotated-cell-2-24"><a href="#annotated-cell-2-24" aria-hidden="true" tabindex="-1"></a>    ) <span class="kw">AS</span> rn</span>
-<span id="annotated-cell-2-25"><a href="#annotated-cell-2-25" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> OperatorReport r</span>
-<span id="annotated-cell-2-26"><a href="#annotated-cell-2-26" aria-hidden="true" tabindex="-1"></a>  <span class="kw">WHERE</span> r.statusOverride <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
-<span id="annotated-cell-2-27"><a href="#annotated-cell-2-27" aria-hidden="true" tabindex="-1"></a>),</span>
-<span id="annotated-cell-2-28"><a href="#annotated-cell-2-28" aria-hidden="true" tabindex="-1"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-29" class="code-annotation-target"><a href="#annotated-cell-2-29" aria-hidden="true" tabindex="-1"></a>OpenWorkOrders <span class="kw">AS</span> (</span>
-<span id="annotated-cell-2-30"><a href="#annotated-cell-2-30" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span></span>
-<span id="annotated-cell-2-31"><a href="#annotated-cell-2-31" aria-hidden="true" tabindex="-1"></a>    w.machineId,</span>
-<span id="annotated-cell-2-32"><a href="#annotated-cell-2-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> openWorkOrderCount</span>
-<span id="annotated-cell-2-33"><a href="#annotated-cell-2-33" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> WorkOrder w</span>
-<span id="annotated-cell-2-34"><a href="#annotated-cell-2-34" aria-hidden="true" tabindex="-1"></a>  <span class="kw">WHERE</span> w.status <span class="kw">IN</span> (<span class="st">'Open'</span>, <span class="st">'InProgress'</span>)</span>
-<span id="annotated-cell-2-35"><a href="#annotated-cell-2-35" aria-hidden="true" tabindex="-1"></a>  <span class="kw">GROUP</span> <span class="kw">BY</span> w.machineId</span>
-<span id="annotated-cell-2-36"><a href="#annotated-cell-2-36" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="annotated-cell-2-37"><a href="#annotated-cell-2-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-2-38"><a href="#annotated-cell-2-38" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span></span>
-<span id="annotated-cell-2-39"><a href="#annotated-cell-2-39" aria-hidden="true" tabindex="-1"></a>  m.machineId,</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-2-40" class="code-annotation-target"><a href="#annotated-cell-2-40" aria-hidden="true" tabindex="-1"></a>  <span class="cf">CASE</span></span>
-<span id="annotated-cell-2-41"><a href="#annotated-cell-2-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">COALESCE</span>(owo.openWorkOrderCount, <span class="dv">0</span>) <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">THEN</span> <span class="st">'UnderMaintenance'</span></span>
-<span id="annotated-cell-2-42"><a href="#annotated-cell-2-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-2-43"><a href="#annotated-cell-2-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> loo.statusOverride <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
-<span id="annotated-cell-2-44"><a href="#annotated-cell-2-44" aria-hidden="true" tabindex="-1"></a>     <span class="kw">AND</span> loo.reportTimestamp <span class="op">&gt;=</span> <span class="fu">CURRENT_TIMESTAMP</span> <span class="op">-</span> <span class="dt">INTERVAL</span> <span class="st">'4 hours'</span> <span class="cf">THEN</span> loo.statusOverride</span>
-<span id="annotated-cell-2-45"><a href="#annotated-cell-2-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-2-46"><a href="#annotated-cell-2-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> lt.faultCodeId <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="st">'Fault'</span></span>
-<span id="annotated-cell-2-47"><a href="#annotated-cell-2-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">ELSE</span> <span class="fu">COALESCE</span>(lt.statusRaw, <span class="st">'Idle'</span>)</span>
-<span id="annotated-cell-2-48"><a href="#annotated-cell-2-48" aria-hidden="true" tabindex="-1"></a>  <span class="cf">END</span> <span class="kw">AS</span> resolvedStatus,</span>
-<span id="annotated-cell-2-49"><a href="#annotated-cell-2-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-2-50"><a href="#annotated-cell-2-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">COALESCE</span>(owo.openWorkOrderCount, <span class="dv">0</span>) <span class="kw">AS</span> openWorkOrderCount,</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-2-51" class="code-annotation-target"><a href="#annotated-cell-2-51" aria-hidden="true" tabindex="-1"></a>  lt.telemetryEventId <span class="kw">AS</span> lastTelemetryEventId,</span>
-<span id="annotated-cell-2-52"><a href="#annotated-cell-2-52" aria-hidden="true" tabindex="-1"></a>  loo.operatorReportId <span class="kw">AS</span> lastOperatorReportId,</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="6" onclick="event.preventDefault();">6</a><span id="annotated-cell-2-53" class="code-annotation-target"><a href="#annotated-cell-2-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">GREATEST</span>(</span>
-<span id="annotated-cell-2-54"><a href="#annotated-cell-2-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COALESCE</span>(lt.eventTimestamp, <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>),</span>
-<span id="annotated-cell-2-55"><a href="#annotated-cell-2-55" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COALESCE</span>(loo.reportTimestamp, <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>)</span>
-<span id="annotated-cell-2-56"><a href="#annotated-cell-2-56" aria-hidden="true" tabindex="-1"></a>  ) <span class="kw">AS</span> lastUpdateAt</span>
-<span id="annotated-cell-2-57"><a href="#annotated-cell-2-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-2-58"><a href="#annotated-cell-2-58" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> Machine m</span>
-<span id="annotated-cell-2-59"><a href="#annotated-cell-2-59" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> LatestTelemetry lt</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="7" onclick="event.preventDefault();">7</a><span id="annotated-cell-2-60" class="code-annotation-target"><a href="#annotated-cell-2-60" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ON</span> m.machineId <span class="op">=</span> lt.machineId <span class="kw">AND</span> lt.rn <span class="op">=</span> <span class="dv">1</span></span>
-<span id="annotated-cell-2-61"><a href="#annotated-cell-2-61" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> LatestOperatorOverride loo</span>
-<span id="annotated-cell-2-62"><a href="#annotated-cell-2-62" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ON</span> m.machineId <span class="op">=</span> loo.machineId <span class="kw">AND</span> loo.rn <span class="op">=</span> <span class="dv">1</span></span>
-<span id="annotated-cell-2-63"><a href="#annotated-cell-2-63" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> OpenWorkOrders owo</span>
-<span id="annotated-cell-2-64"><a href="#annotated-cell-2-64" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ON</span> m.machineId <span class="op">=</span> owo.machineId;</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="initialization-at-launch" class="level3" data-number="6.2.2">
+<h3 data-number="6.2.2" class="anchored" data-anchor-id="initialization-at-launch"><span class="header-section-number">6.2.2</span> Initialization at Launch</h3>
+<p>This runs once to create the <code>CurrentMachineState</code> at MVP launch. After this, the system stays current via event driven upserts (Section 6.2.4).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Physical table (read model)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> CurrentMachineState (</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  machineId               BIGINT <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  resolvedStatus          <span class="dt">VARCHAR</span>(<span class="dv">32</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  healthScore             <span class="dt">NUMERIC</span>(<span class="dv">5</span>,<span class="dv">2</span>) <span class="kw">NULL</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  openWorkOrderCount      <span class="dt">INT</span> <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="kw">DEFAULT</span> <span class="dv">0</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  lastTelemetryEventId    BIGINT <span class="kw">NULL</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  lastOperatorReportId    BIGINT <span class="kw">NULL</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  lastUpdateAt            <span class="dt">TIMESTAMP</span> <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="kw">DEFAULT</span> <span class="fu">CURRENT_TIMESTAMP</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="event-driven-updates" class="level3" data-number="6.2.3">
+<h3 data-number="6.2.3" class="anchored" data-anchor-id="event-driven-updates"><span class="header-section-number">6.2.3</span> Event Driven Updates</h3>
+<p>After the initialization, the platforms performs small targeted updates:</p>
+<ul>
+<li>When telemetry arrives for a machine, update that machine’s row<br>
+</li>
+<li>When a work order opens or closes for a machine, update that machine’s row<br>
+</li>
+<li>When an operator submits an override for a machine, update that machine’s row</li>
+</ul>
+<p>The query below shows per machine update executed when telemetry, work order or operator override is received for a specific machine.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The SQL code block is executed with parameters supplied by the <code>Stream Processor</code>. These parameters are taken directly from the incoming telemetry message from <code>Telemetry Ingestion API</code>. They include <code>:machineId</code>, <code>:telemetryEventId</code>, <code>:eventTimestamp</code>, <code>:statusRaw</code>, <code>:faultCodeId</code>.</p>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3"><pre class="sourceCode sql code-annotation-code code-with-copy code-annotated"><code class="sourceCode sql"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Per machine event update (event driven upsert)</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span> WorkOrderSignals <span class="kw">AS</span> (</span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span></span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> status <span class="kw">IN</span> (<span class="st">'Open'</span>,<span class="st">'InProgress'</span>)) <span class="kw">AS</span> openWorkOrderCount,</span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">MAX</span>(<span class="fu">COALESCE</span>(closedAt, createdAt)) <span class="kw">AS</span> lastWorkOrderChangeAt</span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> WorkOrder</span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">WHERE</span> machineId <span class="op">=</span> <span class="ch">:machineId</span></span>
+<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8" aria-hidden="true" tabindex="-1"></a>),</span>
+<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-10" class="code-annotation-target"><a href="#annotated-cell-3-10" aria-hidden="true" tabindex="-1"></a>LatestOperatorOverride <span class="kw">AS</span> (</span>
+<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span></span>
+<span id="annotated-cell-3-12"><a href="#annotated-cell-3-12" aria-hidden="true" tabindex="-1"></a>    operatorReportId,</span>
+<span id="annotated-cell-3-13"><a href="#annotated-cell-3-13" aria-hidden="true" tabindex="-1"></a>    reportTimestamp,</span>
+<span id="annotated-cell-3-14"><a href="#annotated-cell-3-14" aria-hidden="true" tabindex="-1"></a>    statusOverride</span>
+<span id="annotated-cell-3-15"><a href="#annotated-cell-3-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> OperatorReport</span>
+<span id="annotated-cell-3-16"><a href="#annotated-cell-3-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">WHERE</span> machineId <span class="op">=</span> <span class="ch">:machineId</span></span>
+<span id="annotated-cell-3-17"><a href="#annotated-cell-3-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">AND</span> statusOverride <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="annotated-cell-3-18"><a href="#annotated-cell-3-18" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ORDER</span> <span class="kw">BY</span> reportTimestamp <span class="kw">DESC</span></span>
+<span id="annotated-cell-3-19"><a href="#annotated-cell-3-19" aria-hidden="true" tabindex="-1"></a>  <span class="kw">LIMIT</span> <span class="dv">1</span></span>
+<span id="annotated-cell-3-20"><a href="#annotated-cell-3-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="annotated-cell-3-21"><a href="#annotated-cell-3-21" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-3-22" class="code-annotation-target"><a href="#annotated-cell-3-22" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> CurrentMachineState (</span>
+<span id="annotated-cell-3-23"><a href="#annotated-cell-3-23" aria-hidden="true" tabindex="-1"></a>  machineId,</span>
+<span id="annotated-cell-3-24"><a href="#annotated-cell-3-24" aria-hidden="true" tabindex="-1"></a>  resolvedStatus,</span>
+<span id="annotated-cell-3-25"><a href="#annotated-cell-3-25" aria-hidden="true" tabindex="-1"></a>  openWorkOrderCount,</span>
+<span id="annotated-cell-3-26"><a href="#annotated-cell-3-26" aria-hidden="true" tabindex="-1"></a>  lastTelemetryEventId,</span>
+<span id="annotated-cell-3-27"><a href="#annotated-cell-3-27" aria-hidden="true" tabindex="-1"></a>  lastOperatorReportId,</span>
+<span id="annotated-cell-3-28"><a href="#annotated-cell-3-28" aria-hidden="true" tabindex="-1"></a>  lastUpdateAt</span>
+<span id="annotated-cell-3-29"><a href="#annotated-cell-3-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="annotated-cell-3-30"><a href="#annotated-cell-3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-3-31"><a href="#annotated-cell-3-31" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span></span>
+<span id="annotated-cell-3-32"><a href="#annotated-cell-3-32" aria-hidden="true" tabindex="-1"></a>  <span class="ch">:machineId</span>,</span>
+<span id="annotated-cell-3-33"><a href="#annotated-cell-3-33" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-3-34" class="code-annotation-target"><a href="#annotated-cell-3-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">CASE</span></span>
+<span id="annotated-cell-3-35"><a href="#annotated-cell-3-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">COALESCE</span>(wos.openWorkOrderCount, <span class="dv">0</span>) <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">THEN</span> <span class="st">'UnderMaintenance'</span></span>
+<span id="annotated-cell-3-36"><a href="#annotated-cell-3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-3-37"><a href="#annotated-cell-3-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> loo.statusOverride <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="annotated-cell-3-38"><a href="#annotated-cell-3-38" aria-hidden="true" tabindex="-1"></a>      <span class="kw">AND</span> loo.reportTimestamp <span class="op">&gt;=</span> <span class="fu">CURRENT_TIMESTAMP</span> <span class="op">-</span> <span class="dt">INTERVAL</span> <span class="st">'4 hours'</span></span>
+<span id="annotated-cell-3-39"><a href="#annotated-cell-3-39" aria-hidden="true" tabindex="-1"></a>      <span class="cf">THEN</span> loo.statusOverride</span>
+<span id="annotated-cell-3-40"><a href="#annotated-cell-3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-3-41"><a href="#annotated-cell-3-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="ch">:faultCodeId</span> <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="st">'Fault'</span></span>
+<span id="annotated-cell-3-42"><a href="#annotated-cell-3-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">ELSE</span> <span class="fu">COALESCE</span>(<span class="ch">:statusRaw</span>, <span class="st">'Idle'</span>)</span>
+<span id="annotated-cell-3-43"><a href="#annotated-cell-3-43" aria-hidden="true" tabindex="-1"></a>  <span class="cf">END</span> <span class="kw">AS</span> resolvedStatus,</span>
+<span id="annotated-cell-3-44"><a href="#annotated-cell-3-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-3-45"><a href="#annotated-cell-3-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">COALESCE</span>(wos.openWorkOrderCount, <span class="dv">0</span>) <span class="kw">AS</span> openWorkOrderCount,</span>
+<span id="annotated-cell-3-46"><a href="#annotated-cell-3-46" aria-hidden="true" tabindex="-1"></a>  <span class="ch">:telemetryEventId</span> <span class="kw">AS</span> lastTelemetryEventId,</span>
+<span id="annotated-cell-3-47"><a href="#annotated-cell-3-47" aria-hidden="true" tabindex="-1"></a>  loo.operatorReportId <span class="kw">AS</span> lastOperatorReportId,</span>
+<span id="annotated-cell-3-48"><a href="#annotated-cell-3-48" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-3-49" class="code-annotation-target"><a href="#annotated-cell-3-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">GREATEST</span>(</span>
+<span id="annotated-cell-3-50"><a href="#annotated-cell-3-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COALESCE</span>(<span class="ch">:eventTimestamp</span>, <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>),</span>
+<span id="annotated-cell-3-51"><a href="#annotated-cell-3-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COALESCE</span>(loo.reportTimestamp, <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>),</span>
+<span id="annotated-cell-3-52"><a href="#annotated-cell-3-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COALESCE</span>(wos.lastWorkOrderChangeAt, <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>)</span>
+<span id="annotated-cell-3-53"><a href="#annotated-cell-3-53" aria-hidden="true" tabindex="-1"></a>  ) <span class="kw">AS</span> lastUpdateAt</span>
+<span id="annotated-cell-3-54"><a href="#annotated-cell-3-54" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> WorkOrderSignals wos</span>
+<span id="annotated-cell-3-55"><a href="#annotated-cell-3-55" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> LatestOperatorOverride loo <span class="kw">ON</span> <span class="kw">TRUE</span></span>
+<span id="annotated-cell-3-56"><a href="#annotated-cell-3-56" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="6" onclick="event.preventDefault();">6</a><span id="annotated-cell-3-57" class="code-annotation-target"><a href="#annotated-cell-3-57" aria-hidden="true" tabindex="-1"></a><span class="kw">ON</span> CONFLICT (machineId) DO <span class="kw">UPDATE</span></span>
+<span id="annotated-cell-3-58"><a href="#annotated-cell-3-58" aria-hidden="true" tabindex="-1"></a><span class="kw">SET</span></span>
+<span id="annotated-cell-3-59"><a href="#annotated-cell-3-59" aria-hidden="true" tabindex="-1"></a>  resolvedStatus <span class="op">=</span> EXCLUDED.resolvedStatus,</span>
+<span id="annotated-cell-3-60"><a href="#annotated-cell-3-60" aria-hidden="true" tabindex="-1"></a>  openWorkOrderCount <span class="op">=</span> EXCLUDED.openWorkOrderCount,</span>
+<span id="annotated-cell-3-61"><a href="#annotated-cell-3-61" aria-hidden="true" tabindex="-1"></a>  lastTelemetryEventId <span class="op">=</span> EXCLUDED.lastTelemetryEventId,</span>
+<span id="annotated-cell-3-62"><a href="#annotated-cell-3-62" aria-hidden="true" tabindex="-1"></a>  lastOperatorReportId <span class="op">=</span> EXCLUDED.lastOperatorReportId,</span>
+<span id="annotated-cell-3-63"><a href="#annotated-cell-3-63" aria-hidden="true" tabindex="-1"></a>  lastUpdateAt <span class="op">=</span> EXCLUDED.lastUpdateAt;</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="1" data-code-annotation="1">Pick the most recent telemetry event per machine.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="1"><code>WorkOrderSignals</code> - Counts active work orders and captures the latest maintenance change for the machine.</span>
 </dd>
-<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="15" data-code-annotation="2">Pick the most recent operator report that contains a manual status override.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="10" data-code-annotation="2"><code>LatestOperatorOverride</code> – Fetches the most recent valid operator status override for the machine.</span>
 </dd>
-<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="29" data-code-annotation="3">Count open work orders per machine to detect maintenance state.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="22" data-code-annotation="3">Insert into <code>CurrentMachineState</code> – Writes or updates the single current state row for the machine.</span>
 </dd>
-<dt data-target-cell="annotated-cell-2" data-target-annotation="4">4</dt>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="40" data-code-annotation="4">Resolve status using precedence: maintenance → manual override (time boxed) → telemetry.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="34" data-code-annotation="4">Status resolution logic – Determines the machine’s status using maintenance, operator override, then telemetry.</span>
 </dd>
-<dt data-target-cell="annotated-cell-2" data-target-annotation="5">5</dt>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="51" data-code-annotation="5">Keep pointers to the exact records that drove the current view for auditability.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="49" data-code-annotation="5"><code>lastUpdateAt</code> calculation – Records the most recent timestamp from telemetry, maintenance, or operator input.</span>
 </dd>
-<dt data-target-cell="annotated-cell-2" data-target-annotation="6">6</dt>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="6">6</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="53" data-code-annotation="6">lastUpdateAt reflects the most recent update source (telemetry vs operator override).</span>
-</dd>
-<dt data-target-cell="annotated-cell-2" data-target-annotation="7">7</dt>
-<dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="60" data-code-annotation="7">Only one telemetry row per machine is used (rn = 1) to avoid scanning history in dashboards.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="57" data-code-annotation="6">Upsert logic – Guarantees exactly one up-to-date row per machine in <code>CurrentMachineState</code>.</span>
 </dd>
 </dl>
+</section>
+<section id="how-health-score-fits-into-the-current-view" class="level3" data-number="6.2.4">
+<h3 data-number="6.2.4" class="anchored" data-anchor-id="how-health-score-fits-into-the-current-view"><span class="header-section-number">6.2.4</span> How Health Score fits into the current view</h3>
+<p>Once a new health score in <a href="#sec-health-score" class="quarto-xref">Section&nbsp;6.1.4</a> is computed, the Health Scoring Service automatically updates the current state for the affected machine using the following update statement.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4"><pre class="sourceCode sql code-annotation-code code-with-copy code-annotated"><code class="sourceCode sql"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">UPDATE</span> CurrentMachineState</span>
+<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SET</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3" aria-hidden="true" tabindex="-1"></a>  healthScore <span class="op">=</span> new_score_value,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4" aria-hidden="true" tabindex="-1"></a>  lastUpdateAt <span class="op">=</span> <span class="fu">CURRENT_TIMESTAMP</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-4-5" class="code-annotation-target"><a href="#annotated-cell-4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> machineId <span class="op">=</span> target_machine_id;</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="3" data-code-annotation="1"><code>new_score_value</code> is the computed health score produce by the scoring function for each machine</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="4" data-code-annotation="2"><code>lastUpdateAt</code> is bumped so the dashboard can tell the record was updated recently</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="5" data-code-annotation="3"><code>target_machine_id</code> identifies which machine row to update</span>
+</dd>
+</dl>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><code>CurrentMachineState.lastUpdateAt</code> represents the most recent time <strong>any part of the machine’s current state changed</strong>. This includes:</p>
+<ul>
+<li>a status change driven by telemetry, work orders, or operator overrides</li>
+<li>an update to <code>openWorkOrderCount</code></li>
+<li>a new <code>healthScore</code> written by the Health Scoring Service</li>
+</ul>
+<p>Because both status resolution and health scoring update the same read model, <code>lastUpdateAt</code> reflects overall <strong>state freshness</strong>, not just telemetry arrival time.</p>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
 </section>
 </section>
 </section>
@@ -1086,40 +1206,125 @@ Table&nbsp;1: Field level details for the MVP schema
 </section>
 <section id="operational-and-maintenance-views" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="operational-and-maintenance-views"><span class="header-section-number">7.2</span> Operational and Maintenance Views</h2>
-
+<div style="page-break-after: always;"></div>
 </section>
 </section>
 <section id="security-and-data-protection" class="level1" data-number="8">
 <h1 data-number="8"><span class="header-section-number">8</span> Security and Data Protection</h1>
+<p>The platform is designed to protect operational data, ensure controlled access, and maintain trust in machine status and maintenance decisions. Security is treated as a foundational requirement rather than an afterthought, especially given the safety and reliability implications of industrial systems.</p>
 <section id="key-security-concerns" class="level2" data-number="8.1">
 <h2 data-number="8.1" class="anchored" data-anchor-id="key-security-concerns"><span class="header-section-number">8.1</span> Key Security Concerns</h2>
+<p>The primary security concerns addressed by the platform include:</p>
+<ul>
+<li>Unauthorized access to operational data, such as machine health, fault history, and maintenance records<br>
+</li>
+<li>Improper modification of machine state, which could lead to unsafe operational decisions<br>
+</li>
+<li>Loss of traceability, where it becomes unclear who changed a status or triggered maintenance<br>
+</li>
+<li>Exposure of sensitive telemetry or operational metadata across plants and regions</li>
+</ul>
+<p>The architecture mitigates these risks by separating ingestion, processing, and presentation layers, and by enforcing access controls at every boundary.</p>
 </section>
 <section id="authentication-and-authorization" class="level2" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="authentication-and-authorization"><span class="header-section-number">8.2</span> Authentication and Authorization</h2>
+<p>Authentication and authorization are handled centrally using Microsoft Entra ID, ensuring consistent identity management across all user interfaces and services. APIs validate access tokens on every request, ensuring users can only view or modify data permitted by their role.</p>
+<p><strong>Authentication</strong><br>
+All users access the platform through Entra ID using enterprise credentials. This supports single sign-on, multi-factor authentication, and centralized user lifecycle management.</p>
+<p><strong>Authorization</strong><br>
+Role-based access control (RBAC) governs what actions users can perform. Typical roles include:</p>
+<ul>
+<li>Operator: view machine status, submit operator reports<br>
+</li>
+<li>Supervisor: review machine health, approve or prioritize work orders<br>
+</li>
+<li>Maintenance team: manage work orders and maintenance actions<br>
+</li>
+<li>Administrator: manage users, roles, and system configuration</li>
+</ul>
 </section>
 <section id="data-integrity-and-auditability" class="level2" data-number="8.3">
 <h2 data-number="8.3" class="anchored" data-anchor-id="data-integrity-and-auditability"><span class="header-section-number">8.3</span> Data Integrity and Auditability</h2>
-
+<p>Trust in machine condition and maintenance decisions is critical for safe and reliable operations. This design makes it easy to review incidents after they occur, meet regulatory requirements, and continuously improve how operational rules are applied.</p>
+<p>The platform ensures data integrity and auditability through:</p>
+<ul>
+<li>Append-only telemetry storage, preserving all raw sensor data for analysis and audits</li>
+<li>Explicit pointers in the current state, such as <code>lastTelemetryEventId</code> and <code>lastOperatorReportId</code>, which link the current view back to its source records</li>
+<li>Clear separation of concerns, where:
+<ul>
+<li>Status resolution is handled by event processing and workflows</li>
+<li>Health scoring is computed independently by a scoring service</li>
+</ul></li>
+<li>Timestamps on all updates, allowing operators and auditors to understand when and why a state changed</li>
+</ul>
+<div style="page-break-after: always;"></div>
 </section>
 </section>
 <section id="scalability-and-reliability" class="level1" data-number="9">
 <h1 data-number="9"><span class="header-section-number">9</span> Scalability and Reliability</h1>
+<p>The platform is built to scale from a small MVP deployment to a large, multi-plant industrial environment without any major redesign.</p>
 <section id="data-growth-and-performance" class="level2" data-number="9.1">
 <h2 data-number="9.1" class="anchored" data-anchor-id="data-growth-and-performance"><span class="header-section-number">9.1</span> Data Growth and Performance</h2>
+<p>Telemetry data grows rapidly as machines publish frequent updates. The platform approach ensures predictable performance as the number of machines, plants, and telemetry volume increases.The architecture addresses this by:</p>
+<ul>
+<li>Separating historical and operational data
+<ul>
+<li>Raw telemetry is stored in a scalable analytics store optimized for high write volumes</li>
+<li>The <code>CurrentMachineState</code> table stores only one row per machine for fast reads</li>
+</ul></li>
+<li>Event-driven processing</li>
+</ul>
+<p>Telemetry events update only the affected machine’s current state, avoiding periodic full-table scans or fleet-wide recomputation</p>
+<ul>
+<li>Read-optimized dashboards</li>
+</ul>
+<p>Dashboards query the <code>CurrentMachineState</code> table directly, enabling fast refreshes even as historical data grows into millions or billions of records.</p>
 </section>
 <section id="failure-scenarios-and-resilience" class="level2" data-number="9.2">
 <h2 data-number="9.2" class="anchored" data-anchor-id="failure-scenarios-and-resilience"><span class="header-section-number">9.2</span> Failure Scenarios and Resilience</h2>
-
+<p>The system is designed to remain operational under common failure scenarios:</p>
+<ul>
+<li>Telemetry spikes or bursts: Event buffering absorbs temporary surges without dropping data.<br>
+</li>
+<li>Temporary processing delays: If downstream services slow down, telemetry ingestion continues and processing resumes when capacity is available.<br>
+</li>
+<li>Service restarts or redeployments: Stateless processing components can restart safely, using stored state and telemetry history to resume operation.<br>
+</li>
+<li>Partial data loss or gaps: Rolling windows and incremental scoring ensure that short interruptions do not permanently distort machine health indicators.</li>
+</ul>
+<div style="page-break-after: always;"></div>
 </section>
 </section>
 <section id="conclusion-and-recommendations" class="level1" data-number="10">
 <h1 data-number="10"><span class="header-section-number">10</span> Conclusion and Recommendations</h1>
 <section id="summary" class="level2" data-number="10.1">
 <h2 data-number="10.1" class="anchored" data-anchor-id="summary"><span class="header-section-number">10.1</span> Summary</h2>
+<p>This report presents a scalable and practical approach to building a Factory Equipment Health and Maintenance Platform MVP. By separating telemetry ingestion, state resolution, health scoring, and visualization, the platform achieves clarity, performance, and operational reliability.</p>
+<p>Key strengths of the proposed solution include:</p>
+<ul>
+<li>A clear and explainable machine status model with explicit precedence rules<br>
+</li>
+<li>Near real-time operational visibility without querying historical telemetry<br>
+</li>
+<li>Independent and incremental health scoring suitable for streaming data<br>
+</li>
+<li>Strong foundations for security, auditability, and role-based access</li>
+</ul>
 </section>
 <section id="future-enhancements" class="level2" data-number="10.2">
 <h2 data-number="10.2" class="anchored" data-anchor-id="future-enhancements"><span class="header-section-number">10.2</span> Future Enhancements</h2>
-
+<p>As the platform evolves beyond the MVP, the following enhancements can be considered:</p>
+<ul>
+<li>Introduce predictive maintenance models using historical telemetry and work order outcomes<br>
+</li>
+<li>Refine health scoring using machine-type-specific models and adaptive thresholds<br>
+</li>
+<li>Add automated anomaly detection to complement rule-based logic<br>
+</li>
+<li>Enhance dashboards with trend views and cross-plant comparisons</li>
+</ul>
+<p>Overall, the architecture provides a solid foundation that balances simplicity for the MVP with a clear path toward more advanced industrial analytics and automation.</p>
+<div style="page-break-after: always;"></div>
 </section>
 </section>
 <section id="references" class="level1" data-number="11">
@@ -1130,6 +1335,9 @@ Table&nbsp;1: Field level details for the MVP schema
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">11 References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-montgomery2020introduction" class="csl-entry" role="listitem">
+Montgomery, D. C. 2020. <em>Introduction to Statistical Quality Control</em>. John Wiley &amp; Sons, Incorporated. <a href="https://books.google.ca/books?id=X6JFxAEACAAJ">https://books.google.ca/books?id=X6JFxAEACAAJ</a>.
+</div>
 <div id="ref-infiniteUptimeHealthScore" class="csl-entry" role="listitem">
 Uptime, Infinite. 2022. <span>“Understanding Machine Health Score and Its Importance in Asset Reliability.”</span> 2022. <a href="https://medium.com/@infiniteuptime/understanding-machine-health-score-and-its-importance-in-asset-reliability-4912218ea2f7">https://medium.com/@infiniteuptime/understanding-machine-health-score-and-its-importance-in-asset-reliability-4912218ea2f7</a>.
 </div>
