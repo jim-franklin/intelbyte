@@ -185,8 +185,6 @@ bibliography: references.bib
 
 # Conclusion and Recommendations
 
-## Summary
-
 {{< include report/_summary.qmd >}}
 
 ## Future Enhancements
