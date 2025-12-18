@@ -1,6 +1,7 @@
 ---
 title: "Designing a Scalable Factory Equipment Health and Maintenance Platform"
 subtitle: "Architecture, Data Model, and Algorithms"
+author: Franklin Aryee
 
 toc-location: left
 title-block-banner: true
@@ -19,43 +20,60 @@ format:
         icon: speedometer
         text: Dashboards
 
-
-  typst:
-    text:
-      align: justify
-    page-layout: full
-    toc-title: "Table of Contents"
+  pdf:
     toc: true
+    toc-title: "Table of Contents"
     number-sections: true
-    margin:
-      top: 1.25in
-      bottom: 1.25in
-      left: 1in
-      right: 1in
+    page-layout: full
+    latex-engine: xelatex
+    geometry:
+      - top=1.25in
+      - bottom=1.25in
+      - left=1in
+      - right=1in
+    include-in-header:
+      text: |
+        \usepackage{graphicx}
+        \usepackage{fancyhdr}
+        \usepackage{ragged2e}
+        \usepackage{pdflscape}
+
+        \justifying
+
+        % --- Logo on EVERY page, including title page ---
+        \fancypagestyle{plain}{%
+          \fancyhf{}%
+          \fancyhead[L]{\includegraphics[height=20pt]{images/intelbyte_logo.png}}%
+          \renewcommand{\headrulewidth}{0pt}%
+        }
+
+        \pagestyle{fancy}
+        \fancyhf{} % clear header/footer
+        \fancyhead[L]{\includegraphics[height=20pt]{images/intelbyte_logo.png}}
+        \renewcommand{\headrulewidth}{0pt}
+
+        % Avoid "headheight too small" warnings
+        \setlength{\headheight}{24pt}
+
     output-file: report.pdf
 
-  dashboard:
-    output-file: index-dashboard.html
+engine: knitr
+
+dashboard:
+  output-file: index-dashboard.html
 
 bibliography: references.bib
 ---
-```{=typst}
-#pagebreak()
-```
-
+\newpage
 # Executive Summary
 
 {{< include report/_executive_summary.qmd >}}
-```{=typst}
-#pagebreak()
-```
+\newpage
 
 # Problem Context and Objectives
 
 {{< include report/_problem_context.qmd >}}
-```{=typst}
-#pagebreak()
-```
+\newpage
 
 # Requirements Analysis  
 
@@ -68,9 +86,7 @@ bibliography: references.bib
 ## Operational Constraints and Quality Considerations
 
 {{< include report/_operational_quality_requirements.qmd >}}
-```{=typst}
-#pagebreak()
-```
+\newpage
 
 # System Architecture
 
@@ -87,9 +103,7 @@ bibliography: references.bib
 ## Architecture Pattern and Rationale
 
 {{< include report/_architecture_tradeoffs.qmd >}}
-```{=typst}
-#pagebreak()
-```
+\newpage
 
 # Data and Database Design
 
@@ -111,14 +125,13 @@ bibliography: references.bib
 
 {{< include report/_field_level_details.qmd >}}
 
-## Telemetry and Current State Strategy
+## Telemetry and Current Machine State Strategy
 
 {{< include report/_telemetry_current_state_strategy.qmd >}}
-```{=typst}
-#pagebreak()
-```
+\newpage
 
 # Core Algorithms
+{{< include report/_core_algorithms_intro.qmd >}}
 
 ## Machine Health Scoring
 
@@ -127,9 +140,7 @@ bibliography: references.bib
 ## Latest Machine Status Resolution
 
 {{< include report/_latest_status_resolution.qmd >}}
-```{=typst}
-#pagebreak()
-```
+\newpage
 
 # Dashboards and User Experience
 
@@ -140,11 +151,11 @@ bibliography: references.bib
 ## Operational and Maintenance Views
 
 {{< include report/_maintenance_dashboards.qmd >}}
-```{=typst}
-#pagebreak()
-```
+\newpage
 
 # Security and Data Protection
+
+{{< include report/_security_and_data_protection_intro.qmd >}}
 
 ## Key Security Concerns
 
@@ -157,22 +168,20 @@ bibliography: references.bib
 ## Data Integrity and Auditability
 
 {{< include report/_auditability.qmd >}}
-```{=typst}
-#pagebreak()
-```
+\newpage
 
 # Scalability and Reliability
 
+{{< include report/_scalability_and_reliability_intro.qmd >}}
+
 ## Data Growth and Performance
 
-{{< include report/_scalability.qmd >}}
+{{< include report/_data_growth_performance.qmd >}}
 
 ## Failure Scenarios and Resilience
 
 {{< include report/_failure_handling.qmd >}}
-```{=typst}
-#pagebreak()
-```
+\newpage
 
 # Conclusion and Recommendations
 
@@ -183,9 +192,7 @@ bibliography: references.bib
 ## Future Enhancements
 
 {{< include report/_future_work.qmd >}}
-```{=typst}
-#pagebreak()
-```
+\newpage
 
 # References
 
