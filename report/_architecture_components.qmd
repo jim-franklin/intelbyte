@@ -5,13 +5,13 @@
 
 ::: {layout-ncol=4}
 
-![Power Apps](assets/PowerApps_scalable.png){fig-alt="Power Apps icon" width=90}
+![Power Apps](assets/PowerApps_scalable.svg){fig-alt="Power Apps icon" width=90}
 
-![Power BI](assets/PowerBI_scalable.png){fig-alt="Power BI icon" width=90}
+![Power BI](assets/PowerBI_scalable.svg){fig-alt="Power BI icon" width=90}
 
 ![Copilot](assets/CopilotStudio_scalable.svg){fig-alt="Copilot icon" width=90}
 
-![AI Builder](assets/AIBuilder_scalable.png){fig-alt="AIBuilder icon" width=90}
+![AI Builder](assets/AIBuilder_scalable.svg){fig-alt="AIBuilder icon" width=90}
 
 :::
 
@@ -44,7 +44,7 @@
 
 ::: {layout-ncol=4}
 
-![Dataverse](assets/Dataverse_scalable.png){fig-alt="Dataverse icon" width=90}
+![Dataverse](assets/Dataverse_scalable.svg){fig-alt="Dataverse icon" width=90}
 
 ![Azure SQL Database](assets/SQL-Database.svg){fig-alt="Azure SQL Database icon" width=90}
 
@@ -63,7 +63,7 @@
 
 ![Microsoft Entra](assets/Microsoft_Entra.svg){fig-alt="Microsoft Entra icon" width=90}
 
-![Power Automate](assets/PowerAutomate_scalable.png){fig-alt="Power Automate icon" width=90}
+![Power Automate](assets/PowerAutomate_scalable.svg){fig-alt="Power Automate icon" width=90}
 
 ![Teams](assets/microsoft-teams-icon.svg){fig-alt="Teams icon" width=90}
 
