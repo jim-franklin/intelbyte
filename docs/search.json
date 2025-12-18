@@ -161,17 +161,10 @@
     "text": "9.2 Failure Scenarios and Resilience\nThe system is designed to remain operational under common failure scenarios:\n\nTelemetry spikes or bursts: Event buffering absorbs temporary surges without dropping data.\n\nTemporary processing delays: If downstream services slow down, telemetry ingestion continues and processing resumes when capacity is available.\n\nService restarts or redeployments: Stateless processing components can restart safely, using stored state and telemetry history to resume operation.\n\nPartial data loss or gaps: Rolling windows and incremental scoring ensure that short interruptions do not permanently distort machine health indicators."
   },
   {
-    "objectID": "index.html#summary",
-    "href": "index.html#summary",
-    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
-    "section": "10.1 Summary",
-    "text": "10.1 Summary\nThis report presents a scalable and practical approach to building a Factory Equipment Health and Maintenance Platform MVP. By separating telemetry ingestion, state resolution, health scoring, and visualization, the platform achieves clarity, performance, and operational reliability.\nKey strengths of the proposed solution include:\n\nA clear and explainable machine status model with explicit precedence rules\n\nNear real-time operational visibility without querying historical telemetry\n\nIndependent and incremental health scoring suitable for streaming data\n\nStrong foundations for security, auditability, and role-based access"
-  },
-  {
     "objectID": "index.html#future-enhancements",
     "href": "index.html#future-enhancements",
     "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
-    "section": "10.2 Future Enhancements",
-    "text": "10.2 Future Enhancements\nAs the platform evolves beyond the MVP, the following enhancements can be considered:\n\nIntroduce predictive maintenance models using historical telemetry and work order outcomes\n\nRefine health scoring using machine-type-specific models and adaptive thresholds\n\nAdd automated anomaly detection to complement rule-based logic\n\nEnhance dashboards with trend views and cross-plant comparisons\n\nOverall, the architecture provides a solid foundation that balances simplicity for the MVP with a clear path toward more advanced industrial analytics and automation."
+    "section": "10.1 Future Enhancements",
+    "text": "10.1 Future Enhancements\nAs the platform evolves beyond the MVP, the following enhancements can be considered:\n\nIntroduce predictive maintenance models using historical telemetry and work order outcomes\n\nRefine health scoring using machine-type-specific models and adaptive thresholds\n\nAdd automated anomaly detection to complement rule-based logic\n\nEnhance dashboards with trend views and cross-plant comparisons\n\nOverall, the architecture provides a solid foundation that balances simplicity for the MVP with a clear path toward more advanced industrial analytics and automation."
   }
 ]
