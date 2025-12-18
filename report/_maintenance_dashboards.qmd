@@ -1,0 +1,8 @@
+The Operational and Maintenance views support supervisors and maintenance teams. They focus on exceptions and action queues rather than the full fleet.
+
+**What it shows**
+
+- Machines currently in `Fault` with the latest fault context  
+- Machines currently `UnderMaintenance` with `openWorkOrderCount`  
+- A small "Recently changed" list using `lastUpdateAt`  
+- A drill down entry point using `lastTelemetryEventId` and `lastOperatorReportId`  

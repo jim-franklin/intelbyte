@@ -1,0 +1,7 @@
+The Current Equipment Status screen is the primary operator view. It answers one question quickly: what is happening right now across the line.
+
+**What it shows**
+
+- Fleet level counts by `resolvedStatus` (Running, Idle, Fault, UnderMaintenance)  
+- A sortable table of machines with `resolvedStatus`, `healthScore`, `openWorkOrderCount`, and `lastUpdateAt`  
+- Quick filters (Plant, Production line, Machine type)  

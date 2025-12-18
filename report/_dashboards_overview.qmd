@@ -1,0 +1,9 @@
+The dashboards provide a near-real time operational view of machine health, status, and maintenance activity across the fleet. Updates to the underlying data model are event driven rather than tied to a fixed polling schedule.
+
+Telemetry is assumed to arrive approximately every 60 seconds per machine. Each telemetry event is processed as it arrives and immediately triggers an update to the affected machine’s current status and health score. Operational events, such as work order creation or closure and operator status overrides, may occur at any time and similarly trigger immediate updates to the corresponding machine’s current state.
+
+All event driven updates are written directly to the `CurrentMachineState` table, which serves as the single read model for dashboard views. Dashboards poll this table on a short, configurable interval, typically between 30 seconds and one minute. This polling interval is chosen to balance responsiveness with visual stability for human operators, while ensuring that operational changes are reflected shortly after they occur.
+
+The `lastUpdateAt` field records the most recent time any current state attribute changed, including telemetry driven status resolution, health score updates, work order activity, or operator overrides. This allows users to assess data freshness, distinguish active machines from stale ones, and detect potential reporting or connectivity issues.
+
+![Combined dashboard mockup showing fleet wide equipment status, health scores, work orders, and maintenance actions](figures/dashboard-screens.png)
