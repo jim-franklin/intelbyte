@@ -11,7 +11,7 @@
 
 ![Copilot](assets/CopilotStudio_scalable.svg){fig-alt="Copilot icon" width=90}
 
-![AI Builder](assets/AIBuilder_scalable.png){fig-alt="AIBuilder icon" width=90}
+![AI Builder](assets/AIBuilder_scalable.svg){fig-alt="AIBuilder icon" width=90}
 
 :::
 
