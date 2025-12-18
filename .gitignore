@@ -17,4 +17,3 @@ _site/
 **/*.quarto_ipynb
 
 .nojekyll
-assets/
