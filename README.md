@@ -1,12 +1,10 @@
-# Scalable Factory Equipment Health and Maintenance Platform
+# Designing a Scalable Factory Equipment Health and Maintenance Platform
 
 This project presents a system design and data architecture for monitoring factory equipment health and maintenance status at scale.
 
 The goal is to demonstrate how raw telemetry, maintenance workflows, and operator input can be combined to produce a clear, real time operational view of machine status and health.
 
 This repository is structured as a technical design report rather than a full production system.
-
----
 
 ## What this project answers
 
@@ -20,8 +18,6 @@ The solution focuses on:
 - Maintaining a fast, query friendly current state store
 - Supporting real time dashboards without scanning historical data
 
----
-
 ## Why Quarto
 
 Quarto was used to author this report because it allows:
@@ -33,8 +29,6 @@ Quarto was used to author this report because it allows:
 
 This approach makes the design easy to review, share, and extend.
 
----
-
 ## Outputs
 
 - **Website (HTML)**  
@@ -42,5 +36,3 @@ This approach makes the design easy to review, share, and extend.
 
 - **PDF Report**  
   Available via the website at https://jim-franklin.github.io/intelbyte/
-
----
