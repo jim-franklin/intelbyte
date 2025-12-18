@@ -2,12 +2,14 @@ The platform follows an event-driven architecture that separates high-volume tel
 
 At a high level, the system consists of a web application for operators and supervisors, backend services that manage operational workflows and business rules, a telemetry ingestion path optimized for scale, and a database layer that stores both historical telemetry and current machine state. Maintenance requests are generated through configurable rules and recorded as work items linked to the machines and events that triggered them.
 
+:::{.landscape}
 ```{mermaid}
 %%| fig-cap: "System architecture and data flow"
 %%| label: fig-architecture
 %%| fig-align: center
-%%| fig-width: 80%
-%%| fig-height: 100%
+%%| fig-width: 7
+%%| fig-height: 6
+
 flowchart TB
   A[Machines or Plant Gateways] -->|Telemetry Events| B[Telemetry Ingestion API]
   B --> C[(Telemetry Store<br/>Append-only events)]
@@ -34,3 +36,4 @@ flowchart TB
   L --> N[Notification Channel<br/>Teams or Email]
   G --> N
 ```
+:::

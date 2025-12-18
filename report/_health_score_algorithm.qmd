@@ -1,94 +1,101 @@
 The Machine Health Scoring algorithm converts raw machine signals into a single, easy-to-understand indicator that reflects how healthy a machine is at any moment. The goal is not to predict failure perfectly in the MVP, but to provide a **clear, consistent signal** that helps supervisors and maintenance teams prioritize attention.
 
-Industry platforms often normalize machine health to a **0–100** scale to simplify interpretation for operations and maintenance teams @infiniteUptimeHealthScore. The score combines **three ideas** that are common in industrial monitoring systems:
+Industry platforms often normalize machine health score to a **0–100** scale to simplify interpretation for operations and maintenance teams (@infiniteUptimeHealthScore). The score combines **three ideas** that are common in industrial monitoring systems:
 
 - **Normal operation** keeps the score high  
 - **Abnormal sensor readings** reduce the score gradually  
 - **Faults and maintenance states** reduce the score immediately and visibly 
 
-### How often the score is recalculated
+This balance ensures the score is stable enough for dashboards while still reacting quickly to real issues.
 
-The health score is recalculated each time new telemetry is processed for a machine, which in typical industrial environments means every few seconds to every minute, depending on sensor. High frequency signals such as temperature or vibration may arrive every 5–30 seconds, while lower frequency metrics such as throughput or energy usage may arrive every 1–5 minutes.
+### How Often the Score is Recalculated
 
-Rather than recomputing the score from all historical data, the system updates the score incrementally using the previous value. This keeps the score near real-time, computationally efficient, and stable for dashboards, while still reacting quickly when sustained issues or faults appear.
+The health score is recalculated **each time new telemetry is processed for a machine**. We assume telemetry arrives about **every 60 seconds**, so a **15-minute rolling window** provides **about 15 samples per metric**. Hence,  This window reduces short lived noise while still reacting to sustained changes in machine condition.
 
-### Where the score is stored
+Rather than recomputing the score from full historical data, the system updates the score incrementally using the previously stored value. In practice, this is done using an **Exponentially Weighted Moving Average (EWMA)**, which balances responsiveness with noise reduction in streaming telemetry (@montgomery2020introduction).
 
-The computed score is written to `CurrentMachineState.healthScore` for each machine:
+If telemetry is missing for too long, the previous score is no longer reliable. As a safeguard, when the time since the last telemetry event exceeds **twice the rolling window** (in this case, more than **30 minutes** for the 15-minute window), the smoothing state is reset and the score is reinitialized from the current raw telemetry based score. See @sec-health-score for the health scoring pseudocode.
+
+::: {.callout-note appearance="simple"}
+The machines are assumed to publish telemetry approximately every **60 seconds**. A **15-minute rolling window** provides **15 samples per metric**. The health score is recalculated whenever new telemetry arrives and is typically updated once per minute.
+:::
+
+### Where the Score is Stored
+
+Health scoring is performed by the Health Scoring Service (Azure Functions), which computes the score as telemetry arrives (approximately every minute). The score is stored in the `CurrentMachineState` table, which represents the latest operational view for each machine:
 
 - Table: `CurrentMachineState`  
 - Primary key: `machineId`  
-- Foreign keys:  
+- Related references:  
   - `machineId -> Machine.machineId`  
   - `lastTelemetryEventId -> TelemetryEvent.telemetryEventId`  
   - `lastOperatorReportId -> OperatorReport.operatorReportId`  
-- Key fields updated by this algorithm:   
-  - `healthScore`  
-  - `lastUpdateAt`
 
-This aligns with @tbl-field-level-details.
+The scoring service keeps health scoring independent from status resolution and maintenance workflows by updating only the fields it owns:
 
-### Scoring logic overview
+- `healthScore`  
+- `lastUpdateAt`  
 
-At each update, the score is computed using recent machine behavior, not the full telemetry history.
+### Scoring Logic
 
-::: {.callout-note appearance="simple"}
-### Telemetry Frequency and Rolling Window
+At each update, the score is computed using recent machine behavior, not the full telemetry history. The scoring logic combines:
 
-The machines are assumed to publish telemetry approximately every 30 seconds. A 15 minute rolling window is therefore used for health scoring, providing about 30 samples per metric. This window smooths short-lived sensor noise while remaining responsive to sustained changes in machine condition.
-:::
-
-The scoring logic combines:
-
-- The latest telemetry readings, aggregated as rolling averages over a 15 minute window
+- The latest telemetry readings, aggregated as rolling averages over a 15-minute window  
 - Current machine status (`Running`, `Idle`, `Fault`, `UnderMaintenance`)  
 - Any active fault codes and their severity (`High`, `Medium`)  
 - Operator flags from inspections (`IssueObserved`, `MinorConcern`)  
 
-The annotated pseudocode below shows exactly how each signal contributes to the final score and how the result is stabilized for operational dashboards.
+The pseudocode in @sec-health-score shows how each signal contributes to the final score and how EWMA smoothing stabilizes the result for operational dashboards.
+
+### Pseudocode for Scoring {#sec-health-score}
 
 ```python
-def compute_health_score(previous_score):
-    healthScore = 100                                  # <1>
-    smoothing_param = 0.2                              # <2>
+def compute_health_score(previous_score, minutes_since_last_telemetry):
+    rawScore = 100                                       # <1>
+    smoothing_param = 0.2                                # <2>
 
-    # sensor penalties
-    healthScore -= temperature_penalty                 # <3>
-    healthScore -= vibration_penalty                   # <3>
-    healthScore -= throughput_penalty                  # <3>
+    # sensor penalties (computed from last 15 minutes of data)
+    rawScore -= temperature_penalty                      # <3>
+    rawScore -= vibration_penalty                        # <3>
+    rawScore -= throughput_penalty                       # <3>
 
     # fault severity penalties
-    if fault_severity == "High":                       # <4>
-        healthScore -= 60
+    if fault_severity == "High":                         # <4>
+        rawScore -= 60
     elif fault_severity == "Medium":
-        healthScore -= 30
+        rawScore -= 30
 
     # apply operator input only if a report exists
-    if operator_flag == "IssueObserved":                # <5>
-        healthScore -= 20
+    if operator_flag == "IssueObserved":                 # <5>
+        rawScore -= 20
     elif operator_flag == "MinorConcern":
-        healthScore -= 10
+        rawScore -= 10
 
     # maintenance state cap
-    if status == "UnderMaintenance":                    # <6>
-        healthScore = min(healthScore, 60)
+    if status == "UnderMaintenance":                     # <6>
+        rawScore = min(rawScore, 60)
 
-    # smoothing (EWMA)
-    healthScore = (                                     # <7>
-        smoothing_param * healthScore + 
-        (1 - smoothing_param) * previous_score
-    )
+    # initialization / reset rule (no previous score or stale telemetry)
+    if previous_score is None or minutes_since_last_telemetry > 30:  # <7>
+        healthScore = rawScore
+    else:
+        # smoothing (EWMA)
+        healthScore = (                                  # <8>
+            smoothing_param * rawScore +
+            (1 - smoothing_param) * previous_score
+        )
 
     # ensure the final score stays between 0 (worst) and 100 (best)
-    healthScore = max(0, min(100, healthScore))         # <8>
-    
+    healthScore = max(0, min(100, healthScore))          # <9>
+
     return healthScore
 ```
-1.	Start from a healthy baseline score of 100 for every evaluation.
-2.	Define how strongly the new score reacts to recent data versus the previous score.
-3.	Apply penalties based on sensor readings that deviate from normal operating ranges.
+1.	Start from a baseline score and compute a fresh rawScore for this update.
+2.	Set the EWMA weight so recent data influences the score without causing jumps.
+3.	Apply penalties based on 15-minute rolling window sensor summaries
 4.	Apply a strong penalty when an active fault is detected, scaled by severity.
-5.	Incorporate human input from inspections or shift reports when operators flag issues.
-6.	Cap the score when the machine is under maintenance to reflect reduced availability.
-7.	Smooth the score using an Exponentially Weighted Moving Average to reduce noise.
-8.	Ensure the final score always remains between 0 and 100.
+5.	Reduce the score when operators flag issues in inspections or shift reports.
+6.	Cap the score during maintenance to reflect reduced availability.
+7.	If there is no previous score (MVP start) or telemetry is stale (>2× rolling window), reinitialize from rawScore.
+8.	Otherwise smooth using EWMA to reduce noise while keeping responsiveness.
+9.	Clamp the final score to stay between 0 and 100.

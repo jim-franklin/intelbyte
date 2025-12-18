@@ -1,92 +1,151 @@
-The platform resolves `CurrentMachineState.resolvedStatus` using three signal sources, with clear precedence so the output stays explainable.
+The platform resolves `CurrentMachineState.resolvedStatus` by evaluating multiple signal sources in a fixed order of precedence. This ensures the resulting status is predictable, explainable, and aligned with real operational decision-making.
 
-**Precedence (highest wins):**
+### Status Precedence
 
-1. **UnderMaintenance** when there is an open work order
-2. **Manual override** when an operator has set a status override that is still active
-3. **Telemetry derived** status from the latest telemetry event
+Status precedence ensures maintenance and safety decisions take priority, while allowing the system to automatically return to telemetry driven status when conditions normalize. It is applied as follows (highest wins):
 
-This ensures an operator’s safety decision can override sensors, while still allowing the system to return to automatic status when the override expires.
+1. **UnderMaintenance**  
+   If one or more maintenance work orders are active for a machine, the machine is considered `UnderMaintenance` regardless of telemetry or operator inputs. This condition is represented by `openWorkOrderCount > 0`, derived from `WorkOrder.status`.
 
-### Process
+2. **Manual operator override**  
+   If an operator submits a report containing `statusOverride`, the most recent override is applied while it is still valid. This allows short term safety or inspection decisions to override automated signals.
 
-1. The stream processor continuously determines the latest **telemetry status** per machine (e.g., `Fault` if a fault code is present, else `Running` or `Idle` from the device status field).
-2. The operational workflow updates `openWorkOrderCount` when work orders open or close.
-3. The latest operator report with `statusOverride` (if any) is treated as a **manual override** for a short time window (for example 2 to 8 hours), after which the system falls back to telemetry.
+3. **Telemetry derived status**  
+   When neither maintenance nor a manual override is active, the status is derived from the latest telemetry event. If `faultCodeId` is present the status is `Fault`; otherwise the status falls back to the device reported operating state stored in `TelemetryEvent.statusRaw` (for example `Running` or `Idle`).
 
-### Query
+::: {.callout-note appearance="simple"}
+`WorkOrder.status` drives `openWorkOrderCount`. Any non-zero count forces `CurrentMachineState.resolvedStatus = 'UnderMaintenance'` until all active work orders are closed and `openWorkOrderCount` returns to `0`.
+:::
+
+::: {.callout-note appearance="simple"}
+Operator overrides are intentionally time boxed (example: 4 hours). After the window expires, status resolution automatically falls back to telemetry without requiring manual cleanup.
+:::
+
+### Initialization at Launch
+
+This runs once to create the  `CurrentMachineState` at MVP launch. After this, the system stays current via event driven upserts (Section 6.2.4).
 
 ```sql
-WITH LatestTelemetry AS (                                               -- <1>
+-- Physical table (read model)
+CREATE TABLE IF NOT EXISTS CurrentMachineState (
+  machineId               BIGINT PRIMARY KEY,
+  resolvedStatus          VARCHAR(32) NOT NULL,
+  healthScore             NUMERIC(5,2) NULL,
+  openWorkOrderCount      INT NOT NULL DEFAULT 0,
+  lastTelemetryEventId    BIGINT NULL,
+  lastOperatorReportId    BIGINT NULL,
+  lastUpdateAt            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Event Driven Updates
+
+After the initialization, the platforms performs small targeted updates:
+
+-	When telemetry arrives for a machine, update that machine’s row  
+-	When a work order opens or closes for a machine, update that machine’s row  
+-	When an operator submits an override for a machine, update that machine’s row  
+
+The query below shows per machine update executed when telemetry, work order or operator override is received for a specific machine.
+
+::: {.callout-note appearance=“simple”}
+The SQL code block is executed with parameters supplied by the `Stream Processor`. These parameters are taken directly from the incoming telemetry message from `Telemetry Ingestion API`. They include `:machineId`, `:telemetryEventId`, `:eventTimestamp`, `:statusRaw`, `:faultCodeId`.
+:::
+
+```sql
+-- Per machine event update (event driven upsert)
+WITH WorkOrderSignals AS (                                                -- <1>
   SELECT
-    t.machineId,
-    t.telemetryEventId,
-    t.eventTimestamp,
-    t.statusRaw,
-    t.faultCodeId,
-    ROW_NUMBER() OVER (
-      PARTITION BY t.machineId
-      ORDER BY t.eventTimestamp DESC
-    ) AS rn
-  FROM TelemetryEvent t
+    COUNT(*) FILTER (WHERE status IN ('Open','InProgress')) AS openWorkOrderCount,
+    MAX(COALESCE(closedAt, createdAt)) AS lastWorkOrderChangeAt
+  FROM WorkOrder
+  WHERE machineId = :machineId
 ),
 
-LatestOperatorOverride AS (                                              -- <2>
+LatestOperatorOverride AS (                                               -- <2>
   SELECT
-    r.machineId,
-    r.operatorReportId,
-    r.reportTimestamp,
-    r.statusOverride,
-    ROW_NUMBER() OVER (
-      PARTITION BY r.machineId
-      ORDER BY r.reportTimestamp DESC
-    ) AS rn
-  FROM OperatorReport r
-  WHERE r.statusOverride IS NOT NULL
-),
+    operatorReportId,
+    reportTimestamp,
+    statusOverride
+  FROM OperatorReport
+  WHERE machineId = :machineId
+    AND statusOverride IS NOT NULL
+  ORDER BY reportTimestamp DESC
+  LIMIT 1
+)
 
-OpenWorkOrders AS (                                                     -- <3>
-  SELECT
-    w.machineId,
-    COUNT(*) AS openWorkOrderCount
-  FROM WorkOrder w
-  WHERE w.status IN ('Open', 'InProgress')
-  GROUP BY w.machineId
+INSERT INTO CurrentMachineState (                                         -- <3>
+  machineId,
+  resolvedStatus,
+  openWorkOrderCount,
+  lastTelemetryEventId,
+  lastOperatorReportId,
+  lastUpdateAt
 )
 
 SELECT
-  m.machineId,
-  CASE                                                                 -- <4>
-    WHEN COALESCE(owo.openWorkOrderCount, 0) > 0 THEN 'UnderMaintenance'
+  :machineId,
+
+  CASE                                                                     -- <4>
+    WHEN COALESCE(wos.openWorkOrderCount, 0) > 0 THEN 'UnderMaintenance'
 
     WHEN loo.statusOverride IS NOT NULL
-     AND loo.reportTimestamp >= CURRENT_TIMESTAMP - INTERVAL '4 hours' THEN loo.statusOverride
+      AND loo.reportTimestamp >= CURRENT_TIMESTAMP - INTERVAL '4 hours'
+      THEN loo.statusOverride
 
-    WHEN lt.faultCodeId IS NOT NULL THEN 'Fault'
-    ELSE COALESCE(lt.statusRaw, 'Idle')
+    WHEN :faultCodeId IS NOT NULL THEN 'Fault'
+    ELSE COALESCE(:statusRaw, 'Idle')
   END AS resolvedStatus,
 
-  COALESCE(owo.openWorkOrderCount, 0) AS openWorkOrderCount,
-  lt.telemetryEventId AS lastTelemetryEventId,                          -- <5>
+  COALESCE(wos.openWorkOrderCount, 0) AS openWorkOrderCount,
+  :telemetryEventId AS lastTelemetryEventId,
   loo.operatorReportId AS lastOperatorReportId,
-  GREATEST(                                                             -- <6>
-    COALESCE(lt.eventTimestamp, TIMESTAMP '1970-01-01'),
-    COALESCE(loo.reportTimestamp, TIMESTAMP '1970-01-01')
+
+  GREATEST(                                                                -- <5>
+    COALESCE(:eventTimestamp, TIMESTAMP '1970-01-01'),
+    COALESCE(loo.reportTimestamp, TIMESTAMP '1970-01-01'),
+    COALESCE(wos.lastWorkOrderChangeAt, TIMESTAMP '1970-01-01')
   ) AS lastUpdateAt
+FROM WorkOrderSignals wos
+LEFT JOIN LatestOperatorOverride loo ON TRUE
 
-FROM Machine m
-LEFT JOIN LatestTelemetry lt
-  ON m.machineId = lt.machineId AND lt.rn = 1                           -- <7>
-LEFT JOIN LatestOperatorOverride loo
-  ON m.machineId = loo.machineId AND loo.rn = 1
-LEFT JOIN OpenWorkOrders owo
-  ON m.machineId = owo.machineId;
+ON CONFLICT (machineId) DO UPDATE                                         -- <6>
+SET
+  resolvedStatus = EXCLUDED.resolvedStatus,
+  openWorkOrderCount = EXCLUDED.openWorkOrderCount,
+  lastTelemetryEventId = EXCLUDED.lastTelemetryEventId,
+  lastOperatorReportId = EXCLUDED.lastOperatorReportId,
+  lastUpdateAt = EXCLUDED.lastUpdateAt;
 ```
+1.	`WorkOrderSignals` - Counts active work orders and captures the latest maintenance change for the machine.
+2.	`LatestOperatorOverride` – Fetches the most recent valid operator status override for the machine.
+3.	Insert into `CurrentMachineState` – Writes or updates the single current state row for the machine.
+4.	Status resolution logic – Determines the machine’s status using maintenance, operator override, then telemetry.
+5.	`lastUpdateAt` calculation – Records the most recent timestamp from telemetry, maintenance, or operator input.
+6.	Upsert logic – Guarantees exactly one up-to-date row per machine in `CurrentMachineState`.
 
-1.	Pick the most recent telemetry event per machine.
-2.	Pick the most recent operator report that contains a manual status override.
-3.	Count open work orders per machine to detect maintenance state.
-4.	Resolve status using precedence: maintenance → manual override (time boxed) → telemetry.
-5.	Keep pointers to the exact records that drove the current view for auditability.
-6.	lastUpdateAt reflects the most recent update source (telemetry vs operator override).
-7.	Only one telemetry row per machine is used (rn = 1) to avoid scanning history in dashboards.
+### How Health Score fits into the current view
+
+Once a new health score in @sec-health-score is computed, the Health Scoring Service automatically updates the current state for the affected machine using the following update statement.
+
+```sql
+UPDATE CurrentMachineState
+SET
+  healthScore = new_score_value,                                  -- <1>
+  lastUpdateAt = CURRENT_TIMESTAMP                                -- <2>
+WHERE machineId = target_machine_id;                              -- <3>
+```
+1.  `new_score_value` is the computed health score produce by the scoring function for each machine
+2.  `lastUpdateAt` is bumped so the dashboard can tell the record was updated recently
+3.  `target_machine_id` identifies which machine row to update
+
+
+::: {.callout-note appearance="simple"}
+`CurrentMachineState.lastUpdateAt` represents the most recent time **any part of the machine’s current state changed**. This includes:
+
+- a status change driven by telemetry, work orders, or operator overrides
+- an update to `openWorkOrderCount`
+- a new `healthScore` written by the Health Scoring Service
+
+Because both status resolution and health scoring update the same read model, `lastUpdateAt` reflects overall **state freshness**, not just telemetry arrival time.
+:::

@@ -1,0 +1,13 @@
+Telemetry data grows rapidly as machines publish frequent updates. The platform approach ensures predictable performance as the number of machines, plants, and telemetry volume increases.The architecture addresses this by:
+
+-	Separating historical and operational data
+    -	Raw telemetry is stored in a scalable analytics store optimized for high write volumes
+    -	The `CurrentMachineState` table stores only one row per machine for fast reads
+
+-	Event-driven processing
+
+Telemetry events update only the affected machine’s current state, avoiding periodic full-table scans or fleet-wide recomputation
+
+- Read-optimized dashboards
+
+Dashboards query the `CurrentMachineState` table directly, enabling fast refreshes even as historical data grows into millions or billions of records.

@@ -1,0 +1,8 @@
+As the platform evolves beyond the MVP, the following enhancements can be considered:
+
+-   Introduce predictive maintenance models using historical telemetry and work order outcomes  
+-	Refine health scoring using machine-type-specific models and adaptive thresholds  
+- 	Add automated anomaly detection to complement rule-based logic  
+-	Enhance dashboards with trend views and cross-plant comparisons  
+
+Overall, the architecture provides a solid foundation that balances simplicity for the MVP with a clear path toward more advanced industrial analytics and automation.

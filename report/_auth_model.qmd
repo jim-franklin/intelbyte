@@ -1,0 +1,13 @@
+Authentication and authorization are handled centrally using Microsoft Entra ID, ensuring consistent identity management across all user interfaces and services. APIs validate access tokens on every request, ensuring users can only view or modify data permitted by their role.
+
+**Authentication**  
+All users access the platform through Entra ID using enterprise credentials. This supports single sign-on, multi-factor authentication, and centralized user lifecycle management.
+
+**Authorization**  
+Role-based access control (RBAC) governs what actions users can perform. Typical roles include:
+
+-   Operator: view machine status, submit operator reports  
+-   Supervisor: review machine health, approve or prioritize work orders  
+-   Maintenance team: manage work orders and maintenance actions  
+-   Administrator: manage users, roles, and system configuration  
+

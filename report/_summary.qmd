@@ -1,0 +1,8 @@
+This report presents a scalable and practical approach to building a Factory Equipment Health and Maintenance Platform MVP. By separating telemetry ingestion, state resolution, health scoring, and visualization, the platform achieves clarity, performance, and operational reliability.
+
+Key strengths of the proposed solution include:
+
+-	A clear and explainable machine status model with explicit precedence rules  
+-	Near real-time operational visibility without querying historical telemetry  
+-	Independent and incremental health scoring suitable for streaming data  
+-	Strong foundations for security, auditability, and role-based access  

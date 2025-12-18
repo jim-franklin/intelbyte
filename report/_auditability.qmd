@@ -1,0 +1,10 @@
+Trust in machine condition and maintenance decisions is critical for safe and reliable operations. This design makes it easy to review incidents after they occur, meet regulatory requirements, and continuously improve how operational rules are applied.
+
+The platform ensures data integrity and auditability through:
+
+-   Append-only telemetry storage, preserving all raw sensor data for analysis and audits
+-	Explicit pointers in the current state, such as `lastTelemetryEventId` and `lastOperatorReportId`, which link the current view back to its source records
+-	Clear separation of concerns, where:
+    -	Status resolution is handled by event processing and workflows
+    -	Health scoring is computed independently by a scoring service
+-	Timestamps on all updates, allowing operators and auditors to understand when and why a state changed

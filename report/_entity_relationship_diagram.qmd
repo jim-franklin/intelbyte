@@ -1,11 +1,13 @@
 The Entity Relationship Diagram below shows the core entities such as assets, telemetry, human inputs, and maintenance workflows are connected while keeping responsibilities clearly separated. See @tbl-field-level-details for field level details.
 
+::: {.landscape}
 ```{mermaid}
 %%| fig-cap: "High level ERD for assets, telemetry, operator inputs, and maintenance"
 %%| label: fig-ERD
 %%| fig-align: center
-%%| fig-width: 80%
-%%| fig-height: 100%
+%%| fig-width: 8
+%%| fig-height: 6
+
 erDiagram
   Plant ||--o{ ProductionLine : contains
   ProductionLine ||--o{ Machine : contains
@@ -27,3 +29,5 @@ erDiagram
   TelemetryEvent }o--|| CurrentMachineState : last_telemetry
   OperatorReport }o--|| CurrentMachineState : last_operator_report
 ```
+
+:::

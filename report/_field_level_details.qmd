@@ -1,6 +1,9 @@
 The table below lists the proposed tables with their primary keys, foreign keys, and essential fields required for the MVP.
 
-| Table | Primary Key | Foreign Keys | Key Fields |
+\newpage
+
+::: {.landscape}
+| Table | Primary Key | Related References | Key Fields |
 |:---|:---|:---|:---|
 | `Plant` | `plantId` |  | `plantCode`, `plantName`, `region`, `timezone`, `isActive`, `createdAt` |
 | `ProductionLine` | `lineId` | `plantId (Plant.plantId)` | `lineCode`, `lineName`, `area`, `isActive`, `createdAt` |
@@ -14,5 +17,5 @@ The table below lists the proposed tables with their primary keys, foreign keys,
 | `ThresholdRule` | `thresholdRuleId` | `machineTypeId (MachineType.machineTypeId)` | `ruleName`, `metricName`, `operator`, `thresholdValue`, `windowMinutes`, `severity`, `isActive` |
 | `CurrentMachineState` | `machineId` | `machineId (Machine.machineId)`, `lastTelemetryEventId (TelemetryEvent.telemetryEventId)`, `lastOperatorReportId (OperatorReport.operatorReportId)` | `resolvedStatus`, `healthScore`, `lastUpdateAt`, `openWorkOrderCount` |
 
-
 : Field level details for the MVP schema {#tbl-field-level-details .striped .hover}
+:::

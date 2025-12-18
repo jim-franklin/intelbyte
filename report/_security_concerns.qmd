@@ -1,0 +1,8 @@
+The primary security concerns addressed by the platform include:
+
+-   Unauthorized access to operational data, such as machine health, fault history, and maintenance records  
+-   Improper modification of machine state, which could lead to unsafe operational decisions  
+-   Loss of traceability, where it becomes unclear who changed a status or triggered maintenance  
+-   Exposure of sensitive telemetry or operational metadata across plants and regions  
+
+The architecture mitigates these risks by separating ingestion, processing, and presentation layers, and by enforcing access controls at every boundary.

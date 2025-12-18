@@ -1,0 +1,1 @@
+The platform is built to scale from a small MVP deployment to a large, multi-plant industrial environment without any major redesign.
