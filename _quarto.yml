@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  favicon: images/favicon.ico
+  favicon: favicon.ico
   navbar:
     right:
       - href: index.qmd
