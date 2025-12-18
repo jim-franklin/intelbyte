@@ -116,14 +116,14 @@
     "href": "index.html#current-equipment-status-screen",
     "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
     "section": "7.1 Current Equipment Status Screen",
-    "text": "7.1 Current Equipment Status Screen"
+    "text": "7.1 Current Equipment Status Screen\nThe Current Equipment Status screen is the primary operator view. It answers one question quickly: what is happening right now across the line.\nWhat it shows\n\nFleet level counts by resolvedStatus (Running, Idle, Fault, UnderMaintenance)\n\nA sortable table of machines with resolvedStatus, healthScore, openWorkOrderCount, and lastUpdateAt\n\nQuick filters (Plant, Production line, Machine type)"
   },
   {
     "objectID": "index.html#operational-and-maintenance-views",
     "href": "index.html#operational-and-maintenance-views",
     "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
     "section": "7.2 Operational and Maintenance Views",
-    "text": "7.2 Operational and Maintenance Views"
+    "text": "7.2 Operational and Maintenance Views\nThe Operational and Maintenance views support supervisors and maintenance teams. They focus on exceptions and action queues rather than the full fleet.\nWhat it shows\n\nMachines currently in Fault with the latest fault context\n\nMachines currently UnderMaintenance with openWorkOrderCount\n\nA small “Recently changed” list using lastUpdateAt\n\nA drill down entry point using lastTelemetryEventId and lastOperatorReportId"
   },
   {
     "objectID": "index.html#key-security-concerns",
