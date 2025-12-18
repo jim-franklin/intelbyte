@@ -1,6 +1,9 @@
 project:
   type: website
   output-dir: docs
+  resources:
+    - assets/**
+    - images/**
 
 website:
   favicon: favicon.ico
