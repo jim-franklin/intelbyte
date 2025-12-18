@@ -16,7 +16,7 @@ format:
       - href: report.pdf
         icon: file-earmark-pdf
         text: PDF
-      - href: dashboard.html
+      - href: figures/dashboard-screens.png
         icon: speedometer
         text: Dashboards
 
@@ -143,6 +143,8 @@ bibliography: references.bib
 \newpage
 
 # Dashboards and User Experience
+
+{{< include report/_dashboards_overview.qmd >}}
 
 ## Current Equipment Status Screen
 
