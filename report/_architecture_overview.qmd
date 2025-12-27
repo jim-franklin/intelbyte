@@ -16,11 +16,13 @@ flowchart TB
   B -->|Event stream| D[Stream Processor]
   D --> E[(Current State Store<br/>One row per machine)]
 
-  F[Operator or Supervisor Web App] -->|Login and Token| M[Identity Provider<br/>Microsoft Entra ID]
+  F[Operator or Supervisor Web App] -->|Authenticate| M[Identity Provider<br/>Microsoft Entra ID]
   M -->|Access Token| G[Operational API]
 
   G --> H[(Operational Store<br/>Assets, Logs, Work Orders, Users)]
-  G --> E
+
+  %% CHANGED: Operational Store now feeds Current State
+  H -->|Work order / override change events| E
 
   E --> I[Current Equipment Status Screen]
   C --> J[Analytics and Reporting]

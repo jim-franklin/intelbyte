@@ -166,5 +166,264 @@
     "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
     "section": "10.1 Future Enhancements",
     "text": "10.1 Future Enhancements\nAs the platform evolves beyond the MVP, the following enhancements can be considered:\n\nIntroduce predictive maintenance models using historical telemetry and work order outcomes\n\nRefine health scoring using machine-type-specific models and adaptive thresholds\n\nAdd automated anomaly detection to complement rule-based logic\n\nEnhance dashboards with trend views and cross-plant comparisons\n\nOverall, the architecture provides a solid foundation that balances simplicity for the MVP with a clear path toward more advanced industrial analytics and automation."
+  },
+  {
+    "objectID": "presentation.html#goal-and-scope",
+    "href": "presentation.html#goal-and-scope",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "1. Goal and Scope",
+    "text": "1. Goal and Scope\nGoal: Provide a near real time operational view of machine status and health.\nWhat the solution delivers - Latest machine status per machine: Running, Idle, Fault, UnderMaintenance - A single read model (CurrentMachineState) for fast dashboard reads - Health score (0–100) updated as telemetry arrives (rolling window + EWMA) - Audit pointers to the last driving events (telemetry, work order, override)"
+  },
+  {
+    "objectID": "presentation.html#high-level-architecture",
+    "href": "presentation.html#high-level-architecture",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "2. High Level Architecture",
+    "text": "2. High Level Architecture\nIngestion and processing - Telemetry and operational events arrive continuously - A stream processor applies precedence rules and upserts the machine’s current state - Health scoring service computes healthScore and updates the same row\nRead path - Dashboards read exclusively from CurrentMachineState - No scans of historical telemetry needed for operator screens"
+  },
+  {
+    "objectID": "presentation.html#data-model-at-a-glance",
+    "href": "presentation.html#data-model-at-a-glance",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "3. Data Model at a Glance",
+    "text": "3. Data Model at a Glance\nHistorical stores - TelemetryEvent (append only history) - WorkOrder (maintenance workflow) - OperatorReport (human inputs and overrides)\nOperational read model - CurrentMachineState (one row per machine) - resolvedStatus, healthScore, openWorkOrderCount - lastTelemetryEventId, lastOperatorReportId - lastUpdateAt"
+  },
+  {
+    "objectID": "presentation.html#latest-status-resolution",
+    "href": "presentation.html#latest-status-resolution",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "4. Latest Status Resolution",
+    "text": "4. Latest Status Resolution\nStatus is resolved using precedence (highest wins) 1. UnderMaintenance if openWorkOrderCount &gt; 0 2. statusOverride if still active (time boxed, example: 4 hours) 3. Telemetry derived: - Fault if faultCodeId present - else fallback to TelemetryEvent.statusRaw (example Running or Idle)\n\n\n\n\n\n\nWorkOrder.status drives openWorkOrderCount. Any non zero count forces UnderMaintenance until all active work orders are closed."
+  },
+  {
+    "objectID": "presentation.html#event-driven-upsert-pattern",
+    "href": "presentation.html#event-driven-upsert-pattern",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "5. Event Driven Upsert Pattern",
+    "text": "5. Event Driven Upsert Pattern\nWhy event driven - Each event updates only the affected machine row - Scales well even when thousands of machines send telemetry every minute\nHow it works - On telemetry event for machine X: upsert only machine X - On work order open or close for machine X: upsert only machine X - On operator override for machine X: upsert only machine X"
+  },
+  {
+    "objectID": "presentation.html#outline",
+    "href": "presentation.html#outline",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Outline",
+    "text": "Outline\n\n\nProblem and Objectives\n\n\n\n\nOverview of Platform Architecture\n\n\n\n\nDatabase Design\n\n\n\n\nCore Algorithms\n\n\n\n\nSecurity and Data Protection\n\n\n\n\nAuthentication and Authorization\n\n\n\n\nScalability and Reliability"
+  },
+  {
+    "objectID": "presentation.html#requirements-that-drive-the-design",
+    "href": "presentation.html#requirements-that-drive-the-design",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Requirements that drive the design",
+    "text": "Requirements that drive the design\n\n\n⚙️ Functional\n\nSupport multiple plants, production lines, and machines\nIngest and persist high-frequency machine telemetry\nCapture operator reports and manual overrides\nAutomate maintenance requests and work orders\nProvide a current equipment status view with one row per machine\n\n\n📈 Quality\n\nScale horizontally to thousands of machines\nHandle continuous growth to millions of telemetry events\nDeliver fast, predictable reads for operational dashboards\nPreserve full audit history and traceability\nEnforce secure, role-based access controls"
+  },
+  {
+    "objectID": "presentation.html#architecture-overview",
+    "href": "presentation.html#architecture-overview",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Architecture overview",
+    "text": "Architecture overview\nThe platform stores all telemetry events as historical data. At the same time, a stream processor updates a lightweight table that holds the current state of each machine, enabling fast and reliable operational dashboards.\n\n\n\n\n\n\n\nSystem architecture and data flow"
+  },
+  {
+    "objectID": "presentation.html#data-model-overview",
+    "href": "presentation.html#data-model-overview",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Data Model Overview",
+    "text": "Data Model Overview\nCore entities support plants, machines, telemetry, operator inputs, and maintenance workflows.\n\n\n\n\n\n\nCall out Plant, ProductionLine, Machine, TelemetryEvent, OperatorReport, WorkOrder, FaultCode, ThresholdConfig, User and Role."
+  },
+  {
+    "objectID": "presentation.html#telemetry-and-current-state-strategy",
+    "href": "presentation.html#telemetry-and-current-state-strategy",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Telemetry and Current State Strategy",
+    "text": "Telemetry and Current State Strategy\nTo balance scalability with real-time operational visibility, the platform decouples how data is stored from how it is served to users:\n\n\nTelemetry events are stored as an append-only history for analytics, audits, and reporting\n\n\n\n\nA separate CurrentMachineState table maintains one row per machine for operational views\n\n\n\n\nStatus and health are updated through event-driven upserts as telemetry and operational events arrive\n\n\n\n\nDashboards read exclusively from CurrentMachineState for fast, predictable performance"
+  },
+  {
+    "objectID": "presentation.html#algorithm-a-machine-health-scoring",
+    "href": "presentation.html#algorithm-a-machine-health-scoring",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Algorithm A: Machine Health Scoring",
+    "text": "Algorithm A: Machine Health Scoring\nThe machine health score is a normalized indicator ranging from 0 (critical) to 100 (healthy) that summarizes recent machine behavior into a single, easy-to-interpret value. The score is recalculated whenever new telemetry arrives and is written to CurrentMachineState.healthScore. The algorithm combines sensor deviations, fault severity, operator input, and maintenance state, while applying smoothing to reduce noise.\n\nPseudocode\ndef compute_health_score(previous_score, minutes_since_last_telemetry):\n    rawScore = 100\n    smoothing_param = 0.2\n\n    # sensor penalties (computed from last 15 minutes of data)\n    rawScore -= temperature_penalty\n    rawScore -= vibration_penalty\n    rawScore -= throughput_penalty\n\n    # fault severity penalties\n    if fault_severity == \"High\":\n        rawScore -= 60\n    elif fault_severity == \"Medium\":\n        rawScore -= 30\n\n    # apply operator input only if a report exists\n    if operator_flag == \"IssueObserved\":\n        rawScore -= 20\n    elif operator_flag == \"MinorConcern\":\n        rawScore -= 10\n\n    # maintenance state cap\n    if status == \"UnderMaintenance\":\n        rawScore = min(rawScore, 60)\n\n    # initialization / reset rule (no previous score or stale telemetry)\n    if previous_score is None or minutes_since_last_telemetry &gt; 30:\n        healthScore = rawScore\n    else:\n        # Apply smoothing (EWMA)\n        healthScore = (\n            smoothing_param * rawScore +\n            (1 - smoothing_param) * previous_score\n        )\n\n    # ensure the final score stays between 0 (worst) and 100 (best)\n    healthScore = max(0, min(100, healthScore))\n\n    return healthScore"
+  },
+  {
+    "objectID": "presentation.html#cadence-and-storage",
+    "href": "presentation.html#cadence-and-storage",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Cadence and storage",
+    "text": "Cadence and storage\n\nTelemetry cadence assumption: every 60 seconds\nRolling window: 15 minutes, about 15 samples\nEWMA smoothing uses previous score\nReset smoothing if telemetry gap exceeds 30 minutes\nStore in CurrentMachineState.healthScore"
+  },
+  {
+    "objectID": "presentation.html#algorithm-b-latest-machine-status-resolution",
+    "href": "presentation.html#algorithm-b-latest-machine-status-resolution",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Algorithm B: Latest Machine Status Resolution",
+    "text": "Algorithm B: Latest Machine Status Resolution\nThe platform resolves each machine’s current status using explicit precedence rules to ensure results are deterministic, explainable, and aligned with real operational priorities.\n\nUnder Maintenance: Applied whenever there is at least one open or in progress work order for the machine.\nOperator Override: A manually reported status is honored if it was submitted within the last 4 hours.\nTelemetry-derived Status: From the most recent telemetry using fault codes first, then raw machine status.\n\n\nEmphasize that maintenance and safety always take priority over sensor signals. Operators can override automation temporarily, but telemetry remains the default source of truth.\n\n\nInitialization at Launch\nCREATE TABLE IF NOT EXISTS CurrentMachineState (\n  machineId                  BIGINT PRIMARY KEY,\n  resolvedStatus             VARCHAR(32) NOT NULL,\n\n  -- scoring\n  healthScore                NUMERIC(5,2) NULL,\n\n  -- work orders\n  openWorkOrderCount         INT NOT NULL DEFAULT 0,\n  lastWorkOrderId            BIGINT NULL,\n  lastWorkOrderCreatedByType VARCHAR(32) NULL,  -- 'User' | 'RuleEngine'\n  lastWorkOrderCreatedById   BIGINT NULL,\n\n  -- latest pointers\n  lastTelemetryEventId       BIGINT NULL,\n  lastOperatorReportId       BIGINT NULL,\n\n  -- freshness across any signal\n  lastUpdateAt               TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);"
+  },
+  {
+    "objectID": "presentation.html#security-and-data-protection",
+    "href": "presentation.html#security-and-data-protection",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Security and Data Protection",
+    "text": "Security and Data Protection\n\nProtect operational data and machine state integrity across plants\nPrevent unauthorized access to machine health, telemetry, and maintenance records\nEnsure machine status and maintenance actions cannot be modified improperly\nPreserve clear traceability of who changed status or triggered maintenance\nPrevent data exposure across plants and regions\n\n\n\nProtect operational data and machine state integrity across plants\nensures that machine status, health scores, and maintenance signals are accurate, uncorrupted and trustworthy across all plants, since operators and supervisors rely on this data for safety and production decisions.\nPrevent unauthorized access to machine health, telemetry, and maintenance records\nensures that only authenticated and authorized users are able to view or interact with operational data, preventing accidental exposure or malicious access to sensitive plant information.\nEnsure machine status and maintenance actions cannot be modified improperly\nStatus changes, overrides, and work order updates must follow controlled workflows, reducing the risk of unsafe decisions caused by unauthorized or accidental edits.\nPreserve clear traceability of who changed status or triggered maintenance\nEvery status override and work order action is traceable to a user or system component, supporting accountability, troubleshooting, and audit requirements.\nPrevent data exposure across plants and regions\nThe platform enforces data isolation so users only access data for plants and regions they are authorized to manage, which is important for operational separation and compliance."
+  },
+  {
+    "objectID": "presentation.html#scalability-and-reliability",
+    "href": "presentation.html#scalability-and-reliability",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Scalability and Reliability",
+    "text": "Scalability and Reliability\n\nScalability: All machine telemetry is written to an append-only event store designed for very high write volume\nOperational Performance: A lightweight CurrentMachineState table keeps exactly one row per machine, enabling fast and predictable dashboard queries\nReliability: Event-driven processing uses retries, dead-letter handling, and idempotent upserts to safely handle failures and duplicate events\nData Freshness and Trust: A lastUpdateAt timestamp makes it easy to detect stale machines, delayed telemetry, or processing gaps\n\n\n\nStart by reminding them that industrial systems generate a lot of data very quickly\nThe append-only telemetry store absorbs this volume without slowing down the system\nInstead of querying history, dashboards read from a small current-state table optimized for operations\nEvent-driven updates mean the system reacts immediately as data arrives\nIdempotent upserts ensure retries or duplicates never corrupt machine state\nlastUpdateAt gives operations teams confidence that what they see is current and reliable\nOverall, this design scales cleanly as plants, machines, and telemetry grow"
+  },
+  {
+    "objectID": "presentation.html#problem",
+    "href": "presentation.html#problem",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Problem and Objectives",
+    "text": "Problem and Objectives\nDesign a platform that continuously monitors equipment health and maintenance activity across production lines, capable of absorbing high-frequency telemetry while presenting operations teams with a clear, always-current view of system status.\n🎯 MVP Goals\n\n\nIngest continuous machine telemetry data\n\n\n\n\nScale to thousands of machines and millions of telemetry records\n\n\n\n\nStore complete historical data for analysis, reporting, and audits\n\n\n\n\nMaintain a single current state per machine that powers near real-time dashboards\n\n\n\n\nEnable operators to log issues and status changes\n\n\n\n\nGenerate maintenance work orders based on issues, rules, or thresholds"
+  },
+  {
+    "objectID": "presentation.html#requirements-that-drive-the-platform",
+    "href": "presentation.html#requirements-that-drive-the-platform",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Requirements that Drive the Platform",
+    "text": "Requirements that Drive the Platform\n\n\n\n⚙️ Functional\n\n\nSupport multiple plants, production lines, and machines\nIngest and persist high-frequency machine telemetry\nCapture operator reports and manual overrides\nAutomate and manage maintenance requests and work orders\nProvide a current equipment status view with one row per machine\n\n\n\n📈 Quality\n\n\nScale horizontally to thousands of machines\nHandle continuous growth to millions of telemetry events\nDeliver fast, predictable reads for operational dashboards\nPreserve full audit history and traceability\nEnforce secure, role-based access controls"
+  },
+  {
+    "objectID": "presentation.html#data-model",
+    "href": "presentation.html#data-model",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Data Model",
+    "text": "Data Model\nCore entities support plants, machines, telemetry, operator inputs, and maintenance workflows.\n\n\n\n\n\n\nCall out Plant, ProductionLine, Machine, TelemetryEvent, OperatorReport, WorkOrder, FaultCode, ThresholdConfig, User and Role."
+  },
+  {
+    "objectID": "presentation.html#architecture",
+    "href": "presentation.html#architecture",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Overview of Platform Architecture",
+    "text": "Overview of Platform Architecture\nThe platform stores all telemetry events as historical data. At the same time, a stream processor updates a lightweight table that holds the current state of each machine, enabling fast and reliable operational dashboards.\n\n\n\n\n\n\n\n\nSystem architecture and data flow"
+  },
+  {
+    "objectID": "presentation.html#erd",
+    "href": "presentation.html#erd",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Entity Relationship Diagram",
+    "text": "Entity Relationship Diagram\nCore entities support plants, machines, telemetry, operator inputs, and maintenance workflows.\n\n\n\n\n\n\nCall out Plant, ProductionLine, Machine, TelemetryEvent, OperatorReport, WorkOrder, FaultCode, ThresholdConfig, User and Role."
+  },
+  {
+    "objectID": "presentation.html#db-design",
+    "href": "presentation.html#db-design",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Database Design",
+    "text": "Database Design\nThe data model defines how plants, production lines, machines, telemetry, operator inputs, and maintenance workflows relate to each other. It is designed to scale with growing telemetry while preserving clear ownership, traceability, and auditability across all operational data.\n\n\n\n\n\n\n\n\nEntity Relationship Digram"
+  },
+  {
+    "objectID": "presentation.html#telemetry-frequency-and-storage",
+    "href": "presentation.html#telemetry-frequency-and-storage",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Telemetry Frequency and Storage",
+    "text": "Telemetry Frequency and Storage\n\nTelemetry cadence assumption: every 60 seconds\nRolling window: 15 minutes, about 15 samples\nEWMA smoothing uses previous score\nReset smoothing if telemetry gap exceeds 30 minutes\nStore in CurrentMachineState.healthScore"
+  },
+  {
+    "objectID": "presentation.html#algorithm-context-and-assumptions",
+    "href": "presentation.html#algorithm-context-and-assumptions",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Algorithm Context and Assumptions",
+    "text": "Algorithm Context and Assumptions\n\nTelemetry is expected approximately every 60 seconds per machine, providing about 15 samples over a 15-minute rolling window\nEach incoming telemetry event triggers a health score update for the affected machine\nSensor penalties are calculated over the most recent 15-minute rolling window to capture short-term behavior\nEWMA smoothing is applied using the previously stored healthScore to reduce noise and sudden spikes\nSmoothing is reset when telemetry is missing for more than 30 minutes or when no prior score exists\nThe final score is written to CurrentMachineState.healthScore for use by operational dashboards"
+  },
+  {
+    "objectID": "presentation.html#mvp-goals",
+    "href": "presentation.html#mvp-goals",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "🎯 MVP Goals",
+    "text": "🎯 MVP Goals\n\n\nIngest continuous machine telemetry data\n\n\n\n\nScale to thousands of machines and millions of telemetry records\n\n\n\n\nStore complete historical data for analysis, reporting, and audits\n\n\n\n\nMaintain a single current state per machine that powers near real-time dashboards\n\n\n\n\nEnable operators to log issues and status changes\n\n\n\n\nGenerate maintenance work orders based on issues, rules, or thresholds"
+  },
+  {
+    "objectID": "presentation.html#functional",
+    "href": "presentation.html#functional",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "⚙️ Functional",
+    "text": "⚙️ Functional"
+  },
+  {
+    "objectID": "presentation.html#quality",
+    "href": "presentation.html#quality",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "📈 Quality",
+    "text": "📈 Quality"
+  },
+  {
+    "objectID": "presentation.html#pseudocode",
+    "href": "presentation.html#pseudocode",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Pseudocode",
+    "text": "Pseudocode\ndef compute_health_score(previous_score, minutes_since_last_telemetry):\n    rawScore = 100\n    smoothing_param = 0.2\n\n    # sensor penalties (computed from last 15 minutes of data)\n    rawScore -= temperature_penalty\n    rawScore -= vibration_penalty\n    rawScore -= throughput_penalty\n\n    # fault severity penalties\n    if fault_severity == \"High\":\n        rawScore -= 60\n    elif fault_severity == \"Medium\":\n        rawScore -= 30\n\n    # apply operator input only if a report exists\n    if operator_flag == \"IssueObserved\":\n        rawScore -= 20\n    elif operator_flag == \"MinorConcern\":\n        rawScore -= 10\n\n    # maintenance state cap\n    if status == \"UnderMaintenance\":\n        rawScore = min(rawScore, 60)\n\n    # initialization / reset rule (no previous score or stale telemetry)\n    if previous_score is None or minutes_since_last_telemetry &gt; 30:\n        healthScore = rawScore\n    else:\n        # Apply smoothing (EWMA)\n        healthScore = (\n            smoothing_param * rawScore +\n            (1 - smoothing_param) * previous_score\n        )\n\n    # ensure the final score stays between 0 (worst) and 100 (best)\n    healthScore = max(0, min(100, healthScore))\n\n    return healthScore"
+  },
+  {
+    "objectID": "presentation.html#per-machine-event-update-for-current-status",
+    "href": "presentation.html#per-machine-event-update-for-current-status",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Per machine event update for current status",
+    "text": "Per machine event update for current status\nThis upsert runs when one telemetry event arrives for one machine. Parameters are supplied by the stream processor.\nWITH WorkOrderSignals AS (\n  SELECT\n    COUNT(*) FILTER (WHERE status IN ('Open','InProgress')) AS openWorkOrderCount,\n    MAX(COALESCE(closedAt, createdAt)) AS lastWorkOrderChangeAt\n  FROM WorkOrder\n  WHERE machineId = :machineId\n),\nLatestOperatorOverride AS (\n  SELECT\n    operatorReportId,\n    reportTimestamp,\n    statusOverride\n  FROM OperatorReport\n  WHERE machineId = :machineId\n    AND statusOverride IS NOT NULL\n  ORDER BY reportTimestamp DESC\n  LIMIT 1\n)\nINSERT INTO CurrentMachineState (\n  machineId,\n  resolvedStatus,\n  openWorkOrderCount,\n  lastTelemetryEventId,\n  lastOperatorReportId,\n  lastUpdateAt\n)\nSELECT\n  :machineId,\n  CASE\n    WHEN COALESCE(wos.openWorkOrderCount, 0) &gt; 0 THEN 'UnderMaintenance'\n    WHEN loo.statusOverride IS NOT NULL\n      AND loo.reportTimestamp &gt;= CURRENT_TIMESTAMP - INTERVAL '4 hours'\n      THEN loo.statusOverride\n    WHEN :faultCodeId IS NOT NULL THEN 'Fault'\n    ELSE COALESCE(:statusRaw, 'Idle')\n  END AS resolvedStatus,\n  COALESCE(wos.openWorkOrderCount, 0) AS openWorkOrderCount,\n  :telemetryEventId AS lastTelemetryEventId,\n  loo.operatorReportId AS lastOperatorReportId,\n  GREATEST(\n    COALESCE(:eventTimestamp, TIMESTAMP '1970-01-01'),\n    COALESCE(loo.reportTimestamp, TIMESTAMP '1970-01-01'),\n    COALESCE(wos.lastWorkOrderChangeAt, TIMESTAMP '1970-01-01')\n  ) AS lastUpdateAt\nFROM WorkOrderSignals wos\nLEFT JOIN LatestOperatorOverride loo ON TRUE\nON CONFLICT (machineId) DO UPDATE\nSET\n  resolvedStatus = EXCLUDED.resolvedStatus,\n  openWorkOrderCount = EXCLUDED.openWorkOrderCount,\n  lastTelemetryEventId = EXCLUDED.lastTelemetryEventId,\n  lastOperatorReportId = EXCLUDED.lastOperatorReportId,\n  lastUpdateAt = EXCLUDED.lastUpdateAt;"
+  },
+  {
+    "objectID": "presentation.html#event-driven-per-machine-update",
+    "href": "presentation.html#event-driven-per-machine-update",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Event-driven per Machine Update",
+    "text": "Event-driven per Machine Update\nThis update runs once per incoming event and recalculates the current status for a single machine using telemetry data, maintenance-driven work order changes, operator-submitted overrides, and the latest health score. All inputs are supplied by event-driven processes, eliminating the need to scan historical data.\n\n-- Runs for ONE machine whenever ANY of these events occurs:\n-- 1) telemetry event, 2) work order opened/closed, 3) operator override submitted, 4) health score updated.\n\nWITH Incoming AS (\n  SELECT\n    :machineId                :: BIGINT        AS machineId,\n\n    -- Telemetry event fields (present on telemetry events)\n    :telemetryEventId         :: BIGINT        AS telemetryEventId,\n    :eventTimestamp           :: TIMESTAMP     AS eventTimestamp,\n    :statusRaw                :: VARCHAR(32)   AS statusRaw,\n    :faultCodeId              :: BIGINT        AS faultCodeId,\n\n    -- Work order fields (emitted when a work order is created/updated/closed)\n    :workOrderId              :: BIGINT        AS workOrderId,\n    :workOrderCreatedAt       :: TIMESTAMP     AS workOrderCreatedAt,\n    :workOrderClosedAt        :: TIMESTAMP     AS workOrderClosedAt,\n    :openWorkOrderCount       :: INT           AS openWorkOrderCount,\n    :workOrderCreatedByType   :: VARCHAR(32)   AS workOrderCreatedByType,\n    :workOrderCreatedById     :: BIGINT        AS workOrderCreatedById,\n\n    -- Operator report fields (emitted when an operator submits a report/override)\n    :operatorReportId         :: BIGINT        AS operatorReportId,\n    :reportTimestamp          :: TIMESTAMP     AS reportTimestamp,\n    :statusOverride           :: VARCHAR(32)   AS statusOverride,\n\n    -- Health score event fields (present on scoring events)\n    :healthScore              :: NUMERIC(5,2)  AS healthScore,\n    :healthScoreAt            :: TIMESTAMP     AS healthScoreAt\n),\n\nExisting AS (\n  SELECT *\n  FROM CurrentMachineState\n  WHERE machineId = (SELECT machineId FROM Incoming)\n),\n\nMerged AS (\n  SELECT\n    i.machineId,\n\n    -- Keep lastest telemetry\n    COALESCE(i.telemetryEventId, e.lastTelemetryEventId) AS lastTelemetryEventId,\n    COALESCE(i.eventTimestamp,   e.lastUpdateAt)         AS lastTelemetryAt,\n    i.statusRaw                                         AS statusRaw,\n    i.faultCodeId                                       AS faultCodeId,\n\n    -- Keep latest work order signals\n    COALESCE(i.openWorkOrderCount, e.openWorkOrderCount, 0) AS openWorkOrderCount,\n    COALESCE(i.workOrderId, e.lastWorkOrderId) AS lastWorkOrderId,\n    COALESCE(i.workOrderCreatedByType, e.lastWorkOrderCreatedByType) AS lastWorkOrderCreatedByType,\n    COALESCE(i.workOrderCreatedById,   e.lastWorkOrderCreatedById)   AS lastWorkOrderCreatedById,\n\n    -- Use createdAt/closedAt from the incoming work order event to bump freshness.\n    GREATEST(\n      COALESCE(i.workOrderCreatedAt, TIMESTAMP '1970-01-01'),\n      COALESCE(i.workOrderClosedAt,  TIMESTAMP '1970-01-01'),\n      COALESCE(e.lastUpdateAt,       TIMESTAMP '1970-01-01')\n    ) AS lastWorkOrderChangeAt,\n\n    -- Keep latest operator override pointer\n    COALESCE(i.operatorReportId, e.lastOperatorReportId) AS lastOperatorReportId,\n    COALESCE(i.reportTimestamp,  e.lastUpdateAt)         AS lastOverrideAt,\n    i.statusOverride                                     AS statusOverride,\n\n    -- Keep latest health score\n    COALESCE(i.healthScore,   e.healthScore)             AS healthScore,\n    COALESCE(i.healthScoreAt, e.lastUpdateAt)            AS healthScoreAt\n  FROM Incoming i\n  LEFT JOIN Existing e ON TRUE\n)\n\nINSERT INTO CurrentMachineState (\n  machineId,\n  resolvedStatus,\n  healthScore,\n  openWorkOrderCount,\n  lastTelemetryEventId,\n  lastOperatorReportId,\n  lastWorkOrderId,\n  lastWorkOrderCreatedByType,\n  lastWorkOrderCreatedById,\n  lastUpdateAt\n)\nSELECT\n  m.machineId,\n\n  CASE\n    WHEN m.openWorkOrderCount &gt; 0 THEN 'UnderMaintenance'\n\n    WHEN m.statusOverride IS NOT NULL\n      AND m.lastOverrideAt &gt;= CURRENT_TIMESTAMP - INTERVAL '4 hours'\n      THEN m.statusOverride\n\n    WHEN m.faultCodeId IS NOT NULL THEN 'Fault'\n    ELSE COALESCE(m.statusRaw, 'Idle')\n  END AS resolvedStatus,\n\n  m.healthScore,\n  m.openWorkOrderCount,\n  m.lastTelemetryEventId,\n  m.lastOperatorReportId,\n  m.lastWorkOrderId,\n  m.lastWorkOrderCreatedByType,\n  m.lastWorkOrderCreatedById,\n\n  GREATEST(\n    COALESCE(m.lastTelemetryAt,         TIMESTAMP '1970-01-01'),\n    COALESCE(m.lastWorkOrderChangeAt,   TIMESTAMP '1970-01-01'),\n    COALESCE(m.lastOverrideAt,          TIMESTAMP '1970-01-01'),\n    COALESCE(m.healthScoreAt,           TIMESTAMP '1970-01-01')\n  ) AS lastUpdateAt\nFROM Merged m\n\nON CONFLICT (machineId) DO UPDATE\nSET\n  resolvedStatus              = EXCLUDED.resolvedStatus,\n  healthScore                 = EXCLUDED.healthScore,\n  openWorkOrderCount          = EXCLUDED.openWorkOrderCount,\n  lastTelemetryEventId        = EXCLUDED.lastTelemetryEventId,\n  lastOperatorReportId        = EXCLUDED.lastOperatorReportId,\n  lastWorkOrderId             = EXCLUDED.lastWorkOrderId,\n  lastWorkOrderCreatedByType  = EXCLUDED.lastWorkOrderCreatedByType,\n  lastWorkOrderCreatedById    = EXCLUDED.lastWorkOrderCreatedById,\n  lastUpdateAt                = EXCLUDED.lastUpdateAt;"
+  },
+  {
+    "objectID": "presentation.html#handling-duplicate-events-and-work-orders",
+    "href": "presentation.html#handling-duplicate-events-and-work-orders",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Handling Duplicate Events and Work Orders",
+    "text": "Handling Duplicate Events and Work Orders\n\n\nTelemetry events, rule evaluations, and retries can surface the same underlying issue multiple times\n\n\n\n\nEach issue is assigned a stable issue key derived from the machine and problem type\n\nissueKey: hash(machineId + issueType) = 42_HighTemp\n\n\n\n\n\nThe rule engine checks for an existing open work order associated with the same issueKey\n\n\n\n\nIf an open work order already exists, the system suppresses creation of a duplicate\n\n\n\n\nOnly transitions (new issue detected or issue resolved) trigger work order changes\n\n\n\n\nThis approach ensures consistent work order counts and reliable status signals, even under delayed or out-of-order events\n\n\n\nWe deduplicate at the issue level, not the event level, which keeps the system stable under real-world delays"
+  },
+  {
+    "objectID": "presentation.html#authentication-and-authorization",
+    "href": "presentation.html#authentication-and-authorization",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Authentication and Authorization",
+    "text": "Authentication and Authorization\n\nAuthentication: Centralized identity via Microsoft Entra ID\n\nSingle sign on, multi factor authentication, and managed identities\n\nAuthorization: Role based access control\n\nOperator, Supervisor, Maintenance, Administrator"
+  },
+  {
+    "objectID": "presentation.html#algorithm",
+    "href": "presentation.html#algorithm",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Algorithm A: Machine Health Scoring",
+    "text": "Algorithm A: Machine Health Scoring\nThe machine health score is a normalized indicator ranging from 0 (critical) to 100 (healthy) that summarizes recent machine behavior into a single, easy-to-interpret value. The score is recalculated whenever new telemetry arrives and is written to CurrentMachineState.healthScore. The algorithm combines sensor deviations, fault severity, operator input, and maintenance state, while applying smoothing to reduce noise.\n\nPseudocode\ndef compute_health_score(previous_score, minutes_since_last_telemetry):\n    rawScore = 100\n    smoothing_param = 0.2\n\n    # sensor penalties (computed from last 15 minutes of data)\n    rawScore -= temperature_penalty\n    rawScore -= vibration_penalty\n    rawScore -= throughput_penalty\n\n    # fault severity penalties\n    if fault_severity == \"High\":\n        rawScore -= 60\n    elif fault_severity == \"Medium\":\n        rawScore -= 30\n\n    # apply operator input only if a report exists\n    if operator_flag == \"IssueObserved\":\n        rawScore -= 20\n    elif operator_flag == \"MinorConcern\":\n        rawScore -= 10\n\n    # maintenance state cap\n    if status == \"UnderMaintenance\":\n        rawScore = min(rawScore, 60)\n\n    # initialization / reset rule (no previous score or stale telemetry)\n    if previous_score is None or minutes_since_last_telemetry &gt; 30:\n        healthScore = rawScore\n    else:\n        # Apply smoothing (EWMA)\n        healthScore = (\n            smoothing_param * rawScore +\n            (1 - smoothing_param) * previous_score\n        )\n\n    # ensure the final score stays between 0 (worst) and 100 (best)\n    healthScore = max(0, min(100, healthScore))\n\n    return healthScore"
+  },
+  {
+    "objectID": "presentation.html#auth",
+    "href": "presentation.html#auth",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Authentication and Authorization",
+    "text": "Authentication and Authorization\n\nAuthentication\nCentralized identity management using Microsoft Entra ID\n\nSingle sign on, multi factor authentication, and managed identities\n\n\n\n\n\n\n\n\n\n\nAuthorization\nRole based access control governs what users can see and do\n\nOperator, Supervisor, Maintenance, Administrator\n\n\n\n\nAuthentication is handled centrally using Microsoft Entra ID, which provides a single trusted identity system across the platform.\nThis allows users to sign in once and access all authorized services securely.\nSingle sign on improves usability, while multi factor authentication adds protection for sensitive operational systems.\nManaged identities are used for service to service communication without exposing credentials.\nAuthorization is enforced through role based access control, ensuring users can only perform actions appropriate to their role.\nOperators can view machine status and submit reports, supervisors can review health and prioritize work, maintenance teams manage work orders, and administrators control users and configuration."
+  },
+  {
+    "objectID": "presentation.html#scale",
+    "href": "presentation.html#scale",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Scalability and Reliability",
+    "text": "Scalability and Reliability\n\nScalability: All machine telemetry is written to an append-only event store designed for very high write volume\n\nOperational Performance: A lightweight CurrentMachineState table keeps exactly one row per machine, enabling fast and predictable dashboard queries\n\nReliability: Automatically handles failures and duplicate events so machine status remains accurate and consistent\n\nData Freshness and Trust: A lastUpdateAt timestamp makes it easy to detect stale machines, delayed telemetry, or processing gaps\n\n\n\n\nStart by reminding them that industrial systems generate a lot of data very quickly\nThe append-only telemetry store absorbs this volume without slowing down the system\nInstead of querying history, dashboards read from a small current-state table optimized for operations\nEvent-driven updates mean the system reacts immediately as data arrives\nIdempotent upserts ensure retries or duplicates never corrupt machine state\nlastUpdateAt gives operations teams confidence that what they see is current and reliable\nOverall, this design scales cleanly as plants, machines, and telemetry grow"
+  },
+  {
+    "objectID": "presentation.html#thank-you",
+    "href": "presentation.html#thank-you",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Thank You",
+    "text": "Thank You\n\nThank you for the opportunity to present this design.\n\n\n\nQuestions?\n\n\nFor full details, architecture diagrams, and design rationale, please refer to the technical report."
+  },
+  {
+    "objectID": "presentation.html#section",
+    "href": "presentation.html#section",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "",
+    "text": "Thank You\n\n\nAny questions?"
+  },
+  {
+    "objectID": "presentation.html#section-1",
+    "href": "presentation.html#section-1",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "",
+    "text": "Any Questions?"
   }
 ]

@@ -61,6 +61,7 @@ engine: knitr
 
 dashboard:
   output-file: index-dashboard.html
+presentation: presentation.html
 
 bibliography: references.bib
 ---

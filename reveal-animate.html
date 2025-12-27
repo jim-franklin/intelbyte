@@ -1,0 +1,24 @@
+<!-- Loadcontent plugin (needed if you use data-load="file.svg") -->
+<script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/loadcontent/plugin.js"></script>
+
+<!-- Animate plugin -->
+<script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/animate/plugin.js"></script>
+
+<!-- SVG.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.2/svg.min.js"></script>
+
+<script>
+  // Quarto initializes Reveal for you, so you do NOT call Reveal.initialize here.
+  // Instead, register plugins and configure after Reveal exists.
+  window.addEventListener("load", () => {
+    if (window.Reveal && window.RevealAnimate && window.RevealLoadContent) {
+      Reveal.registerPlugin("loadcontent", RevealLoadContent);
+      Reveal.registerPlugin("animate", RevealAnimate);
+
+      // Make animations play whenever you enter the slide
+      Reveal.configure({
+        animate: { autoplay: true }
+      });
+    }
+  });
+</script>

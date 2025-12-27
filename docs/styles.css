@@ -20,3 +20,75 @@ p {
     text-align: justify;
     text-justify: inter-word;
   }
+
+.reveal h1.title {
+  font-size: 3.9rem;   /* default is ~3.5rem */
+  text-align: center; /* or left */
+}
+
+.reveal p.subtitle {
+  font-size: 2.5rem;   /* default is ~1.8rem */
+  text-align: center; /* or left */
+}
+
+.reveal .quarto-title-author-name {
+  font-size: 2.0rem;
+  text-align: center;
+  color: #666;
+  margin-top: 0   /* default is larger */
+
+}
+.reveal p.date {
+  font-size: 2.0rem;
+  text-align: center;
+  color: #666;
+}
+
+
+.reveal h2 {
+  font-size: 3.0rem;        /* Match title page title */
+  margin-bottom: 1rem;
+}
+
+.reveal h3 {
+  font-size: 2.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.reveal p {
+  font-size: 1.8rem;
+  line-height: 2.5rem
+}
+
+.reveal li {
+  font-size: 1.8rem;
+  line-height: 3.5rem
+}
+
+.reveal img {
+  max-width: 90vw;
+  max-height: 50vh;
+  object-fit: contain;
+}
+
+.critical {
+  color: #d9534f;
+  font-weight: 600;
+}
+
+.healthy {
+  color: #5cb85c;
+  font-weight: 600;
+}
+
+.reveal .thankyou{
+  font-size: 5.5em;
+  font-weight: 700;
+}
+
+.reveal .questions{
+  font-size: 2em;
+  font-weight: 400;
+  color: #2563eb !important;
+}

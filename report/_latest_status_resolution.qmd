@@ -23,7 +23,7 @@ Operator overrides are intentionally time boxed (example: 4 hours). After the wi
 
 ### Initialization at Launch
 
-This runs once to create the  `CurrentMachineState` at MVP launch. After this, the system stays current via event driven upserts (Section 6.2.4).
+This runs once to create the  `CurrentMachineState` at MVP launch. After this, the system stays current via event driven upserts. See @upserts.
 
 ```sql
 -- Physical table (read model)
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS CurrentMachineState (
 );
 ```
 
-### Event Driven Updates
+### Event Driven Updates {#upserts}
 
 After the initialization, the platforms performs small targeted updates:
 
@@ -52,93 +52,133 @@ The query below shows per machine update executed when telemetry, work order or 
 The SQL code block is executed with parameters supplied by the `Stream Processor`. These parameters are taken directly from the incoming telemetry message from `Telemetry Ingestion API`. They include `:machineId`, `:telemetryEventId`, `:eventTimestamp`, `:statusRaw`, `:faultCodeId`.
 :::
 
-```sql
--- Per machine event update (event driven upsert)
-WITH WorkOrderSignals AS (                                                -- <1>
+```{.sql code-line-numbers="4-30|32-36|38-71|88-97|99-112"}
+-- Runs for ONE machine whenever ANY of these events occurs:
+-- 1) telemetry event, 2) work order opened/closed, 3) operator override submitted, 4) health score updated.
+
+WITH Incoming AS (
   SELECT
-    COUNT(*) FILTER (WHERE status IN ('Open','InProgress')) AS openWorkOrderCount,
-    MAX(COALESCE(closedAt, createdAt)) AS lastWorkOrderChangeAt
-  FROM WorkOrder
-  WHERE machineId = :machineId
+    :machineId                :: BIGINT        AS machineId,
+
+    -- Telemetry event fields (present on telemetry events)
+    :telemetryEventId         :: BIGINT        AS telemetryEventId,
+    :eventTimestamp           :: TIMESTAMP     AS eventTimestamp,
+    :statusRaw                :: VARCHAR(32)   AS statusRaw,
+    :faultCodeId              :: BIGINT        AS faultCodeId,
+
+    -- Work order fields (emitted when a work order is created/updated/closed)
+    :workOrderId              :: BIGINT        AS workOrderId,
+    :workOrderCreatedAt       :: TIMESTAMP     AS workOrderCreatedAt,
+    :workOrderClosedAt        :: TIMESTAMP     AS workOrderClosedAt,
+    :openWorkOrderCount       :: INT           AS openWorkOrderCount,
+    :workOrderCreatedByType   :: VARCHAR(32)   AS workOrderCreatedByType,
+    :workOrderCreatedById     :: BIGINT        AS workOrderCreatedById,
+
+    -- Operator report fields (emitted when an operator submits a report/override)
+    :operatorReportId         :: BIGINT        AS operatorReportId,
+    :reportTimestamp          :: TIMESTAMP     AS reportTimestamp,
+    :statusOverride           :: VARCHAR(32)   AS statusOverride,
+
+    -- Health score event fields (present on scoring events)
+    :healthScore              :: NUMERIC(5,2)  AS healthScore,
+    :healthScoreAt            :: TIMESTAMP     AS healthScoreAt
 ),
 
-LatestOperatorOverride AS (                                               -- <2>
+Existing AS (
+  SELECT *
+  FROM CurrentMachineState
+  WHERE machineId = (SELECT machineId FROM Incoming)
+),
+
+Merged AS (
   SELECT
-    operatorReportId,
-    reportTimestamp,
-    statusOverride
-  FROM OperatorReport
-  WHERE machineId = :machineId
-    AND statusOverride IS NOT NULL
-  ORDER BY reportTimestamp DESC
-  LIMIT 1
+    i.machineId,
+
+    -- Keep lastest telemetry
+    COALESCE(i.telemetryEventId, e.lastTelemetryEventId) AS lastTelemetryEventId,
+    COALESCE(i.eventTimestamp,   e.lastUpdateAt)         AS lastTelemetryAt,
+    i.statusRaw                                         AS statusRaw,
+    i.faultCodeId                                       AS faultCodeId,
+
+    -- Keep latest work order signals
+    COALESCE(i.openWorkOrderCount, e.openWorkOrderCount, 0) AS openWorkOrderCount,
+    COALESCE(i.workOrderId, e.lastWorkOrderId) AS lastWorkOrderId,
+    COALESCE(i.workOrderCreatedByType, e.lastWorkOrderCreatedByType) AS lastWorkOrderCreatedByType,
+    COALESCE(i.workOrderCreatedById,   e.lastWorkOrderCreatedById)   AS lastWorkOrderCreatedById,
+
+    -- Use createdAt/closedAt from the incoming work order event to bump freshness.
+    GREATEST(
+      COALESCE(i.workOrderCreatedAt, TIMESTAMP '1970-01-01'),
+      COALESCE(i.workOrderClosedAt,  TIMESTAMP '1970-01-01'),
+      COALESCE(e.lastUpdateAt,       TIMESTAMP '1970-01-01')
+    ) AS lastWorkOrderChangeAt,
+
+    -- Keep latest operator override pointer
+    COALESCE(i.operatorReportId, e.lastOperatorReportId) AS lastOperatorReportId,
+    COALESCE(i.reportTimestamp,  e.lastUpdateAt)         AS lastOverrideAt,
+    i.statusOverride                                     AS statusOverride,
+
+    -- Keep latest health score
+    COALESCE(i.healthScore,   e.healthScore)             AS healthScore,
+    COALESCE(i.healthScoreAt, e.lastUpdateAt)            AS healthScoreAt
+  FROM Incoming i
+  LEFT JOIN Existing e ON TRUE
 )
 
-INSERT INTO CurrentMachineState (                                         -- <3>
+INSERT INTO CurrentMachineState (
   machineId,
   resolvedStatus,
+  healthScore,
   openWorkOrderCount,
   lastTelemetryEventId,
   lastOperatorReportId,
+  lastWorkOrderId,
+  lastWorkOrderCreatedByType,
+  lastWorkOrderCreatedById,
   lastUpdateAt
 )
-
 SELECT
-  :machineId,
+  m.machineId,
 
-  CASE                                                                     -- <4>
-    WHEN COALESCE(wos.openWorkOrderCount, 0) > 0 THEN 'UnderMaintenance'
+  CASE
+    WHEN m.openWorkOrderCount > 0 THEN 'UnderMaintenance'
 
-    WHEN loo.statusOverride IS NOT NULL
-      AND loo.reportTimestamp >= CURRENT_TIMESTAMP - INTERVAL '4 hours'
-      THEN loo.statusOverride
+    WHEN m.statusOverride IS NOT NULL
+      AND m.lastOverrideAt >= CURRENT_TIMESTAMP - INTERVAL '4 hours'
+      THEN m.statusOverride
 
-    WHEN :faultCodeId IS NOT NULL THEN 'Fault'
-    ELSE COALESCE(:statusRaw, 'Idle')
+    WHEN m.faultCodeId IS NOT NULL THEN 'Fault'
+    ELSE COALESCE(m.statusRaw, 'Idle')
   END AS resolvedStatus,
 
-  COALESCE(wos.openWorkOrderCount, 0) AS openWorkOrderCount,
-  :telemetryEventId AS lastTelemetryEventId,
-  loo.operatorReportId AS lastOperatorReportId,
+  m.healthScore,
+  m.openWorkOrderCount,
+  m.lastTelemetryEventId,
+  m.lastOperatorReportId,
+  m.lastWorkOrderId,
+  m.lastWorkOrderCreatedByType,
+  m.lastWorkOrderCreatedById,
 
-  GREATEST(                                                                -- <5>
-    COALESCE(:eventTimestamp, TIMESTAMP '1970-01-01'),
-    COALESCE(loo.reportTimestamp, TIMESTAMP '1970-01-01'),
-    COALESCE(wos.lastWorkOrderChangeAt, TIMESTAMP '1970-01-01')
+  GREATEST(
+    COALESCE(m.lastTelemetryAt,         TIMESTAMP '1970-01-01'),
+    COALESCE(m.lastWorkOrderChangeAt,   TIMESTAMP '1970-01-01'),
+    COALESCE(m.lastOverrideAt,          TIMESTAMP '1970-01-01'),
+    COALESCE(m.healthScoreAt,           TIMESTAMP '1970-01-01')
   ) AS lastUpdateAt
-FROM WorkOrderSignals wos
-LEFT JOIN LatestOperatorOverride loo ON TRUE
+FROM Merged m
 
-ON CONFLICT (machineId) DO UPDATE                                         -- <6>
+ON CONFLICT (machineId) DO UPDATE
 SET
-  resolvedStatus = EXCLUDED.resolvedStatus,
-  openWorkOrderCount = EXCLUDED.openWorkOrderCount,
-  lastTelemetryEventId = EXCLUDED.lastTelemetryEventId,
-  lastOperatorReportId = EXCLUDED.lastOperatorReportId,
-  lastUpdateAt = EXCLUDED.lastUpdateAt;
+  resolvedStatus              = EXCLUDED.resolvedStatus,
+  healthScore                 = EXCLUDED.healthScore,
+  openWorkOrderCount          = EXCLUDED.openWorkOrderCount,
+  lastTelemetryEventId        = EXCLUDED.lastTelemetryEventId,
+  lastOperatorReportId        = EXCLUDED.lastOperatorReportId,
+  lastWorkOrderId             = EXCLUDED.lastWorkOrderId,
+  lastWorkOrderCreatedByType  = EXCLUDED.lastWorkOrderCreatedByType,
+  lastWorkOrderCreatedById    = EXCLUDED.lastWorkOrderCreatedById,
+  lastUpdateAt                = EXCLUDED.lastUpdateAt;
 ```
-1.	`WorkOrderSignals` - Counts active work orders and captures the latest maintenance change for the machine.
-2.	`LatestOperatorOverride` – Fetches the most recent valid operator status override for the machine.
-3.	Insert into `CurrentMachineState` – Writes or updates the single current state row for the machine.
-4.	Status resolution logic – Determines the machine’s status using maintenance, operator override, then telemetry.
-5.	`lastUpdateAt` calculation – Records the most recent timestamp from telemetry, maintenance, or operator input.
-6.	Upsert logic – Guarantees exactly one up-to-date row per machine in `CurrentMachineState`.
-
-### How Health Score fits into the current view
-
-Once a new health score in @sec-health-score is computed, the Health Scoring Service automatically updates the current state for the affected machine using the following update statement.
-
-```sql
-UPDATE CurrentMachineState
-SET
-  healthScore = new_score_value,                                  -- <1>
-  lastUpdateAt = CURRENT_TIMESTAMP                                -- <2>
-WHERE machineId = target_machine_id;                              -- <3>
-```
-1.  `new_score_value` is the computed health score produce by the scoring function for each machine
-2.  `lastUpdateAt` is bumped so the dashboard can tell the record was updated recently
-3.  `target_machine_id` identifies which machine row to update
-
 
 ::: {.callout-note appearance="simple"}
 `CurrentMachineState.lastUpdateAt` represents the most recent time **any part of the machine’s current state changed**. This includes:
