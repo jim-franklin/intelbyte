@@ -5,6 +5,12 @@ import pandas as pd
 
 alt.data_transformers.enable('default')
 
+STATUS_COLOR_MAP = {
+    "Running": "#4E79A7",           # blue
+    "Idle": "#F28E2B",              # orange
+    "Fault": "#E15759",             # red
+    "UnderMaintenance": "#76B7B2",  # teal
+}
 
 def status_pie_chart(df: pd.DataFrame, title: str = "Status distribution") -> str:
     """Return an Altair chart rendered as an HTML string for Dash Iframe srcDoc."""
@@ -24,6 +30,9 @@ def status_pie_chart(df: pd.DataFrame, title: str = "Status distribution") -> st
         .sort_values("count", ascending=False)
     )
 
+    domain = list(STATUS_COLOR_MAP.keys())
+    range_ = list(STATUS_COLOR_MAP.values())
+
     chart = (
         alt.Chart(agg, title=title)
         .mark_arc()
@@ -31,6 +40,7 @@ def status_pie_chart(df: pd.DataFrame, title: str = "Status distribution") -> st
             theta=alt.Theta("count:Q"),
             color=alt.Color(
                 "resolvedStatus:N",
+                scale=alt.Scale(domain=domain, range=range_),
                 legend=alt.Legend(
                     title="",
                     orient="bottom",
@@ -45,6 +55,4 @@ def status_pie_chart(df: pd.DataFrame, title: str = "Status distribution") -> st
         .properties(width=360, height=260)
     )
 
-    # Dash components must receive JSON-serializable values.
-    # For an Iframe `srcDoc`, return an HTML string.
     return chart.to_dict(format="vega")

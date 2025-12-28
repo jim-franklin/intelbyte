@@ -9,6 +9,7 @@ from dash import Input, Output, html, ctx
 from .charts import status_pie_chart
 from .utils import ago
 
+
 _NUMERIC_COLS = {
     "plantId",
     "lineId",
@@ -22,6 +23,20 @@ _NUMERIC_COLS = {
     "lastWorkOrderCreatedById",
     "workOrderId",
     "createdById",
+}
+
+# Match Altair / Vega-Lite categorical defaults (Tableau 10 first 4)
+# Used for KPI card backgrounds to stay consistent with the pie chart.
+STATUS_CARD_COLORS: dict[str, str] = {
+    "Running": "#4E79A7",  # blue
+    "Idle": "#F28E2B",  # orange
+    "Fault": "#E15759",  # red
+    "UnderMaintenance": "#76B7B2",  # teal
+}
+
+OTHER_CARD_COLORS: dict[str, str] = {
+    "Machines": "#6C757D",  # bootstrap secondary-ish
+    "Average health": "#59A14F",  # green
 }
 
 
@@ -115,70 +130,70 @@ def make_kpi_cards(df: pd.DataFrame) -> html.Div:
         else 0.0
     )
 
+    def _card(title: str, value: str, bg: str, fg: str = "white"):
+        return dbc.Card(
+            dbc.CardBody(
+                [
+                    html.Div(title, style={"opacity": 0.9}),
+                    html.H3(value, style={"margin": 0}),
+                ]
+            ),
+            style={
+                "backgroundColor": bg,
+                "color": fg,
+                "border": "0",
+                "boxShadow": "0 1px 2px rgba(0,0,0,0.06)",
+            },
+        )
+
     cards = dbc.Row(
         [
             dbc.Col(
-                dbc.Card(
-                    dbc.CardBody(
-                        [
-                            html.Div("Machines", className="text-muted"),
-                            html.H3(f"{total}"),
-                        ]
-                    )
+                _card(
+                    "Machines",
+                    f"{total}",
+                    OTHER_CARD_COLORS["Machines"],
                 )
             ),
             dbc.Col(
-                dbc.Card(
-                    dbc.CardBody(
-                        [
-                            html.Div("Running", className="text-muted"),
-                            html.H3(f"{running}"),
-                        ]
-                    )
+                _card(
+                    "Running",
+                    f"{running}",
+                    STATUS_CARD_COLORS["Running"],
                 )
             ),
             dbc.Col(
-                dbc.Card(
-                    dbc.CardBody(
-                        [
-                            html.Div("Idle", className="text-muted"),
-                            html.H3(f"{idle}"),
-                        ]
-                    )
+                _card(
+                    "Idle",
+                    f"{idle}",
+                    STATUS_CARD_COLORS["Idle"],
                 )
             ),
             dbc.Col(
-                dbc.Card(
-                    dbc.CardBody(
-                        [
-                            html.Div("Fault", className="text-muted"),
-                            html.H3(f"{fault}"),
-                        ]
-                    )
+                _card(
+                    "Fault",
+                    f"{fault}",
+                    STATUS_CARD_COLORS["Fault"],
                 )
             ),
             dbc.Col(
-                dbc.Card(
-                    dbc.CardBody(
-                        [
-                            html.Div("Under maintenance", className="text-muted"),
-                            html.H3(f"{maint}"),
-                        ]
-                    )
+                _card(
+                    "Under maintenance",
+                    f"{maint}",
+                    STATUS_CARD_COLORS["UnderMaintenance"],
                 )
             ),
             dbc.Col(
-                dbc.Card(
-                    dbc.CardBody(
-                        [
-                            html.Div("Average health", className="text-muted"),
-                            html.H3(f"{avg_health:.1f}"),
-                        ]
-                    )
+                _card(
+                    "Average health",
+                    f"{avg_health:.1f}",
+                    OTHER_CARD_COLORS["Average health"],
                 )
             ),
         ],
-        className="g-2",
+        className="g-3",
+        justify="around",
+        style={"margin": "0px", "padding": "0px"},
     )
 
     return html.Div(cards)
