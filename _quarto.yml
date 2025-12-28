@@ -11,6 +11,8 @@ website:
     right:
       - href: index.qmd
         text: Report
+      - href: presentation.qmd
+        text: Presentation
       - href: about.qmd
         text: About
       - icon: github
