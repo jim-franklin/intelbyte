@@ -6,4 +6,7 @@ All event driven updates are written directly to the `CurrentMachineState` table
 
 The `lastUpdateAt` field records the most recent time any current state attribute changed, including telemetry driven status resolution, health score updates, work order activity, or operator overrides. This allows users to assess data freshness, distinguish active machines from stale ones, and detect potential reporting or connectivity issues.
 
-![Combined dashboard mockup showing fleet wide equipment status, health scores, work orders, and maintenance actions](figures/dashboard-screens.png)
+\newpage
+:::{.landscape}
+![Dashboard showing fleet wide equipment status, health scores, work orders, and maintenance actions](figures/dashboard-screens.png){width=100%}
+:::

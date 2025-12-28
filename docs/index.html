@@ -1226,11 +1226,14 @@ Note
 <p>Telemetry is assumed to arrive approximately every 60 seconds per machine. Each telemetry event is processed as it arrives and immediately triggers an update to the affected machine’s current status and health score. Operational events, such as work order creation or closure and operator status overrides, may occur at any time and similarly trigger immediate updates to the corresponding machine’s current state.</p>
 <p>All event driven updates are written directly to the <code>CurrentMachineState</code> table, which serves as the single read model for dashboard views. Dashboards poll this table on a short, configurable interval, typically between 30 seconds and one minute. This polling interval is chosen to balance responsiveness with visual stability for human operators, while ensuring that operational changes are reflected shortly after they occur.</p>
 <p>The <code>lastUpdateAt</code> field records the most recent time any current state attribute changed, including telemetry driven status resolution, health score updates, work order activity, or operator overrides. This allows users to assess data freshness, distinguish active machines from stale ones, and detect potential reporting or connectivity issues.</p>
+<div style="page-break-after: always;"></div>
+<div class="landscape">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="figures/dashboard-screens.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17" title="Combined dashboard mockup showing fleet wide equipment status, health scores, work orders, and maintenance actions"><img src="figures/dashboard-screens.png" class="img-fluid figure-img" alt="Combined dashboard mockup showing fleet wide equipment status, health scores, work orders, and maintenance actions"></a></p>
-<figcaption>Combined dashboard mockup showing fleet wide equipment status, health scores, work orders, and maintenance actions</figcaption>
+<p><a href="figures/dashboard-screens.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17" title="Dashboard showing fleet wide equipment status, health scores, work orders, and maintenance actions"><img src="figures/dashboard-screens.png" class="img-fluid figure-img" style="width:100.0%" alt="Dashboard showing fleet wide equipment status, health scores, work orders, and maintenance actions"></a></p>
+<figcaption>Dashboard showing fleet wide equipment status, health scores, work orders, and maintenance actions</figcaption>
 </figure>
+</div>
 </div>
 <section id="current-equipment-status-screen" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="current-equipment-status-screen"><span class="header-section-number">7.1</span> Current Equipment Status Screen</h2>
