@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 import pandas as pd
 import dash_bootstrap_components as dbc
-from dash import Input, Output, html, ctx
+from dash import Input, Output, html, ctx, dcc
 
 from .charts import status_pie_chart
 from .utils import ago
@@ -131,7 +131,7 @@ def make_kpi_cards(df: pd.DataFrame) -> html.Div:
     )
 
     def _card(title: str, value: str, bg: str, fg: str = "white"):
-        return dbc.Card(
+        card = dbc.Card(
             dbc.CardBody(
                 [
                     html.Div(title, style={"opacity": 0.9}),
@@ -145,6 +145,7 @@ def make_kpi_cards(df: pd.DataFrame) -> html.Div:
                 "boxShadow": "0 1px 2px rgba(0,0,0,0.06)",
             },
         )
+        return dcc.Loading(children=card, type="dot", fullscreen=False)
 
     cards = dbc.Row(
         [
