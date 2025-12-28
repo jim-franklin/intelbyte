@@ -2,7 +2,7 @@
 title: "Designing a Scalable Factory Equipment Health and Maintenance Platform"
 subtitle: "Architecture, Data Model, and Algorithms"
 author: "Presented by Franklin Aryee"
-date: 2025-12-29
+date: 2025-12-30
 date-format: "DD MMM YYYY"  
 format:
   revealjs: 
