@@ -19,6 +19,9 @@ format:
       - href: figures/dashboard-screens.png
         icon: speedometer
         text: Dashboards
+      - href: presentation.html
+        icon: file-slides
+        text: Slides
 
   pdf:
     toc: true

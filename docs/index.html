@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.9.15">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -94,14 +94,14 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3ae5a7fe75b0d5b11c1bf337a5350341.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d2ba968a340cd0d74878d6852ced13fb.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-3ae5a7fe75b0d5b11c1bf337a5350341.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-0bf144460954881a529a602f9b9a7b5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-7f2cc7a6ea63d59fa1f1180d41479419.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-0bf144460954881a529a602f9b9a7b5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3ef427a99e8c2d4f440260184ea4771e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e73c4175e226f8da51064820c97fb20a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3ef427a99e8c2d4f440260184ea4771e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -262,8 +262,7 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#status-precedence" id="toc-status-precedence" class="nav-link" data-scroll-target="#status-precedence"><span class="header-section-number">6.2.1</span> Status Precedence</a></li>
   <li><a href="#initialization-at-launch" id="toc-initialization-at-launch" class="nav-link" data-scroll-target="#initialization-at-launch"><span class="header-section-number">6.2.2</span> Initialization at Launch</a></li>
-  <li><a href="#event-driven-updates" id="toc-event-driven-updates" class="nav-link" data-scroll-target="#event-driven-updates"><span class="header-section-number">6.2.3</span> Event Driven Updates</a></li>
-  <li><a href="#how-health-score-fits-into-the-current-view" id="toc-how-health-score-fits-into-the-current-view" class="nav-link" data-scroll-target="#how-health-score-fits-into-the-current-view"><span class="header-section-number">6.2.4</span> How Health Score fits into the current view</a></li>
+  <li><a href="#upserts" id="toc-upserts" class="nav-link" data-scroll-target="#upserts"><span class="header-section-number">6.2.3</span> Event Driven Updates</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#dashboards-and-user-experience" id="toc-dashboards-and-user-experience" class="nav-link" data-scroll-target="#dashboards-and-user-experience"><span class="header-section-number">7</span> Dashboards and User Experience</a>
@@ -288,7 +287,7 @@ div.csl-indent {
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">11</span> References</a></li>
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="report.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div><div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="report.pdf"><i class="bi bi-file-earmark-pdf"></i>PDF</a></li><li><a href="figures/dashboard-screens.png"><i class="bi bi-speedometer"></i>Dashboards</a></li></ul></div></nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="report.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div><div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="report.pdf"><i class="bi bi-file-earmark-pdf"></i>PDF</a></li><li><a href="figures/dashboard-screens.png"><i class="bi bi-speedometer"></i>Dashboards</a></li><li><a href="presentation.html"><i class="bi bi-file-slides"></i>Slides</a></li></ul></div></nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
@@ -415,11 +414,13 @@ div.csl-indent {
   B --&gt;|Event stream| D[Stream Processor]
   D --&gt; E[(Current State Store&lt;br/&gt;One row per machine)]
 
-  F[Operator or Supervisor Web App] --&gt;|Login and Token| M[Identity Provider&lt;br/&gt;Microsoft Entra ID]
+  F[Operator or Supervisor Web App] --&gt;|Authenticate| M[Identity Provider&lt;br/&gt;Microsoft Entra ID]
   M --&gt;|Access Token| G[Operational API]
 
   G --&gt; H[(Operational Store&lt;br/&gt;Assets, Logs, Work Orders, Users)]
-  G --&gt; E
+
+  %% CHANGED: Operational Store now feeds Current State
+  H --&gt;|Work order / override change events| E
 
   E --&gt; I[Current Equipment Status Screen]
   C --&gt; J[Analytics and Reporting]
@@ -692,6 +693,7 @@ The design supports both technical needs such as telemetry ingestion and analyti
 <div>
 <pre class="mermaid mermaid-js" data-label="fig-ERD">erDiagram
   Plant ||--o{ ProductionLine : contains
+  
   ProductionLine ||--o{ Machine : contains
   MachineType ||--o{ Machine : classifies
 
@@ -1030,7 +1032,7 @@ When neither maintenance nor a manual override is active, the status is derived 
 </section>
 <section id="initialization-at-launch" class="level3" data-number="6.2.2">
 <h3 data-number="6.2.2" class="anchored" data-anchor-id="initialization-at-launch"><span class="header-section-number">6.2.2</span> Initialization at Launch</h3>
-<p>This runs once to create the <code>CurrentMachineState</code> at MVP launch. After this, the system stays current via event driven upserts (Section 6.2.4).</p>
+<p>This runs once to create the <code>CurrentMachineState</code> at MVP launch. After this, the system stays current via event driven upserts. See <span class="citation" data-cites="upserts">(<a href="#ref-upserts" role="doc-biblioref"><strong>upserts?</strong></a>)</span>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Physical table (read model)</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> CurrentMachineState (</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  machineId               BIGINT <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
@@ -1042,8 +1044,8 @@ When neither maintenance nor a manual override is active, the status is derived 
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  lastUpdateAt            <span class="dt">TIMESTAMP</span> <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="kw">DEFAULT</span> <span class="fu">CURRENT_TIMESTAMP</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="event-driven-updates" class="level3" data-number="6.2.3">
-<h3 data-number="6.2.3" class="anchored" data-anchor-id="event-driven-updates"><span class="header-section-number">6.2.3</span> Event Driven Updates</h3>
+<section id="upserts" class="level3" data-number="6.2.3">
+<h3 data-number="6.2.3" class="anchored" data-anchor-id="upserts"><span class="header-section-number">6.2.3</span> Event Driven Updates</h3>
 <p>After the initialization, the platforms performs small targeted updates:</p>
 <ul>
 <li>When telemetry arrives for a machine, update that machine’s row<br>
@@ -1066,118 +1068,134 @@ Note
 <p>The SQL code block is executed with parameters supplied by the <code>Stream Processor</code>. These parameters are taken directly from the incoming telemetry message from <code>Telemetry Ingestion API</code>. They include <code>:machineId</code>, <code>:telemetryEventId</code>, <code>:eventTimestamp</code>, <code>:statusRaw</code>, <code>:faultCodeId</code>.</p>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3"><pre class="sourceCode sql code-annotation-code code-with-copy code-annotated"><code class="sourceCode sql"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Per machine event update (event driven upsert)</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">WITH</span> WorkOrderSignals <span class="kw">AS</span> (</span>
-<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span></span>
-<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> status <span class="kw">IN</span> (<span class="st">'Open'</span>,<span class="st">'InProgress'</span>)) <span class="kw">AS</span> openWorkOrderCount,</span>
-<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">MAX</span>(<span class="fu">COALESCE</span>(closedAt, createdAt)) <span class="kw">AS</span> lastWorkOrderChangeAt</span>
-<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> WorkOrder</span>
-<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">WHERE</span> machineId <span class="op">=</span> <span class="ch">:machineId</span></span>
-<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8" aria-hidden="true" tabindex="-1"></a>),</span>
-<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9" aria-hidden="true" tabindex="-1"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-10" class="code-annotation-target"><a href="#annotated-cell-3-10" aria-hidden="true" tabindex="-1"></a>LatestOperatorOverride <span class="kw">AS</span> (</span>
-<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span></span>
-<span id="annotated-cell-3-12"><a href="#annotated-cell-3-12" aria-hidden="true" tabindex="-1"></a>    operatorReportId,</span>
-<span id="annotated-cell-3-13"><a href="#annotated-cell-3-13" aria-hidden="true" tabindex="-1"></a>    reportTimestamp,</span>
-<span id="annotated-cell-3-14"><a href="#annotated-cell-3-14" aria-hidden="true" tabindex="-1"></a>    statusOverride</span>
-<span id="annotated-cell-3-15"><a href="#annotated-cell-3-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> OperatorReport</span>
-<span id="annotated-cell-3-16"><a href="#annotated-cell-3-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">WHERE</span> machineId <span class="op">=</span> <span class="ch">:machineId</span></span>
-<span id="annotated-cell-3-17"><a href="#annotated-cell-3-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">AND</span> statusOverride <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
-<span id="annotated-cell-3-18"><a href="#annotated-cell-3-18" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ORDER</span> <span class="kw">BY</span> reportTimestamp <span class="kw">DESC</span></span>
-<span id="annotated-cell-3-19"><a href="#annotated-cell-3-19" aria-hidden="true" tabindex="-1"></a>  <span class="kw">LIMIT</span> <span class="dv">1</span></span>
-<span id="annotated-cell-3-20"><a href="#annotated-cell-3-20" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="annotated-cell-3-21"><a href="#annotated-cell-3-21" aria-hidden="true" tabindex="-1"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-3-22" class="code-annotation-target"><a href="#annotated-cell-3-22" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> CurrentMachineState (</span>
-<span id="annotated-cell-3-23"><a href="#annotated-cell-3-23" aria-hidden="true" tabindex="-1"></a>  machineId,</span>
-<span id="annotated-cell-3-24"><a href="#annotated-cell-3-24" aria-hidden="true" tabindex="-1"></a>  resolvedStatus,</span>
-<span id="annotated-cell-3-25"><a href="#annotated-cell-3-25" aria-hidden="true" tabindex="-1"></a>  openWorkOrderCount,</span>
-<span id="annotated-cell-3-26"><a href="#annotated-cell-3-26" aria-hidden="true" tabindex="-1"></a>  lastTelemetryEventId,</span>
-<span id="annotated-cell-3-27"><a href="#annotated-cell-3-27" aria-hidden="true" tabindex="-1"></a>  lastOperatorReportId,</span>
-<span id="annotated-cell-3-28"><a href="#annotated-cell-3-28" aria-hidden="true" tabindex="-1"></a>  lastUpdateAt</span>
-<span id="annotated-cell-3-29"><a href="#annotated-cell-3-29" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="annotated-cell-3-30"><a href="#annotated-cell-3-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-3-31"><a href="#annotated-cell-3-31" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span></span>
-<span id="annotated-cell-3-32"><a href="#annotated-cell-3-32" aria-hidden="true" tabindex="-1"></a>  <span class="ch">:machineId</span>,</span>
-<span id="annotated-cell-3-33"><a href="#annotated-cell-3-33" aria-hidden="true" tabindex="-1"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-3-34" class="code-annotation-target"><a href="#annotated-cell-3-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">CASE</span></span>
-<span id="annotated-cell-3-35"><a href="#annotated-cell-3-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="fu">COALESCE</span>(wos.openWorkOrderCount, <span class="dv">0</span>) <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">THEN</span> <span class="st">'UnderMaintenance'</span></span>
-<span id="annotated-cell-3-36"><a href="#annotated-cell-3-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-3-37"><a href="#annotated-cell-3-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> loo.statusOverride <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
-<span id="annotated-cell-3-38"><a href="#annotated-cell-3-38" aria-hidden="true" tabindex="-1"></a>      <span class="kw">AND</span> loo.reportTimestamp <span class="op">&gt;=</span> <span class="fu">CURRENT_TIMESTAMP</span> <span class="op">-</span> <span class="dt">INTERVAL</span> <span class="st">'4 hours'</span></span>
-<span id="annotated-cell-3-39"><a href="#annotated-cell-3-39" aria-hidden="true" tabindex="-1"></a>      <span class="cf">THEN</span> loo.statusOverride</span>
-<span id="annotated-cell-3-40"><a href="#annotated-cell-3-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-3-41"><a href="#annotated-cell-3-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">WHEN</span> <span class="ch">:faultCodeId</span> <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="st">'Fault'</span></span>
-<span id="annotated-cell-3-42"><a href="#annotated-cell-3-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">ELSE</span> <span class="fu">COALESCE</span>(<span class="ch">:statusRaw</span>, <span class="st">'Idle'</span>)</span>
-<span id="annotated-cell-3-43"><a href="#annotated-cell-3-43" aria-hidden="true" tabindex="-1"></a>  <span class="cf">END</span> <span class="kw">AS</span> resolvedStatus,</span>
-<span id="annotated-cell-3-44"><a href="#annotated-cell-3-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-3-45"><a href="#annotated-cell-3-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">COALESCE</span>(wos.openWorkOrderCount, <span class="dv">0</span>) <span class="kw">AS</span> openWorkOrderCount,</span>
-<span id="annotated-cell-3-46"><a href="#annotated-cell-3-46" aria-hidden="true" tabindex="-1"></a>  <span class="ch">:telemetryEventId</span> <span class="kw">AS</span> lastTelemetryEventId,</span>
-<span id="annotated-cell-3-47"><a href="#annotated-cell-3-47" aria-hidden="true" tabindex="-1"></a>  loo.operatorReportId <span class="kw">AS</span> lastOperatorReportId,</span>
-<span id="annotated-cell-3-48"><a href="#annotated-cell-3-48" aria-hidden="true" tabindex="-1"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-3-49" class="code-annotation-target"><a href="#annotated-cell-3-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">GREATEST</span>(</span>
-<span id="annotated-cell-3-50"><a href="#annotated-cell-3-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COALESCE</span>(<span class="ch">:eventTimestamp</span>, <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>),</span>
-<span id="annotated-cell-3-51"><a href="#annotated-cell-3-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COALESCE</span>(loo.reportTimestamp, <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>),</span>
-<span id="annotated-cell-3-52"><a href="#annotated-cell-3-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">COALESCE</span>(wos.lastWorkOrderChangeAt, <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>)</span>
-<span id="annotated-cell-3-53"><a href="#annotated-cell-3-53" aria-hidden="true" tabindex="-1"></a>  ) <span class="kw">AS</span> lastUpdateAt</span>
-<span id="annotated-cell-3-54"><a href="#annotated-cell-3-54" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> WorkOrderSignals wos</span>
-<span id="annotated-cell-3-55"><a href="#annotated-cell-3-55" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> LatestOperatorOverride loo <span class="kw">ON</span> <span class="kw">TRUE</span></span>
-<span id="annotated-cell-3-56"><a href="#annotated-cell-3-56" aria-hidden="true" tabindex="-1"></a></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="6" onclick="event.preventDefault();">6</a><span id="annotated-cell-3-57" class="code-annotation-target"><a href="#annotated-cell-3-57" aria-hidden="true" tabindex="-1"></a><span class="kw">ON</span> CONFLICT (machineId) DO <span class="kw">UPDATE</span></span>
-<span id="annotated-cell-3-58"><a href="#annotated-cell-3-58" aria-hidden="true" tabindex="-1"></a><span class="kw">SET</span></span>
-<span id="annotated-cell-3-59"><a href="#annotated-cell-3-59" aria-hidden="true" tabindex="-1"></a>  resolvedStatus <span class="op">=</span> EXCLUDED.resolvedStatus,</span>
-<span id="annotated-cell-3-60"><a href="#annotated-cell-3-60" aria-hidden="true" tabindex="-1"></a>  openWorkOrderCount <span class="op">=</span> EXCLUDED.openWorkOrderCount,</span>
-<span id="annotated-cell-3-61"><a href="#annotated-cell-3-61" aria-hidden="true" tabindex="-1"></a>  lastTelemetryEventId <span class="op">=</span> EXCLUDED.lastTelemetryEventId,</span>
-<span id="annotated-cell-3-62"><a href="#annotated-cell-3-62" aria-hidden="true" tabindex="-1"></a>  lastOperatorReportId <span class="op">=</span> EXCLUDED.lastOperatorReportId,</span>
-<span id="annotated-cell-3-63"><a href="#annotated-cell-3-63" aria-hidden="true" tabindex="-1"></a>  lastUpdateAt <span class="op">=</span> EXCLUDED.lastUpdateAt;</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="1"><code>WorkOrderSignals</code> - Counts active work orders and captures the latest maintenance change for the machine.</span>
-</dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="10" data-code-annotation="2"><code>LatestOperatorOverride</code> – Fetches the most recent valid operator status override for the machine.</span>
-</dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="3">3</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="22" data-code-annotation="3">Insert into <code>CurrentMachineState</code> – Writes or updates the single current state row for the machine.</span>
-</dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="4">4</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="34" data-code-annotation="4">Status resolution logic – Determines the machine’s status using maintenance, operator override, then telemetry.</span>
-</dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="5">5</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="49" data-code-annotation="5"><code>lastUpdateAt</code> calculation – Records the most recent timestamp from telemetry, maintenance, or operator input.</span>
-</dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="6">6</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="57" data-code-annotation="6">Upsert logic – Guarantees exactly one up-to-date row per machine in <code>CurrentMachineState</code>.</span>
-</dd>
-</dl>
-</section>
-<section id="how-health-score-fits-into-the-current-view" class="level3" data-number="6.2.4">
-<h3 data-number="6.2.4" class="anchored" data-anchor-id="how-health-score-fits-into-the-current-view"><span class="header-section-number">6.2.4</span> How Health Score fits into the current view</h3>
-<p>Once a new health score in <a href="#sec-health-score" class="quarto-xref">Section&nbsp;6.1.4</a> is computed, the Health Scoring Service automatically updates the current state for the affected machine using the following update statement.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4"><pre class="sourceCode sql code-annotation-code code-with-copy code-annotated"><code class="sourceCode sql"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">UPDATE</span> CurrentMachineState</span>
-<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SET</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3" aria-hidden="true" tabindex="-1"></a>  healthScore <span class="op">=</span> new_score_value,</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4" aria-hidden="true" tabindex="-1"></a>  lastUpdateAt <span class="op">=</span> <span class="fu">CURRENT_TIMESTAMP</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-4-5" class="code-annotation-target"><a href="#annotated-cell-4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> machineId <span class="op">=</span> target_machine_id;</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="3" data-code-annotation="1"><code>new_score_value</code> is the computed health score produce by the scoring function for each machine</span>
-</dd>
-<dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="4" data-code-annotation="2"><code>lastUpdateAt</code> is bumped so the dashboard can tell the record was updated recently</span>
-</dd>
-<dt data-target-cell="annotated-cell-4" data-target-annotation="3">3</dt>
-<dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="5" data-code-annotation="3"><code>target_machine_id</code> identifies which machine row to update</span>
-</dd>
-</dl>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">-- Runs for ONE machine whenever ANY of these events occurs:</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="co">-- 1) telemetry event, 2) work order opened/closed, </span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>   <span class="dv">3</span>) <span class="kw">operator</span> override submitted, <span class="dv">4</span>) health score updated.</span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="kw">WITH</span> Incoming <span class="kw">AS</span> (</span>
+<span id="cb2-6"><a href="#cb2-6"></a>  <span class="kw">SELECT</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>    <span class="ch">:machineId</span>                :: BIGINT        <span class="kw">AS</span> machineId,</span>
+<span id="cb2-8"><a href="#cb2-8"></a></span>
+<span id="cb2-9"><a href="#cb2-9"></a>    <span class="co">-- Telemetry event fields (present on telemetry events)</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>    <span class="ch">:telemetryEventId</span>         :: BIGINT        <span class="kw">AS</span> telemetryEventId,</span>
+<span id="cb2-11"><a href="#cb2-11"></a>    <span class="ch">:eventTimestamp</span>           :: <span class="dt">TIMESTAMP</span>     <span class="kw">AS</span> eventTimestamp,</span>
+<span id="cb2-12"><a href="#cb2-12"></a>    <span class="ch">:statusRaw</span>                :: <span class="dt">VARCHAR</span>(<span class="dv">32</span>)   <span class="kw">AS</span> statusRaw,</span>
+<span id="cb2-13"><a href="#cb2-13"></a>    <span class="ch">:faultCodeId</span>              :: BIGINT        <span class="kw">AS</span> faultCodeId,</span>
+<span id="cb2-14"><a href="#cb2-14"></a></span>
+<span id="cb2-15"><a href="#cb2-15"></a>    <span class="co">-- Work order fields (emitted when a work order is created/updated/closed)</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a>    <span class="ch">:workOrderId</span>              :: BIGINT        <span class="kw">AS</span> workOrderId,</span>
+<span id="cb2-17"><a href="#cb2-17"></a>    <span class="ch">:workOrderCreatedAt</span>       :: <span class="dt">TIMESTAMP</span>     <span class="kw">AS</span> workOrderCreatedAt,</span>
+<span id="cb2-18"><a href="#cb2-18"></a>    <span class="ch">:workOrderClosedAt</span>        :: <span class="dt">TIMESTAMP</span>     <span class="kw">AS</span> workOrderClosedAt,</span>
+<span id="cb2-19"><a href="#cb2-19"></a>    <span class="ch">:openWorkOrderCount</span>       :: <span class="dt">INT</span>           <span class="kw">AS</span> openWorkOrderCount,</span>
+<span id="cb2-20"><a href="#cb2-20"></a>    <span class="ch">:workOrderCreatedByType</span>   :: <span class="dt">VARCHAR</span>(<span class="dv">32</span>)   </span>
+<span id="cb2-21"><a href="#cb2-21"></a>          <span class="kw">AS</span> workOrderCreatedByType,</span>
+<span id="cb2-22"><a href="#cb2-22"></a>    <span class="ch">:workOrderCreatedById</span>     :: BIGINT        </span>
+<span id="cb2-23"><a href="#cb2-23"></a>          <span class="kw">AS</span> workOrderCreatedById,</span>
+<span id="cb2-24"><a href="#cb2-24"></a></span>
+<span id="cb2-25"><a href="#cb2-25"></a>    <span class="co">-- Operator report fields (emitted when an operator submits a report/override)</span></span>
+<span id="cb2-26"><a href="#cb2-26"></a>    <span class="ch">:operatorReportId</span>         :: BIGINT        <span class="kw">AS</span> operatorReportId,</span>
+<span id="cb2-27"><a href="#cb2-27"></a>    <span class="ch">:reportTimestamp</span>          :: <span class="dt">TIMESTAMP</span>     <span class="kw">AS</span> reportTimestamp,</span>
+<span id="cb2-28"><a href="#cb2-28"></a>    <span class="ch">:statusOverride</span>           :: <span class="dt">VARCHAR</span>(<span class="dv">32</span>)   <span class="kw">AS</span> statusOverride,</span>
+<span id="cb2-29"><a href="#cb2-29"></a></span>
+<span id="cb2-30"><a href="#cb2-30"></a>    <span class="co">-- Health score event fields (present on scoring events)</span></span>
+<span id="cb2-31"><a href="#cb2-31"></a>    <span class="ch">:healthScore</span>              :: <span class="dt">NUMERIC</span>(<span class="dv">5</span>,<span class="dv">2</span>)  <span class="kw">AS</span> healthScore,</span>
+<span id="cb2-32"><a href="#cb2-32"></a>    <span class="ch">:healthScoreAt</span>            :: <span class="dt">TIMESTAMP</span>     <span class="kw">AS</span> healthScoreAt</span>
+<span id="cb2-33"><a href="#cb2-33"></a>),</span>
+<span id="cb2-34"><a href="#cb2-34"></a></span>
+<span id="cb2-35"><a href="#cb2-35"></a>Existing <span class="kw">AS</span> (</span>
+<span id="cb2-36"><a href="#cb2-36"></a>  <span class="kw">SELECT</span> <span class="op">*</span></span>
+<span id="cb2-37"><a href="#cb2-37"></a>  <span class="kw">FROM</span> CurrentMachineState</span>
+<span id="cb2-38"><a href="#cb2-38"></a>  <span class="kw">WHERE</span> machineId <span class="op">=</span> (<span class="kw">SELECT</span> machineId <span class="kw">FROM</span> Incoming)</span>
+<span id="cb2-39"><a href="#cb2-39"></a>),</span>
+<span id="cb2-40"><a href="#cb2-40"></a></span>
+<span id="cb2-41"><a href="#cb2-41"></a>Merged <span class="kw">AS</span> (</span>
+<span id="cb2-42"><a href="#cb2-42"></a>  <span class="kw">SELECT</span></span>
+<span id="cb2-43"><a href="#cb2-43"></a>    i.machineId,</span>
+<span id="cb2-44"><a href="#cb2-44"></a></span>
+<span id="cb2-45"><a href="#cb2-45"></a>    <span class="co">-- Keep lastest telemetry</span></span>
+<span id="cb2-46"><a href="#cb2-46"></a>    <span class="fu">COALESCE</span>(i.telemetryEventId, e.lastTelemetryEventId) <span class="kw">AS</span> lastTelemetryEventId,</span>
+<span id="cb2-47"><a href="#cb2-47"></a>    <span class="fu">COALESCE</span>(i.eventTimestamp,   e.lastUpdateAt)         <span class="kw">AS</span> lastTelemetryAt,</span>
+<span id="cb2-48"><a href="#cb2-48"></a>    i.statusRaw                                          <span class="kw">AS</span> statusRaw,</span>
+<span id="cb2-49"><a href="#cb2-49"></a>    i.faultCodeId                                        <span class="kw">AS</span> faultCodeId,</span>
+<span id="cb2-50"><a href="#cb2-50"></a></span>
+<span id="cb2-51"><a href="#cb2-51"></a>    <span class="co">-- Keep latest work order signals</span></span>
+<span id="cb2-52"><a href="#cb2-52"></a>    <span class="fu">COALESCE</span>(i.openWorkOrderCount, e.openWorkOrderCount, <span class="dv">0</span>) <span class="kw">AS</span> openWorkOrderCount,</span>
+<span id="cb2-53"><a href="#cb2-53"></a>    <span class="fu">COALESCE</span>(i.workOrderId, e.lastWorkOrderId) <span class="kw">AS</span> lastWorkOrderId,</span>
+<span id="cb2-54"><a href="#cb2-54"></a>    <span class="fu">COALESCE</span>(i.workOrderCreatedByType, e.lastWorkOrderCreatedByType) <span class="kw">AS</span> lastWorkOrderCreatedByType,</span>
+<span id="cb2-55"><a href="#cb2-55"></a>    <span class="fu">COALESCE</span>(i.workOrderCreatedById,   e.lastWorkOrderCreatedById)   <span class="kw">AS</span> lastWorkOrderCreatedById,</span>
+<span id="cb2-56"><a href="#cb2-56"></a></span>
+<span id="cb2-57"><a href="#cb2-57"></a>    <span class="co">-- Use createdAt/closedAt from the incoming work order event to bump freshness.</span></span>
+<span id="cb2-58"><a href="#cb2-58"></a>    <span class="fu">GREATEST</span>(</span>
+<span id="cb2-59"><a href="#cb2-59"></a>      <span class="fu">COALESCE</span>(i.workOrderCreatedAt, <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>),</span>
+<span id="cb2-60"><a href="#cb2-60"></a>      <span class="fu">COALESCE</span>(i.workOrderClosedAt,  <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>),</span>
+<span id="cb2-61"><a href="#cb2-61"></a>      <span class="fu">COALESCE</span>(e.lastUpdateAt,       <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>)</span>
+<span id="cb2-62"><a href="#cb2-62"></a>    ) <span class="kw">AS</span> lastWorkOrderChangeAt,</span>
+<span id="cb2-63"><a href="#cb2-63"></a></span>
+<span id="cb2-64"><a href="#cb2-64"></a>    <span class="co">-- Keep latest operator override pointer</span></span>
+<span id="cb2-65"><a href="#cb2-65"></a>    <span class="fu">COALESCE</span>(i.operatorReportId, e.lastOperatorReportId) <span class="kw">AS</span> lastOperatorReportId,</span>
+<span id="cb2-66"><a href="#cb2-66"></a>    <span class="fu">COALESCE</span>(i.reportTimestamp,  e.lastUpdateAt)         <span class="kw">AS</span> lastOverrideAt,</span>
+<span id="cb2-67"><a href="#cb2-67"></a>    i.statusOverride                                     <span class="kw">AS</span> statusOverride,</span>
+<span id="cb2-68"><a href="#cb2-68"></a></span>
+<span id="cb2-69"><a href="#cb2-69"></a>    <span class="co">-- Keep latest health score</span></span>
+<span id="cb2-70"><a href="#cb2-70"></a>    <span class="fu">COALESCE</span>(i.healthScore,   e.healthScore)             <span class="kw">AS</span> healthScore,</span>
+<span id="cb2-71"><a href="#cb2-71"></a>    <span class="fu">COALESCE</span>(i.healthScoreAt, e.lastUpdateAt)            <span class="kw">AS</span> healthScoreAt</span>
+<span id="cb2-72"><a href="#cb2-72"></a>  <span class="kw">FROM</span> Incoming i</span>
+<span id="cb2-73"><a href="#cb2-73"></a>  <span class="kw">LEFT</span> <span class="kw">JOIN</span> Existing e <span class="kw">ON</span> <span class="kw">TRUE</span></span>
+<span id="cb2-74"><a href="#cb2-74"></a>)</span>
+<span id="cb2-75"><a href="#cb2-75"></a></span>
+<span id="cb2-76"><a href="#cb2-76"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> CurrentMachineState (</span>
+<span id="cb2-77"><a href="#cb2-77"></a>  machineId,</span>
+<span id="cb2-78"><a href="#cb2-78"></a>  resolvedStatus,</span>
+<span id="cb2-79"><a href="#cb2-79"></a>  healthScore,</span>
+<span id="cb2-80"><a href="#cb2-80"></a>  openWorkOrderCount,</span>
+<span id="cb2-81"><a href="#cb2-81"></a>  lastTelemetryEventId,</span>
+<span id="cb2-82"><a href="#cb2-82"></a>  lastOperatorReportId,</span>
+<span id="cb2-83"><a href="#cb2-83"></a>  lastWorkOrderId,</span>
+<span id="cb2-84"><a href="#cb2-84"></a>  lastWorkOrderCreatedByType,</span>
+<span id="cb2-85"><a href="#cb2-85"></a>  lastWorkOrderCreatedById,</span>
+<span id="cb2-86"><a href="#cb2-86"></a>  lastUpdateAt</span>
+<span id="cb2-87"><a href="#cb2-87"></a>)</span>
+<span id="cb2-88"><a href="#cb2-88"></a><span class="kw">SELECT</span></span>
+<span id="cb2-89"><a href="#cb2-89"></a>  m.machineId,</span>
+<span id="cb2-90"><a href="#cb2-90"></a></span>
+<span id="cb2-91"><a href="#cb2-91"></a>  <span class="cf">CASE</span></span>
+<span id="cb2-92"><a href="#cb2-92"></a>    <span class="cf">WHEN</span> m.openWorkOrderCount <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">THEN</span> <span class="st">'UnderMaintenance'</span></span>
+<span id="cb2-93"><a href="#cb2-93"></a></span>
+<span id="cb2-94"><a href="#cb2-94"></a>    <span class="cf">WHEN</span> m.statusOverride <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="cb2-95"><a href="#cb2-95"></a>      <span class="kw">AND</span> m.lastOverrideAt <span class="op">&gt;=</span> <span class="fu">CURRENT_TIMESTAMP</span> <span class="op">-</span> <span class="dt">INTERVAL</span> <span class="st">'4 hours'</span></span>
+<span id="cb2-96"><a href="#cb2-96"></a>      <span class="cf">THEN</span> m.statusOverride</span>
+<span id="cb2-97"><a href="#cb2-97"></a></span>
+<span id="cb2-98"><a href="#cb2-98"></a>    <span class="cf">WHEN</span> m.faultCodeId <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="st">'Fault'</span></span>
+<span id="cb2-99"><a href="#cb2-99"></a>    <span class="cf">ELSE</span> <span class="fu">COALESCE</span>(m.statusRaw, <span class="st">'Idle'</span>)</span>
+<span id="cb2-100"><a href="#cb2-100"></a>  <span class="cf">END</span> <span class="kw">AS</span> resolvedStatus,</span>
+<span id="cb2-101"><a href="#cb2-101"></a></span>
+<span id="cb2-102"><a href="#cb2-102"></a>  m.healthScore,</span>
+<span id="cb2-103"><a href="#cb2-103"></a>  m.openWorkOrderCount,</span>
+<span id="cb2-104"><a href="#cb2-104"></a>  m.lastTelemetryEventId,</span>
+<span id="cb2-105"><a href="#cb2-105"></a>  m.lastOperatorReportId,</span>
+<span id="cb2-106"><a href="#cb2-106"></a>  m.lastWorkOrderId,</span>
+<span id="cb2-107"><a href="#cb2-107"></a>  m.lastWorkOrderCreatedByType,</span>
+<span id="cb2-108"><a href="#cb2-108"></a>  m.lastWorkOrderCreatedById,</span>
+<span id="cb2-109"><a href="#cb2-109"></a></span>
+<span id="cb2-110"><a href="#cb2-110"></a>  <span class="fu">GREATEST</span>(</span>
+<span id="cb2-111"><a href="#cb2-111"></a>    <span class="fu">COALESCE</span>(m.lastTelemetryAt,         <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>),</span>
+<span id="cb2-112"><a href="#cb2-112"></a>    <span class="fu">COALESCE</span>(m.lastWorkOrderChangeAt,   <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>),</span>
+<span id="cb2-113"><a href="#cb2-113"></a>    <span class="fu">COALESCE</span>(m.lastOverrideAt,          <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>),</span>
+<span id="cb2-114"><a href="#cb2-114"></a>    <span class="fu">COALESCE</span>(m.healthScoreAt,           <span class="dt">TIMESTAMP</span> <span class="st">'1970-01-01'</span>)</span>
+<span id="cb2-115"><a href="#cb2-115"></a>  ) <span class="kw">AS</span> lastUpdateAt</span>
+<span id="cb2-116"><a href="#cb2-116"></a><span class="kw">FROM</span> Merged m</span>
+<span id="cb2-117"><a href="#cb2-117"></a></span>
+<span id="cb2-118"><a href="#cb2-118"></a><span class="kw">ON</span> CONFLICT (machineId) DO <span class="kw">UPDATE</span></span>
+<span id="cb2-119"><a href="#cb2-119"></a><span class="kw">SET</span></span>
+<span id="cb2-120"><a href="#cb2-120"></a>  resolvedStatus              <span class="op">=</span> EXCLUDED.resolvedStatus,</span>
+<span id="cb2-121"><a href="#cb2-121"></a>  healthScore                 <span class="op">=</span> EXCLUDED.healthScore,</span>
+<span id="cb2-122"><a href="#cb2-122"></a>  openWorkOrderCount          <span class="op">=</span> EXCLUDED.openWorkOrderCount,</span>
+<span id="cb2-123"><a href="#cb2-123"></a>  lastTelemetryEventId        <span class="op">=</span> EXCLUDED.lastTelemetryEventId,</span>
+<span id="cb2-124"><a href="#cb2-124"></a>  lastOperatorReportId        <span class="op">=</span> EXCLUDED.lastOperatorReportId,</span>
+<span id="cb2-125"><a href="#cb2-125"></a>  lastWorkOrderId             <span class="op">=</span> EXCLUDED.lastWorkOrderId,</span>
+<span id="cb2-126"><a href="#cb2-126"></a>  lastWorkOrderCreatedByType  <span class="op">=</span> EXCLUDED.lastWorkOrderCreatedByType,</span>
+<span id="cb2-127"><a href="#cb2-127"></a>  lastWorkOrderCreatedById    <span class="op">=</span> EXCLUDED.lastWorkOrderCreatedById,</span>
+<span id="cb2-128"><a href="#cb2-128"></a>  lastUpdateAt                <span class="op">=</span> EXCLUDED.lastUpdateAt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-simple callout-note">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">

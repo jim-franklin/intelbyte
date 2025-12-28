@@ -54,7 +54,8 @@ The SQL code block is executed with parameters supplied by the `Stream Processor
 
 ```{.sql code-line-numbers="4-30|32-36|38-71|88-97|99-112"}
 -- Runs for ONE machine whenever ANY of these events occurs:
--- 1) telemetry event, 2) work order opened/closed, 3) operator override submitted, 4) health score updated.
+-- 1) telemetry event, 2) work order opened/closed, 
+   3) operator override submitted, 4) health score updated.
 
 WITH Incoming AS (
   SELECT
@@ -71,8 +72,10 @@ WITH Incoming AS (
     :workOrderCreatedAt       :: TIMESTAMP     AS workOrderCreatedAt,
     :workOrderClosedAt        :: TIMESTAMP     AS workOrderClosedAt,
     :openWorkOrderCount       :: INT           AS openWorkOrderCount,
-    :workOrderCreatedByType   :: VARCHAR(32)   AS workOrderCreatedByType,
-    :workOrderCreatedById     :: BIGINT        AS workOrderCreatedById,
+    :workOrderCreatedByType   :: VARCHAR(32)   
+          AS workOrderCreatedByType,
+    :workOrderCreatedById     :: BIGINT        
+          AS workOrderCreatedById,
 
     -- Operator report fields (emitted when an operator submits a report/override)
     :operatorReportId         :: BIGINT        AS operatorReportId,
@@ -97,8 +100,8 @@ Merged AS (
     -- Keep lastest telemetry
     COALESCE(i.telemetryEventId, e.lastTelemetryEventId) AS lastTelemetryEventId,
     COALESCE(i.eventTimestamp,   e.lastUpdateAt)         AS lastTelemetryAt,
-    i.statusRaw                                         AS statusRaw,
-    i.faultCodeId                                       AS faultCodeId,
+    i.statusRaw                                          AS statusRaw,
+    i.faultCodeId                                        AS faultCodeId,
 
     -- Keep latest work order signals
     COALESCE(i.openWorkOrderCount, e.openWorkOrderCount, 0) AS openWorkOrderCount,
