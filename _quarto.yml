@@ -13,6 +13,8 @@ website:
         text: Report
       - href: presentation.qmd
         text: Presentation
+      - href: https://intelbyte.onrender.com
+        text: Dashboard
       - href: about.qmd
         text: About
       - icon: github

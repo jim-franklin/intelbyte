@@ -145,7 +145,7 @@ def make_kpi_cards(df: pd.DataFrame) -> html.Div:
                 "boxShadow": "0 1px 2px rgba(0,0,0,0.06)",
             },
         )
-        return dcc.Loading(children=card, type="dot", fullscreen=False)
+        return dcc.Loading(children=card)
 
     cards = dbc.Row(
         [

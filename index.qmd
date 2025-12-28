@@ -18,7 +18,7 @@ format:
         text: PDF
       - href: figures/dashboard-screens.png
         icon: speedometer
-        text: Dashboard
+        text: Dashboard View
       - href: presentation.html
         icon: file-slides
         text: Slides
