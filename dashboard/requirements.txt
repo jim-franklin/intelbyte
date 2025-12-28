@@ -4,3 +4,7 @@ pandas==2.3.3
 plotly==6.5.0
 altair==6.0.0
 numpy==2.3.5
+vl-convert-python==1.9.0
+vegafusion-python-embed==1.6.9
+dash-vega-components==0.11.0
+gunicorn==23.0.0  
