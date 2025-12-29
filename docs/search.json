@@ -126,6 +126,13 @@
     "text": "Scalability and Reliability\n\nScalability: All machine telemetry is written to an append-only event store designed for very high write volume\n\nOperational Performance: A lightweight CurrentMachineState table keeps exactly one row per machine, enabling fast and predictable dashboard queries\n\nReliability: Automatically handles failures and duplicate events so machine status remains accurate and consistent\n\nData Freshness and Trust: A lastUpdateAt timestamp makes it easy to detect stale machines, delayed telemetry, or processing gaps\n\n\n\n\nStart by reminding them that industrial systems generate a lot of data very quickly\nThe append-only telemetry store absorbs this volume without slowing down the system\nInstead of querying history, dashboards read from a small current-state table optimized for operations\nEvent-driven updates mean the system reacts immediately as data arrives\nIdempotent upserts ensure retries or duplicates never corrupt machine state\nlastUpdateAt gives operations teams confidence that what they see is current and reliable\nOverall, this design scales cleanly as plants, machines, and telemetry grow"
   },
   {
+    "objectID": "presentation.html#live-dashboard-demo",
+    "href": "presentation.html#live-dashboard-demo",
+    "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",
+    "section": "Live Dashboard Demo",
+    "text": "Live Dashboard Demo"
+  },
+  {
     "objectID": "presentation.html#section",
     "href": "presentation.html#section",
     "title": "Designing a Scalable Factory Equipment Health and Maintenance Platform",

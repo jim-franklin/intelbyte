@@ -12,7 +12,7 @@ def build_layout(app: dash.Dash) -> html.Div:
         children=[
             dcc.Store(id="store-current"),
             dcc.Store(id="store-workorders"),
-            dcc.Interval(id="tick", interval=30_000, n_intervals=0),
+            dcc.Interval(id="tick", interval=60_000, n_intervals=0),
 
             dbc.Row(
                 [

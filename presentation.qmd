@@ -470,6 +470,13 @@ Managed identities are used for service to service communication without exposin
 -	Overall, this design scales cleanly as plants, machines, and telemetry grow
 :::
 
+## Live Dashboard Demo
+
+<br/>
+
+[![](figures/dashboard-screens.png){fig-align="center" style="max-width: 90vw; max-height: 70vh;" .fragment .fade-down}](https://intelbyte.onrender.com)
+
+
 ## 
 
 ::: {style="display:flex; align-items:center; justify-content:center; height:70vh; text-align:center;"}

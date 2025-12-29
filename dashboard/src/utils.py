@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-import pandas as pd
 
 
 def parse_dt(value: str | None) -> datetime | None:

@@ -12,6 +12,7 @@ STATUS_COLOR_MAP = {
     "UnderMaintenance": "#76B7B2",  # teal
 }
 
+
 def status_pie_chart(df: pd.DataFrame, title: str = "Status distribution") -> str:
     """Return an Altair chart rendered as an HTML string for Dash Iframe srcDoc."""
     if df.empty:
