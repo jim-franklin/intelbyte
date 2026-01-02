@@ -1,0 +1,13 @@
+##
+
+::: {style="display:flex; align-items:center; justify-content:center; height:70vh; text-align:center;"}
+<div>
+  <div class="fragment fade-up" style="font-size:5.5em; font-weight:700;">
+    Thank You
+  </div>
+
+  <div class="fragment fade-left" style="font-size:2em; font-weight:400; color:#2563eb !important;">
+    Any questions?
+  </div>
+</div>
+:::

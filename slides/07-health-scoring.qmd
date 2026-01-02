@@ -1,0 +1,49 @@
+## Algorithm A: Machine Health Scoring {#algorithm}
+
+The machine health score is a normalized indicator ranging from **<span class="critical">0 (critical)</span>** to **<span class="healthy">100 (healthy)</span>** that summarizes recent machine behavior into a single, easy-to-interpret value. The score is recalculated whenever new telemetry arrives and is written to `CurrentMachineState.healthScore`. The algorithm combines sensor deviations, fault severity, operator input, and maintenance state, while applying smoothing to reduce noise.
+
+::: {.fragment .fade-up}
+### Pseudocode
+
+```{.python code-line-numbers="1|2-3|6-8|11-14|17-20|23-24|27-28|29-34|37"}
+def compute_health_score(previous_score, minutes_since_last_telemetry):
+    rawScore = 100
+    smoothing_param = 0.2
+
+    # sensor penalties (computed from last 15 minutes of data)
+    rawScore -= temperature_penalty
+    rawScore -= vibration_penalty
+    rawScore -= throughput_penalty
+
+    # fault severity penalties
+    if fault_severity == "High":
+        rawScore -= 60
+    elif fault_severity == "Medium":
+        rawScore -= 30
+
+    # apply operator input only if a report exists
+    if operator_flag == "IssueObserved":
+        rawScore -= 20
+    elif operator_flag == "MinorConcern":
+        rawScore -= 10
+
+    # maintenance state cap
+    if status == "UnderMaintenance":
+        rawScore = min(rawScore, 60)
+
+    # initialization / reset rule (no previous score or stale telemetry)
+    if previous_score is None or minutes_since_last_telemetry > 30:
+        healthScore = rawScore
+    else:
+        # Apply smoothing (EWMA)
+        healthScore = (
+            smoothing_param * rawScore +
+            (1 - smoothing_param) * previous_score
+        )
+
+    # ensure the final score stays between 0 (worst) and 100 (best)
+    healthScore = max(0, min(100, healthScore))
+
+    return healthScore
+```
+:::

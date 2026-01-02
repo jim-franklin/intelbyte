@@ -1,0 +1,133 @@
+## Event-driven per Machine Update
+
+This update runs once per incoming event and recalculates the current status for a single machine using telemetry data, maintenance-driven work order changes, operator-submitted overrides, and the latest health score. All inputs are supplied by event-driven processes, eliminating the need to scan historical data.
+
+::: {.fragment .fade-down}
+```{.sql code-line-numbers="4-30|32-36|38-71|88-97|99-112"}
+-- Runs for ONE machine whenever ANY of these events occurs:
+-- 1) telemetry event, 2) work order opened/closed, 3) operator override submitted, 4) health score updated.
+
+WITH Incoming AS (
+  SELECT
+    :machineId                :: BIGINT        AS machineId,
+
+    -- Telemetry event fields (present on telemetry events)
+    :telemetryEventId         :: BIGINT        AS telemetryEventId,
+    :eventTimestamp           :: TIMESTAMP     AS eventTimestamp,
+    :statusRaw                :: VARCHAR(32)   AS statusRaw,
+    :faultCodeId              :: BIGINT        AS faultCodeId,
+
+    -- Work order fields (emitted when a work order is created/updated/closed)
+    :workOrderId              :: BIGINT        AS workOrderId,
+    :workOrderCreatedAt       :: TIMESTAMP     AS workOrderCreatedAt,
+    :workOrderClosedAt        :: TIMESTAMP     AS workOrderClosedAt,
+    :openWorkOrderCount       :: INT           AS openWorkOrderCount,
+    :workOrderCreatedByType   :: VARCHAR(32)   AS workOrderCreatedByType,
+    :workOrderCreatedById     :: BIGINT        AS workOrderCreatedById,
+
+    -- Operator report fields (emitted when an operator submits a report/override)
+    :operatorReportId         :: BIGINT        AS operatorReportId,
+    :reportTimestamp          :: TIMESTAMP     AS reportTimestamp,
+    :statusOverride           :: VARCHAR(32)   AS statusOverride,
+
+    -- Health score event fields (present on scoring events)
+    :healthScore              :: NUMERIC(5,2)  AS healthScore,
+    :healthScoreAt            :: TIMESTAMP     AS healthScoreAt
+),
+
+Existing AS (
+  SELECT *
+  FROM CurrentMachineState
+  WHERE machineId = (SELECT machineId FROM Incoming)
+),
+
+Merged AS (
+  SELECT
+    i.machineId,
+
+    -- Keep lastest telemetry
+    COALESCE(i.telemetryEventId, e.lastTelemetryEventId) AS lastTelemetryEventId,
+    COALESCE(i.eventTimestamp,   e.lastUpdateAt)         AS lastTelemetryAt,
+    i.statusRaw                                         AS statusRaw,
+    i.faultCodeId                                       AS faultCodeId,
+
+    -- Keep latest work order signals
+    COALESCE(i.openWorkOrderCount, e.openWorkOrderCount, 0) AS openWorkOrderCount,
+    COALESCE(i.workOrderId, e.lastWorkOrderId) AS lastWorkOrderId,
+    COALESCE(i.workOrderCreatedByType, e.lastWorkOrderCreatedByType) AS lastWorkOrderCreatedByType,
+    COALESCE(i.workOrderCreatedById,   e.lastWorkOrderCreatedById)   AS lastWorkOrderCreatedById,
+
+    -- Use createdAt/closedAt from the incoming work order event to bump freshness.
+    GREATEST(
+      COALESCE(i.workOrderCreatedAt, TIMESTAMP '1970-01-01'),
+      COALESCE(i.workOrderClosedAt,  TIMESTAMP '1970-01-01'),
+      COALESCE(e.lastUpdateAt,       TIMESTAMP '1970-01-01')
+    ) AS lastWorkOrderChangeAt,
+
+    -- Keep latest operator override pointer
+    COALESCE(i.operatorReportId, e.lastOperatorReportId) AS lastOperatorReportId,
+    COALESCE(i.reportTimestamp,  e.lastUpdateAt)         AS lastOverrideAt,
+    i.statusOverride                                     AS statusOverride,
+
+    -- Keep latest health score
+    COALESCE(i.healthScore,   e.healthScore)             AS healthScore,
+    COALESCE(i.healthScoreAt, e.lastUpdateAt)            AS healthScoreAt
+  FROM Incoming i
+  LEFT JOIN Existing e ON TRUE
+)
+
+INSERT INTO CurrentMachineState (
+  machineId,
+  resolvedStatus,
+  healthScore,
+  openWorkOrderCount,
+  lastTelemetryEventId,
+  lastOperatorReportId,
+  lastWorkOrderId,
+  lastWorkOrderCreatedByType,
+  lastWorkOrderCreatedById,
+  lastUpdateAt
+)
+SELECT
+  m.machineId,
+
+  CASE
+    WHEN m.openWorkOrderCount > 0 THEN 'UnderMaintenance'
+
+    WHEN m.statusOverride IS NOT NULL
+      AND m.lastOverrideAt >= CURRENT_TIMESTAMP - INTERVAL '4 hours'
+      THEN m.statusOverride
+
+    WHEN m.faultCodeId IS NOT NULL THEN 'Fault'
+    ELSE COALESCE(m.statusRaw, 'Idle')
+  END AS resolvedStatus,
+
+  m.healthScore,
+  m.openWorkOrderCount,
+  m.lastTelemetryEventId,
+  m.lastOperatorReportId,
+  m.lastWorkOrderId,
+  m.lastWorkOrderCreatedByType,
+  m.lastWorkOrderCreatedById,
+
+  GREATEST(
+    COALESCE(m.lastTelemetryAt,         TIMESTAMP '1970-01-01'),
+    COALESCE(m.lastWorkOrderChangeAt,   TIMESTAMP '1970-01-01'),
+    COALESCE(m.lastOverrideAt,          TIMESTAMP '1970-01-01'),
+    COALESCE(m.healthScoreAt,           TIMESTAMP '1970-01-01')
+  ) AS lastUpdateAt
+FROM Merged m
+
+ON CONFLICT (machineId) DO UPDATE
+SET
+  resolvedStatus              = EXCLUDED.resolvedStatus,
+  healthScore                 = EXCLUDED.healthScore,
+  openWorkOrderCount          = EXCLUDED.openWorkOrderCount,
+  lastTelemetryEventId        = EXCLUDED.lastTelemetryEventId,
+  lastOperatorReportId        = EXCLUDED.lastOperatorReportId,
+  lastWorkOrderId             = EXCLUDED.lastWorkOrderId,
+  lastWorkOrderCreatedByType  = EXCLUDED.lastWorkOrderCreatedByType,
+  lastWorkOrderCreatedById    = EXCLUDED.lastWorkOrderCreatedById,
+  lastUpdateAt                = EXCLUDED.lastUpdateAt;
+```
+:::

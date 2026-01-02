@@ -3,493 +3,55 @@ title: "Designing a Scalable Factory Equipment Health and Maintenance Platform"
 subtitle: "Architecture, Data Model, and Algorithms"
 author: "Presented by Franklin Aryee"
 date: 2025-12-30
-date-format: "DD MMM YYYY"  
+date-format: "DD MMM YYYY"
 format:
-  revealjs: 
+  revealjs:
     slide-number: true
     transition: slide
     width: 1600
     height: 900
-    chalkboard: 
+    chalkboard:
       buttons: false
     preview-links: auto
     logo: images/intelbyte_logo.png
     css: styles.css
     lightbox: true
     touch: true
-    include-in-header: reveal-animate.html
 resources:
   - report.pdf
 ---
 
-## Outline
+{{< include slides/01-outline.qmd >}}
 
-::: {.fragment .fade-left}
-- [Problem and Objectives](#problem)
-:::
-::: {.fragment .fade-left}
-- [Overview of Platform Architecture](#architecture)
-:::
-::: {.fragment .fade-left}
-- [Database Design](#db-design)
-:::
-::: {.fragment .fade-left}
-- [Core Algorithms](#algorithms)
-:::
-::: {.fragment .fade-left}
-- [Security and Data Protection](#security)
-:::
-::: {.fragment .fade-left}
-- [Authentication and Authorization](#auth)
-:::
-::: {.fragment .fade-left}
-- [Scalability and Reliability](#scale)
-:::
+{{< include slides/02-problem-objectives.qmd >}}
 
-## Problem and Objectives {#problem}
+{{< include slides/03-requirements.qmd >}}
 
-Design a platform that continuously monitors equipment health and maintenance activity across production lines, capable of absorbing high-frequency telemetry while presenting operations teams with a clear, always-current view of system status.
+{{< include slides/04-architecture.qmd >}}
 
-### 🎯 MVP Goals
-::: {.fragment .fade-up}
--	Ingest continuous machine telemetry data
-:::
-::: {.fragment .fade-up}
-- Scale to thousands of machines and millions of telemetry records
-:::
-::: {.fragment .fade-up}
--	Store complete historical data for analysis, reporting, and audits
-:::
-::: {.fragment .fade-up}
--	Maintain a single current state per machine that powers near real-time dashboards
-:::
-::: {.fragment .fade-up}
--	Enable operators to log issues and status changes
-:::
-::: {.fragment .fade-up}
--	Generate maintenance work orders based on issues, rules, or thresholds
-:::
+{{< include slides/05-database-design.qmd >}}
 
-## Requirements that Drive the Platform
+{{< include slides/06-telemetry-strategy.qmd >}}
 
-::: columns
-::: {.column width="50%"}
-::: {.fragment .fade-up}
-### ⚙️ Functional
-:::
-::: incremental
--	Support multiple plants, production lines, and machines
--	Ingest and persist high-frequency machine telemetry
--	Capture operator reports and manual overrides
--	Automate and manage maintenance requests and work orders
--	Provide a current equipment status view with one row per machine
-:::
-:::
+{{< include slides/07-health-scoring.qmd >}}
 
-::: {.column width="50%"}
-::: {.fragment .fade-up}
-### 📈 Quality
-:::
-::: incremental
--	Scale horizontally to thousands of machines
--	Handle continuous growth to millions of telemetry events
--	Deliver fast, predictable reads for operational dashboards
--	Preserve full audit history and traceability
--	Enforce secure, role-based access controls
-:::
-:::
-:::
+{{< include slides/08-algorithm-context.qmd >}}
 
-## Overview of Platform Architecture {#architecture}
+{{< include slides/09-status-resolution.qmd >}}
 
-The platform stores all telemetry events as historical data. At the same time, a **stream processor** updates a lightweight table that holds the current state of each machine, enabling fast and reliable operational dashboards.
+{{< include slides/10-event-driven-update.qmd >}}
 
-![System architecture and data flow](figures/architecture-flowchart.png){fig-align="center" style="max-width: 90vw; max-height: 65vh;" .fragment}
+{{< include slides/11-duplicate-handling.qmd >}}
 
+{{< include slides/12-security.qmd >}}
 
-## Database Design {#db-design}
+{{< include slides/13-auth.qmd >}}
 
-The data model defines how plants, production lines, machines, telemetry, operator inputs, and maintenance workflows relate to each other. It is designed to scale with growing telemetry while preserving clear ownership, traceability, and auditability across all operational data.
+{{< include slides/14-scalability.qmd >}}
 
-![Entity Relationship Digram](figures/erd.png){fig-align="center" style="max-width: 90vw; max-height: 65vh;" .fragment}
+{{< include slides/15-dashboard-demo.qmd >}}
 
-## Telemetry and Current State Strategy
-
-To balance scalability with real-time operational visibility, the platform decouples how data is **stored** from how it is **served to users**:
-
-::: {.fragment .fade-up}
-- Telemetry events are stored as an append-only history for analytics, audits, and reporting
-:::
-::: {.fragment .fade-up}
-- A separate `CurrentMachineState` table maintains one row per machine for operational views
-:::
-::: {.fragment .fade-up}
-- Status and health are updated through event-driven upserts as telemetry and operational events arrive
-:::
-::: {.fragment .fade-up}
-- Dashboards read exclusively from `CurrentMachineState` for fast, predictable performance
-:::
-
-## Algorithm A: Machine Health Scoring {#algorithm}
-
-The machine health score is a normalized indicator ranging from **<span class="critical">0 (critical)</span>** to **<span class="healthy">100 (healthy)</span>** that summarizes recent machine behavior into a single, easy-to-interpret value. The score is recalculated whenever new telemetry arrives and is written to `CurrentMachineState.healthScore`. The algorithm combines sensor deviations, fault severity, operator input, and maintenance state, while applying smoothing to reduce noise.
-
-::: {.fragment .fade-up}
-### Pseudocode
-
-```{.python code-line-numbers="1|2-3|6-8|11-14|17-20|23-24|27-28|29-34|37"}
-def compute_health_score(previous_score, minutes_since_last_telemetry):
-    rawScore = 100
-    smoothing_param = 0.2
-
-    # sensor penalties (computed from last 15 minutes of data)
-    rawScore -= temperature_penalty
-    rawScore -= vibration_penalty
-    rawScore -= throughput_penalty
-
-    # fault severity penalties
-    if fault_severity == "High":
-        rawScore -= 60
-    elif fault_severity == "Medium":
-        rawScore -= 30
-
-    # apply operator input only if a report exists
-    if operator_flag == "IssueObserved":
-        rawScore -= 20
-    elif operator_flag == "MinorConcern":
-        rawScore -= 10
-
-    # maintenance state cap
-    if status == "UnderMaintenance":
-        rawScore = min(rawScore, 60)
-
-    # initialization / reset rule (no previous score or stale telemetry)
-    if previous_score is None or minutes_since_last_telemetry > 30:
-        healthScore = rawScore
-    else:
-        # Apply smoothing (EWMA)
-        healthScore = (
-            smoothing_param * rawScore +
-            (1 - smoothing_param) * previous_score
-        )
-
-    # ensure the final score stays between 0 (worst) and 100 (best)
-    healthScore = max(0, min(100, healthScore))
-
-    return healthScore
-```
-:::
-
-## Algorithm Context and Assumptions
-
-::: incremental
--	Telemetry is expected approximately every **60 seconds** per machine, providing about **15 samples** over a **15-minute rolling window**
--	Each incoming telemetry event triggers a health score update for the affected machine
--	Sensor penalties are calculated over the most recent 15-minute rolling window to capture short-term behavior
--	EWMA smoothing is applied using the previously stored `healthScore` to reduce noise and sudden spikes
--	Smoothing is reset when telemetry is **missing for more than 30 minutes** or when **no prior score exists**
--	The final score is written to `CurrentMachineState.healthScore` for use by operational dashboards
-:::
-
-## Algorithm B: Latest Machine Status Resolution
-
-The platform resolves each machine’s current status using explicit precedence rules to ensure results are deterministic, explainable, and aligned with real operational priorities.
-
-::: incremental
-1.	**Under Maintenance**: Applied whenever there is at least one open or in progress work order for the machine.
-2.	**Operator Override**: A manually reported status is honored if it was submitted within the last 4 hours.
-3.	**Telemetry-derived Status**: From the most recent telemetry using fault codes first, then raw machine status.
-:::
-
-::: notes
-Emphasize that maintenance and safety always take priority over sensor signals. Operators can override automation temporarily, but telemetry remains the default source of truth.
-:::
-
-::: {.fragment .fade-down}
-### Initialization at Launch
-
-```sql
-CREATE TABLE IF NOT EXISTS CurrentMachineState (
-  machineId                  BIGINT PRIMARY KEY,
-  resolvedStatus             VARCHAR(32) NOT NULL,
-
-  -- scoring
-  healthScore                NUMERIC(5,2) NULL,
-
-  -- work orders
-  openWorkOrderCount         INT NOT NULL DEFAULT 0,
-  lastWorkOrderId            BIGINT NULL,
-  lastWorkOrderCreatedByType VARCHAR(32) NULL,  -- 'User' | 'RuleEngine'
-  lastWorkOrderCreatedById   BIGINT NULL,
-
-  -- latest pointers
-  lastTelemetryEventId       BIGINT NULL,
-  lastOperatorReportId       BIGINT NULL,
-
-  -- freshness across any signal
-  lastUpdateAt               TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-```
-:::
-
-## Event-driven per Machine Update
-
-This update runs once per incoming event and recalculates the current status for a single machine using telemetry data, maintenance-driven work order changes, operator-submitted overrides, and the latest health score. All inputs are supplied by event-driven processes, eliminating the need to scan historical data.
-
-::: {.fragment .fade-down}
-```{.sql code-line-numbers="4-30|32-36|38-71|88-97|99-112"}
--- Runs for ONE machine whenever ANY of these events occurs:
--- 1) telemetry event, 2) work order opened/closed, 3) operator override submitted, 4) health score updated.
-
-WITH Incoming AS (
-  SELECT
-    :machineId                :: BIGINT        AS machineId,
-
-    -- Telemetry event fields (present on telemetry events)
-    :telemetryEventId         :: BIGINT        AS telemetryEventId,
-    :eventTimestamp           :: TIMESTAMP     AS eventTimestamp,
-    :statusRaw                :: VARCHAR(32)   AS statusRaw,
-    :faultCodeId              :: BIGINT        AS faultCodeId,
-
-    -- Work order fields (emitted when a work order is created/updated/closed)
-    :workOrderId              :: BIGINT        AS workOrderId,
-    :workOrderCreatedAt       :: TIMESTAMP     AS workOrderCreatedAt,
-    :workOrderClosedAt        :: TIMESTAMP     AS workOrderClosedAt,
-    :openWorkOrderCount       :: INT           AS openWorkOrderCount,
-    :workOrderCreatedByType   :: VARCHAR(32)   AS workOrderCreatedByType,
-    :workOrderCreatedById     :: BIGINT        AS workOrderCreatedById,
-
-    -- Operator report fields (emitted when an operator submits a report/override)
-    :operatorReportId         :: BIGINT        AS operatorReportId,
-    :reportTimestamp          :: TIMESTAMP     AS reportTimestamp,
-    :statusOverride           :: VARCHAR(32)   AS statusOverride,
-
-    -- Health score event fields (present on scoring events)
-    :healthScore              :: NUMERIC(5,2)  AS healthScore,
-    :healthScoreAt            :: TIMESTAMP     AS healthScoreAt
-),
-
-Existing AS (
-  SELECT *
-  FROM CurrentMachineState
-  WHERE machineId = (SELECT machineId FROM Incoming)
-),
-
-Merged AS (
-  SELECT
-    i.machineId,
-
-    -- Keep lastest telemetry
-    COALESCE(i.telemetryEventId, e.lastTelemetryEventId) AS lastTelemetryEventId,
-    COALESCE(i.eventTimestamp,   e.lastUpdateAt)         AS lastTelemetryAt,
-    i.statusRaw                                         AS statusRaw,
-    i.faultCodeId                                       AS faultCodeId,
-
-    -- Keep latest work order signals
-    COALESCE(i.openWorkOrderCount, e.openWorkOrderCount, 0) AS openWorkOrderCount,
-    COALESCE(i.workOrderId, e.lastWorkOrderId) AS lastWorkOrderId,
-    COALESCE(i.workOrderCreatedByType, e.lastWorkOrderCreatedByType) AS lastWorkOrderCreatedByType,
-    COALESCE(i.workOrderCreatedById,   e.lastWorkOrderCreatedById)   AS lastWorkOrderCreatedById,
-
-    -- Use createdAt/closedAt from the incoming work order event to bump freshness.
-    GREATEST(
-      COALESCE(i.workOrderCreatedAt, TIMESTAMP '1970-01-01'),
-      COALESCE(i.workOrderClosedAt,  TIMESTAMP '1970-01-01'),
-      COALESCE(e.lastUpdateAt,       TIMESTAMP '1970-01-01')
-    ) AS lastWorkOrderChangeAt,
-
-    -- Keep latest operator override pointer
-    COALESCE(i.operatorReportId, e.lastOperatorReportId) AS lastOperatorReportId,
-    COALESCE(i.reportTimestamp,  e.lastUpdateAt)         AS lastOverrideAt,
-    i.statusOverride                                     AS statusOverride,
-
-    -- Keep latest health score
-    COALESCE(i.healthScore,   e.healthScore)             AS healthScore,
-    COALESCE(i.healthScoreAt, e.lastUpdateAt)            AS healthScoreAt
-  FROM Incoming i
-  LEFT JOIN Existing e ON TRUE
-)
-
-INSERT INTO CurrentMachineState (
-  machineId,
-  resolvedStatus,
-  healthScore,
-  openWorkOrderCount,
-  lastTelemetryEventId,
-  lastOperatorReportId,
-  lastWorkOrderId,
-  lastWorkOrderCreatedByType,
-  lastWorkOrderCreatedById,
-  lastUpdateAt
-)
-SELECT
-  m.machineId,
-
-  CASE
-    WHEN m.openWorkOrderCount > 0 THEN 'UnderMaintenance'
-
-    WHEN m.statusOverride IS NOT NULL
-      AND m.lastOverrideAt >= CURRENT_TIMESTAMP - INTERVAL '4 hours'
-      THEN m.statusOverride
-
-    WHEN m.faultCodeId IS NOT NULL THEN 'Fault'
-    ELSE COALESCE(m.statusRaw, 'Idle')
-  END AS resolvedStatus,
-
-  m.healthScore,
-  m.openWorkOrderCount,
-  m.lastTelemetryEventId,
-  m.lastOperatorReportId,
-  m.lastWorkOrderId,
-  m.lastWorkOrderCreatedByType,
-  m.lastWorkOrderCreatedById,
-
-  GREATEST(
-    COALESCE(m.lastTelemetryAt,         TIMESTAMP '1970-01-01'),
-    COALESCE(m.lastWorkOrderChangeAt,   TIMESTAMP '1970-01-01'),
-    COALESCE(m.lastOverrideAt,          TIMESTAMP '1970-01-01'),
-    COALESCE(m.healthScoreAt,           TIMESTAMP '1970-01-01')
-  ) AS lastUpdateAt
-FROM Merged m
-
-ON CONFLICT (machineId) DO UPDATE
-SET
-  resolvedStatus              = EXCLUDED.resolvedStatus,
-  healthScore                 = EXCLUDED.healthScore,
-  openWorkOrderCount          = EXCLUDED.openWorkOrderCount,
-  lastTelemetryEventId        = EXCLUDED.lastTelemetryEventId,
-  lastOperatorReportId        = EXCLUDED.lastOperatorReportId,
-  lastWorkOrderId             = EXCLUDED.lastWorkOrderId,
-  lastWorkOrderCreatedByType  = EXCLUDED.lastWorkOrderCreatedByType,
-  lastWorkOrderCreatedById    = EXCLUDED.lastWorkOrderCreatedById,
-  lastUpdateAt                = EXCLUDED.lastUpdateAt;
-```
-:::
-
-## Handling Duplicate Events and Work Orders
-
-::: {.fragment .fade-up}
--	Telemetry events, rule evaluations, and retries can surface the same underlying issue multiple times
-:::
-::: {.fragment .fade-up}
--	Each issue is assigned a stable **issue key** derived from the **machine** and **problem type**
-    - `issueKey`:  hash(`machineId` + `issueType`) = `42_HighTemp`
-:::
-::: {.fragment .fade-up}
--	The rule engine checks for an existing open work order associated with the same `issueKey`
-:::
-::: {.fragment .fade-up}
--	If an open work order already exists, the system suppresses creation of a duplicate
-:::
-::: {.fragment .fade-up}
--	Only transitions (new issue detected or issue resolved) trigger work order changes
-:::
-::: {.fragment .fade-up}
--	This approach ensures consistent work order counts and reliable status signals, even under delayed or out-of-order events
-:::
-
-::: notes
-We deduplicate at the issue level, not the event level, which keeps the system stable under real-world delays
-:::
-
-## Security and Data Protection
-
-::: incremental
-- Protect operational data and machine state integrity across plants
--	Prevent unauthorized access to machine health, telemetry, and maintenance records
--	Ensure machine status and maintenance actions cannot be modified improperly
--	Preserve clear traceability of who changed status or triggered maintenance
--	Prevent data exposure across plants and regions
-:::
-
-::: notes
-- Protect operational data and machine state integrity across plants  
-ensures that machine status, health scores, and maintenance signals are accurate, uncorrupted and trustworthy across all plants, since operators and supervisors rely on this data for safety and production decisions.
-
-- Prevent unauthorized access to machine health, telemetry, and maintenance records  
-ensures that only authenticated and authorized users are able to view or interact with operational data, preventing accidental exposure or malicious access to sensitive plant information.
-
-- Ensure machine status and maintenance actions cannot be modified improperly  
-Status changes, overrides, and work order updates must follow controlled workflows, reducing the risk of unsafe decisions caused by unauthorized or accidental edits.
-
-- Preserve clear traceability of who changed status or triggered maintenance  
-Every status override and work order action is traceable to a user or system component, supporting accountability, troubleshooting, and audit requirements.
-
-- Prevent data exposure across plants and regions  
-The platform enforces data isolation so users only access data for plants and regions they are authorized to manage, which is important for operational separation and compliance.
-:::
-
-## Authentication and Authorization {#auth}
-
-::: incremental
-- **Authentication**  
-  Centralized identity management using **Microsoft Entra ID**
-  - Single sign on, multi factor authentication, and managed identities
-:::
-
-<br/>
-
-![](assets/Microsoft_Entra.svg){fig-alt="Microsoft Entra ID" width="90" fig-align="center"}
-
-<br/>
-
-::: incremental
-- **Authorization**  
-  Role based access control governs what users can see and do
-  - Operator, Supervisor, Maintenance, Administrator
-:::
-
-::: notes
-- Authentication is handled centrally using `Microsoft Entra ID`, which provides a single trusted identity system across the platform.  
-This allows users to sign in once and access all authorized services securely.
-
-- Single sign on improves usability, while multi factor authentication adds protection for sensitive operational systems.  
-Managed identities are used for service to service communication without exposing credentials.
-
-- Authorization is enforced through role based access control, ensuring users can only perform actions appropriate to their role.
-
-- Operators can view machine status and submit reports, supervisors can review health and prioritize work, maintenance teams manage work orders, and administrators control users and configuration.
-:::
-
-## Scalability and Reliability {#scale}
-
-::: incremental
--	**Scalability**: All machine telemetry is written to an append-only event store designed for very high write volume  
--	**Operational Performance**: A lightweight `CurrentMachineState` table keeps exactly one row per machine, enabling fast and predictable dashboard queries  
--	**Reliability**: Automatically handles failures and duplicate events so machine status remains accurate and consistent  
--	**Data Freshness and Trust**: A `lastUpdateAt` timestamp makes it easy to detect stale machines, delayed telemetry, or processing gaps  
-:::
-
-::: notes
--	Start by reminding them that industrial systems generate a lot of data very quickly
--	The append-only telemetry store absorbs this volume without slowing down the system
--	Instead of querying history, dashboards read from a small current-state table optimized for operations
--	Event-driven updates mean the system reacts immediately as data arrives
--	Idempotent upserts ensure retries or duplicates never corrupt machine state
--	`lastUpdateAt` gives operations teams confidence that what they see is current and reliable
--	Overall, this design scales cleanly as plants, machines, and telemetry grow
-:::
-
-## Live Dashboard Demo
-
-<br/>
-
-[![](figures/dashboard-screens.png){fig-align="center" style="max-width: 90vw; max-height: 70vh;" .fragment .fade-down}](https://intelbyte.onrender.com)
-
-
-## 
-
-::: {style="display:flex; align-items:center; justify-content:center; height:70vh; text-align:center;"}
-<div>
-  <div class="fragment fade-up" style="font-size:5.5em; font-weight:700;">
-    Thank You
-  </div>
-
-  <div class="fragment fade-left" style="font-size:2em; font-weight:400; color:#2563eb !important;">
-    Any questions?
-  </div>
-</div>
-:::
+{{< include slides/16-thank-you.qmd >}}
 
 
 

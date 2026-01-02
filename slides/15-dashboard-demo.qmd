@@ -1,0 +1,5 @@
+## Live Dashboard Demo
+
+<br/>
+
+[![](figures/dashboard-screens.png){fig-align="center" style="max-width: 90vw; max-height: 70vh;" .fragment .fade-down}](https://intelbyte.onrender.com)

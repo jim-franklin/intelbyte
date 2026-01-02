@@ -1,0 +1,31 @@
+## Authentication and Authorization {#auth}
+
+::: incremental
+- **Authentication**
+  Centralized identity management using **Microsoft Entra ID**
+  - Single sign on, multi factor authentication, and managed identities
+:::
+
+<br/>
+
+![](assets/Microsoft_Entra.svg){fig-alt="Microsoft Entra ID" width="90" fig-align="center"}
+
+<br/>
+
+::: incremental
+- **Authorization**
+  Role based access control governs what users can see and do
+  - Operator, Supervisor, Maintenance, Administrator
+:::
+
+::: notes
+- Authentication is handled centrally using `Microsoft Entra ID`, which provides a single trusted identity system across the platform.
+This allows users to sign in once and access all authorized services securely.
+
+- Single sign on improves usability, while multi factor authentication adds protection for sensitive operational systems.
+Managed identities are used for service to service communication without exposing credentials.
+
+- Authorization is enforced through role based access control, ensuring users can only perform actions appropriate to their role.
+
+- Operators can view machine status and submit reports, supervisors can review health and prioritize work, maintenance teams manage work orders, and administrators control users and configuration.
+:::

@@ -1,0 +1,5 @@
+## Overview of Platform Architecture {#architecture}
+
+The platform stores all telemetry events as historical data. At the same time, a **stream processor** updates a lightweight table that holds the current state of each machine, enabling fast and reliable operational dashboards.
+
+![System architecture and data flow](figures/architecture-flowchart.png){fig-align="center" style="max-width: 90vw; max-height: 65vh;" .fragment}

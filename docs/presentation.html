@@ -195,30 +195,6 @@
       margin-right: 0; 
     }
   </style>
-  <!-- Loadcontent plugin (needed if you use data-load="file.svg") -->
-  <script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/loadcontent/plugin.js"></script>
-
-  <!-- Animate plugin -->
-  <script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/animate/plugin.js"></script>
-
-  <!-- SVG.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.1.2/svg.min.js"></script>
-
-  <script>
-    // Quarto initializes Reveal for you, so you do NOT call Reveal.initialize here.
-    // Instead, register plugins and configure after Reveal exists.
-    window.addEventListener("load", () => {
-      if (window.Reveal && window.RevealAnimate && window.RevealLoadContent) {
-        Reveal.registerPlugin("loadcontent", RevealLoadContent);
-        Reveal.registerPlugin("animate", RevealAnimate);
-
-        // Make animations play whenever you enter the slide
-        Reveal.configure({
-          animate: { autoplay: true }
-        });
-      }
-    });
-  </script>
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -460,7 +436,11 @@ Presented by Franklin Aryee
 <li class="fragment"><strong>Telemetry-derived Status</strong>: From the most recent telemetry using fault codes first, then raw machine status.</li>
 </ol>
 <aside class="notes">
-<p>Emphasize that maintenance and safety always take priority over sensor signals. Operators can override automation temporarily, but telemetry remains the default source of truth.</p>
+<p>Next is how we resolve the latest machine status.</p>
+<p>In real factories, multiple signals can conflict. Telemetry might say running, while maintenance says the machine is being worked on. Or an operator might override the status temporarily.</p>
+<p>So we use clear precedence rules. First, under maintenance wins whenever there is an open or in progress work order. Safety and maintenance must have priority.</p>
+<p>Second, operator overrides are honored if they are recent, within the last four hours. Third, telemetry derived status is used when there is no maintenance priority and no active override.</p>
+<p>This makes the system deterministic and explainable. When someone asks why a machine shows a status, we can point to the rule.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -687,16 +667,11 @@ Presented by Franklin Aryee
 </ul>
 <aside class="notes">
 <ul>
-<li><p>Protect operational data and machine state integrity across plants<br>
-ensures that machine status, health scores, and maintenance signals are accurate, uncorrupted and trustworthy across all plants, since operators and supervisors rely on this data for safety and production decisions.</p></li>
-<li><p>Prevent unauthorized access to machine health, telemetry, and maintenance records<br>
-ensures that only authenticated and authorized users are able to view or interact with operational data, preventing accidental exposure or malicious access to sensitive plant information.</p></li>
-<li><p>Ensure machine status and maintenance actions cannot be modified improperly<br>
-Status changes, overrides, and work order updates must follow controlled workflows, reducing the risk of unsafe decisions caused by unauthorized or accidental edits.</p></li>
-<li><p>Preserve clear traceability of who changed status or triggered maintenance<br>
-Every status override and work order action is traceable to a user or system component, supporting accountability, troubleshooting, and audit requirements.</p></li>
-<li><p>Prevent data exposure across plants and regions<br>
-The platform enforces data isolation so users only access data for plants and regions they are authorized to manage, which is important for operational separation and compliance.</p></li>
+<li><p>Protect operational data and machine state integrity across plants ensures that machine status, health scores, and maintenance signals are accurate, uncorrupted and trustworthy across all plants, since operators and supervisors rely on this data for safety and production decisions.</p></li>
+<li><p>Prevent unauthorized access to machine health, telemetry, and maintenance records ensures that only authenticated and authorized users are able to view or interact with operational data, preventing accidental exposure or malicious access to sensitive plant information.</p></li>
+<li><p>Ensure machine status and maintenance actions cannot be modified improperly Status changes, overrides, and work order updates must follow controlled workflows, reducing the risk of unsafe decisions caused by unauthorized or accidental edits.</p></li>
+<li><p>Preserve clear traceability of who changed status or triggered maintenance Every status override and work order action is traceable to a user or system component, supporting accountability, troubleshooting, and audit requirements.</p></li>
+<li><p>Prevent data exposure across plants and regions The platform enforces data isolation so users only access data for plants and regions they are authorized to manage, which is important for operational separation and compliance.</p></li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -713,8 +688,7 @@ The platform enforces data isolation so users only access data for plants and re
 <section id="auth" class="slide level2">
 <h2>Authentication and Authorization</h2>
 <ul>
-<li class="fragment"><strong>Authentication</strong><br>
-Centralized identity management using <strong>Microsoft Entra ID</strong>
+<li class="fragment"><strong>Authentication</strong> Centralized identity management using <strong>Microsoft Entra ID</strong>
 <ul>
 <li class="fragment">Single sign on, multi factor authentication, and managed identities</li>
 </ul></li>
@@ -727,18 +701,15 @@ Centralized identity management using <strong>Microsoft Entra ID</strong>
 </div>
 <p><br></p>
 <ul>
-<li class="fragment"><strong>Authorization</strong><br>
-Role based access control governs what users can see and do
+<li class="fragment"><strong>Authorization</strong> Role based access control governs what users can see and do
 <ul>
 <li class="fragment">Operator, Supervisor, Maintenance, Administrator</li>
 </ul></li>
 </ul>
 <aside class="notes">
 <ul>
-<li><p>Authentication is handled centrally using <code>Microsoft Entra ID</code>, which provides a single trusted identity system across the platform.<br>
-This allows users to sign in once and access all authorized services securely.</p></li>
-<li><p>Single sign on improves usability, while multi factor authentication adds protection for sensitive operational systems.<br>
-Managed identities are used for service to service communication without exposing credentials.</p></li>
+<li><p>Authentication is handled centrally using <code>Microsoft Entra ID</code>, which provides a single trusted identity system across the platform. This allows users to sign in once and access all authorized services securely.</p></li>
+<li><p>Single sign on improves usability, while multi factor authentication adds protection for sensitive operational systems. Managed identities are used for service to service communication without exposing credentials.</p></li>
 <li><p>Authorization is enforced through role based access control, ensuring users can only perform actions appropriate to their role.</p></li>
 <li><p>Operators can view machine status and submit reports, supervisors can review health and prioritize work, maintenance teams manage work orders, and administrators control users and configuration.</p></li>
 </ul>
@@ -757,14 +728,10 @@ Managed identities are used for service to service communication without exposin
 <section id="scale" class="slide level2">
 <h2>Scalability and Reliability</h2>
 <ul>
-<li class="fragment"><strong>Scalability</strong>: All machine telemetry is written to an append-only event store designed for very high write volume<br>
-</li>
-<li class="fragment"><strong>Operational Performance</strong>: A lightweight <code>CurrentMachineState</code> table keeps exactly one row per machine, enabling fast and predictable dashboard queries<br>
-</li>
-<li class="fragment"><strong>Reliability</strong>: Automatically handles failures and duplicate events so machine status remains accurate and consistent<br>
-</li>
-<li class="fragment"><strong>Data Freshness and Trust</strong>: A <code>lastUpdateAt</code> timestamp makes it easy to detect stale machines, delayed telemetry, or processing gaps<br>
-</li>
+<li class="fragment"><strong>Scalability</strong>: All machine telemetry is written to an append-only event store designed for very high write volume</li>
+<li class="fragment"><strong>Operational Performance</strong>: A lightweight <code>CurrentMachineState</code> table keeps exactly one row per machine, enabling fast and predictable dashboard queries</li>
+<li class="fragment"><strong>Reliability</strong>: Automatically handles failures and duplicate events so machine status remains accurate and consistent</li>
+<li class="fragment"><strong>Data Freshness and Trust</strong>: A <code>lastUpdateAt</code> timestamp makes it easy to detect stale machines, delayed telemetry, or processing gaps</li>
 </ul>
 <aside class="notes">
 <ul>

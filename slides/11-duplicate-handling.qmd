@@ -1,0 +1,25 @@
+## Handling Duplicate Events and Work Orders
+
+::: {.fragment .fade-up}
+-	Telemetry events, rule evaluations, and retries can surface the same underlying issue multiple times
+:::
+::: {.fragment .fade-up}
+-	Each issue is assigned a stable **issue key** derived from the **machine** and **problem type**
+    - `issueKey`:  hash(`machineId` + `issueType`) = `42_HighTemp`
+:::
+::: {.fragment .fade-up}
+-	The rule engine checks for an existing open work order associated with the same `issueKey`
+:::
+::: {.fragment .fade-up}
+-	If an open work order already exists, the system suppresses creation of a duplicate
+:::
+::: {.fragment .fade-up}
+-	Only transitions (new issue detected or issue resolved) trigger work order changes
+:::
+::: {.fragment .fade-up}
+-	This approach ensures consistent work order counts and reliable status signals, even under delayed or out-of-order events
+:::
+
+::: notes
+We deduplicate at the issue level, not the event level, which keeps the system stable under real-world delays
+:::

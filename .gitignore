@@ -17,3 +17,5 @@ _site/
 **/*.quarto_ipynb
 
 .nojekyll
+.claude
+.gitignore

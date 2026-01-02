@@ -1,0 +1,10 @@
+## Algorithm Context and Assumptions
+
+::: incremental
+-	Telemetry is expected approximately every **60 seconds** per machine, providing about **15 samples** over a **15-minute rolling window**
+-	Each incoming telemetry event triggers a health score update for the affected machine
+-	Sensor penalties are calculated over the most recent 15-minute rolling window to capture short-term behavior
+-	EWMA smoothing is applied using the previously stored `healthScore` to reduce noise and sudden spikes
+-	Smoothing is reset when telemetry is **missing for more than 30 minutes** or when **no prior score exists**
+-	The final score is written to `CurrentMachineState.healthScore` for use by operational dashboards
+:::

@@ -1,0 +1,23 @@
+## Problem and Objectives {#problem}
+
+Design a platform that continuously monitors equipment health and maintenance activity across production lines, capable of absorbing high-frequency telemetry while presenting operations teams with a clear, always-current view of system status.
+
+### 🎯 MVP Goals
+::: {.fragment .fade-up}
+-	Ingest continuous machine telemetry data
+:::
+::: {.fragment .fade-up}
+- Scale to thousands of machines and millions of telemetry records
+:::
+::: {.fragment .fade-up}
+-	Store complete historical data for analysis, reporting, and audits
+:::
+::: {.fragment .fade-up}
+-	Maintain a single current state per machine that powers near real-time dashboards
+:::
+::: {.fragment .fade-up}
+-	Enable operators to log issues and status changes
+:::
+::: {.fragment .fade-up}
+-	Generate maintenance work orders based on issues, rules, or thresholds
+:::

@@ -1,0 +1,26 @@
+## Security and Data Protection
+
+::: incremental
+- Protect operational data and machine state integrity across plants
+-	Prevent unauthorized access to machine health, telemetry, and maintenance records
+-	Ensure machine status and maintenance actions cannot be modified improperly
+-	Preserve clear traceability of who changed status or triggered maintenance
+-	Prevent data exposure across plants and regions
+:::
+
+::: notes
+- Protect operational data and machine state integrity across plants
+ensures that machine status, health scores, and maintenance signals are accurate, uncorrupted and trustworthy across all plants, since operators and supervisors rely on this data for safety and production decisions.
+
+- Prevent unauthorized access to machine health, telemetry, and maintenance records
+ensures that only authenticated and authorized users are able to view or interact with operational data, preventing accidental exposure or malicious access to sensitive plant information.
+
+- Ensure machine status and maintenance actions cannot be modified improperly
+Status changes, overrides, and work order updates must follow controlled workflows, reducing the risk of unsafe decisions caused by unauthorized or accidental edits.
+
+- Preserve clear traceability of who changed status or triggered maintenance
+Every status override and work order action is traceable to a user or system component, supporting accountability, troubleshooting, and audit requirements.
+
+- Prevent data exposure across plants and regions
+The platform enforces data isolation so users only access data for plants and regions they are authorized to manage, which is important for operational separation and compliance.
+:::

@@ -1,0 +1,53 @@
+## Algorithm B: Latest Machine Status Resolution
+
+The platform resolves each machine's current status using explicit precedence rules to ensure results are deterministic, explainable, and aligned with real operational priorities.
+
+::: incremental
+1.	**Under Maintenance**: Applied whenever there is at least one open or in progress work order for the machine.
+2.	**Operator Override**: A manually reported status is honored if it was submitted within the last 4 hours.
+3.	**Telemetry-derived Status**: From the most recent telemetry using fault codes first, then raw machine status.
+:::
+
+::: notes
+Next is how we resolve the latest machine status.
+
+In real factories, multiple signals can conflict.
+Telemetry might say running, while maintenance says the machine is being worked on.
+Or an operator might override the status temporarily.
+
+So we use clear precedence rules.
+First, under maintenance wins whenever there is an open or in progress work order. Safety and maintenance must have priority.
+
+Second, operator overrides are honored if they are recent, within the last four hours.
+Third, telemetry derived status is used when there is no maintenance priority and no active override.
+
+This makes the system deterministic and explainable.
+When someone asks why a machine shows a status, we can point to the rule.
+:::
+
+::: {.fragment .fade-down}
+### Initialization at Launch
+
+```sql
+CREATE TABLE IF NOT EXISTS CurrentMachineState (
+  machineId                  BIGINT PRIMARY KEY,
+  resolvedStatus             VARCHAR(32) NOT NULL,
+
+  -- scoring
+  healthScore                NUMERIC(5,2) NULL,
+
+  -- work orders
+  openWorkOrderCount         INT NOT NULL DEFAULT 0,
+  lastWorkOrderId            BIGINT NULL,
+  lastWorkOrderCreatedByType VARCHAR(32) NULL,  -- 'User' | 'RuleEngine'
+  lastWorkOrderCreatedById   BIGINT NULL,
+
+  -- latest pointers
+  lastTelemetryEventId       BIGINT NULL,
+  lastOperatorReportId       BIGINT NULL,
+
+  -- freshness across any signal
+  lastUpdateAt               TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+```
+:::

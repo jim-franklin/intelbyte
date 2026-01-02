@@ -1,0 +1,16 @@
+## Telemetry and Current State Strategy
+
+To balance scalability with real-time operational visibility, the platform decouples how data is **stored** from how it is **served to users**:
+
+::: {.fragment .fade-up}
+- Telemetry events are stored as an append-only history for analytics, audits, and reporting
+:::
+::: {.fragment .fade-up}
+- A separate `CurrentMachineState` table maintains one row per machine for operational views
+:::
+::: {.fragment .fade-up}
+- Status and health are updated through event-driven upserts as telemetry and operational events arrive
+:::
+::: {.fragment .fade-up}
+- Dashboards read exclusively from `CurrentMachineState` for fast, predictable performance
+:::

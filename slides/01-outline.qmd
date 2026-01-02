@@ -1,0 +1,23 @@
+## Outline
+
+::: {.fragment .fade-left}
+- [Problem and Objectives](#problem)
+:::
+::: {.fragment .fade-left}
+- [Overview of Platform Architecture](#architecture)
+:::
+::: {.fragment .fade-left}
+- [Database Design](#db-design)
+:::
+::: {.fragment .fade-left}
+- [Core Algorithms](#algorithms)
+:::
+::: {.fragment .fade-left}
+- [Security and Data Protection](#security)
+:::
+::: {.fragment .fade-left}
+- [Authentication and Authorization](#auth)
+:::
+::: {.fragment .fade-left}
+- [Scalability and Reliability](#scale)
+:::

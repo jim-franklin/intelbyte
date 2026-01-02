@@ -1,0 +1,18 @@
+## Scalability and Reliability {#scale}
+
+::: incremental
+-	**Scalability**: All machine telemetry is written to an append-only event store designed for very high write volume
+-	**Operational Performance**: A lightweight `CurrentMachineState` table keeps exactly one row per machine, enabling fast and predictable dashboard queries
+-	**Reliability**: Automatically handles failures and duplicate events so machine status remains accurate and consistent
+-	**Data Freshness and Trust**: A `lastUpdateAt` timestamp makes it easy to detect stale machines, delayed telemetry, or processing gaps
+:::
+
+::: notes
+-	Start by reminding them that industrial systems generate a lot of data very quickly
+-	The append-only telemetry store absorbs this volume without slowing down the system
+-	Instead of querying history, dashboards read from a small current-state table optimized for operations
+-	Event-driven updates mean the system reacts immediately as data arrives
+-	Idempotent upserts ensure retries or duplicates never corrupt machine state
+-	`lastUpdateAt` gives operations teams confidence that what they see is current and reliable
+-	Overall, this design scales cleanly as plants, machines, and telemetry grow
+:::

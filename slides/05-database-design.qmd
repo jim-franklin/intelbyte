@@ -1,0 +1,5 @@
+## Database Design {#db-design}
+
+The data model defines how plants, production lines, machines, telemetry, operator inputs, and maintenance workflows relate to each other. It is designed to scale with growing telemetry while preserving clear ownership, traceability, and auditability across all operational data.
+
+![Entity Relationship Digram](figures/erd.png){fig-align="center" style="max-width: 90vw; max-height: 65vh;" .fragment}

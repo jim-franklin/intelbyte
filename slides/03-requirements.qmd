@@ -1,0 +1,29 @@
+## Requirements that Drive the Platform
+
+::: columns
+::: {.column width="50%"}
+::: {.fragment .fade-up}
+### ⚙️ Functional
+:::
+::: incremental
+-	Support multiple plants, production lines, and machines
+-	Ingest and persist high-frequency machine telemetry
+-	Capture operator reports and manual overrides
+-	Automate and manage maintenance requests and work orders
+-	Provide a current equipment status view with one row per machine
+:::
+:::
+
+::: {.column width="50%"}
+::: {.fragment .fade-up}
+### 📈 Quality
+:::
+::: incremental
+-	Scale horizontally to thousands of machines
+-	Handle continuous growth to millions of telemetry events
+-	Deliver fast, predictable reads for operational dashboards
+-	Preserve full audit history and traceability
+-	Enforce secure, role-based access controls
+:::
+:::
+:::
